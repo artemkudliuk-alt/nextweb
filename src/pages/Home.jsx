@@ -1737,7 +1737,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   animationDelay: '0.8s',
                   opacity: 0
                 }}>
-                  Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг. От идеи и проектирования до запуска и масштабирования бизнеса.
+                  Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг. 
+                  <br className="desktop-only" />
+                  От идеи и проектирования до запуска и масштабирования бизнеса.
                 </p>
                 
                 <div className="button-wrap" style={{
@@ -1793,7 +1795,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 </div>
                 <ul className="hero-services-list">
                   <li><span className="service-dot dot-pink"></span>РАЗРАБОТКА</li>
-                  <li><span className="service-dot dot-purple"></span>БРЕНДИНГ</li>
+                  <li><span className="service-dot dot-purple"></span>ПОДДЕРЖКА</li>
                   <li><span className="service-dot dot-blue"></span>UI/UX</li>
                   <li><span className="service-dot dot-cyan"></span>МАРКЕТИНГ</li>
                 </ul>
@@ -1830,102 +1832,101 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         </div>
 
         {/* ----------------- APPROACH SECTION ----------------- */}
-        <section id="approach">
-          <div className="grid-container">
-          <Grid cols={8} className="content">
-            <div style={{ gridColumn: '1 / span 2', marginTop: '55px' }} ref={menuRef}>
-              <ul className="items">
-                <li className={`item ${activeCategory === 'tech' ? 'active' : ''}`} onClick={() => handleCategoryClick('tech', card1Ref)}>
-                  <h2 className="item"><TextReveal text="Технологии" glitch={true} /></h2>
-                </li>
-                <li className={`item ${activeCategory === 'team' ? 'active' : ''}`} onClick={() => handleCategoryClick('team', card2Ref)}>
-                  <h2 className="item"><TextReveal text="Профессионалы" glitch={true} /></h2>
-                </li>
-                <li className={`item ${activeCategory === 'marketing' ? 'active' : ''}`} onClick={() => handleCategoryClick('marketing', card3Ref)}>
-                  <h2 className="item"><TextReveal text="Маркетинг" glitch={true} /></h2>
-                </li>
-              </ul>
+        <section id="approach" className="approach-section-clean">
+          <div className="approach-container-clean">
+            {/* Left Column: CEO */}
+            <div className="approach-col-avatar-clean">
+              <div className="ceo-avatar-wrap-clean" onClick={() => setIsVideoOpen && setIsVideoOpen(true)}>
+                <img src="/avatar_igor.png" alt="Игорь Табаев" className="ceo-avatar-img-clean" />
+                <div className="ceo-play-btn-clean">
+                  <svg viewBox="0 0 24 24" fill="none" width="22" height="22" className="play-icon-svg">
+                    <defs>
+                      <linearGradient id="play-btn-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#00D1FF" />
+                        <stop offset="50%" stopColor="#7B3FF2" />
+                        <stop offset="100%" stopColor="#FF2EBE" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M8 5v14l11-7z" fill="url(#play-btn-grad)" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ceo-info-clean">
+                <h4 className="ceo-name-clean">Игорь Табаев</h4>
+                <span className="ceo-title-clean">CEO NEXTWEB</span>
+              </div>
             </div>
-            
-            <div style={{ gridColumn: '3 / span 6' }} className="approach-text-container" ref={descriptionRef}>
-              <span className="cyber-section-label">// 01 . НАШ ПОДХОД</span>
-              <h2 className="heading-accent">
-                <TextReveal text="NextWeb проектирует и создает эффективные цифровые продукты с 2009 года." />
-              </h2>
-               <p className="description-text">
-                 <TextReveal text="За это время мы успешно реализовали более сотни сложных проектов в сферах e-commerce, автоматизации и интернет-маркетинга. Мы не просто пишем код — мы глубоко погружаемся в бизнес, берем на себя ответственность за продукт и работаем как усиление вашей команды." />
-               </p>
-            </div>
-          </Grid>
 
-          {/* Step Cards Wrapper */}
-          <div className="cards-wrapper">
-            <div className="cards" ref={cardsRef}>
-              <div 
-                className={`card ${activeCategory === 'tech' ? 'active' : ''}`} 
-                ref={card1Ref}
-                onMouseMove={handleCardMouseMove}
-                onMouseLeave={handleCardMouseLeave}
-              >
-                <div className="card-top">
-                  <span className="card-number">01</span>
-                  <h3 className="heading">СОВРЕМЕННЫЕ ТЕХНОЛОГИИ</h3>
-                </div>
-                <p className="description">От проверенных временем WordPress, OpenCart и Shopify до гибких Laravel, Node.js и React. Подбираем стек под задачи бизнеса, а не навязываем шаблоны.</p>
-                <div className="card-tags">
-                  <span>WordPress</span>
-                  <span>OpenCart</span>
-                  <span>Shopify</span>
-                  <span>Laravel</span>
-                  <span>Node.js</span>
-                  <span>React</span>
-                </div>
+            {/* Right Column: Text content */}
+            <div className="approach-col-text-clean">
+              <span className="approach-label-clean">// 01 . НАШ ПОДХОД</span>
+              <h2 className="approach-heading-clean">
+                NextWeb работает на рынке информационных<br />
+                технологий с 2009 года и за это время эффективно<br />
+                реализовали множество проектов в областях<br />
+                электронной коммерции и интернет-маркетинга.
+              </h2>
+              <p className="approach-desc-clean">
+                Мы работаем в тесном контакте с нашими клиентами для<br className="br-desktop" />
+                решения конкретных бизнес-задач.
+              </p>
+            </div>
+
+            {/* Bottom row: Cards */}
+            {/* Card 1 */}
+            <div className="approach-card-item-clean approach-card-first">
+              <span className="approach-card-number-clean">01</span>
+              <h3 className="approach-card-title-clean">СОВРЕМЕННЫЕ ТЕХНОЛОГИИ</h3>
+              <p className="approach-card-desc-clean">
+                От проверенных временем WordPress, OpenCart и<br className="br-desktop" />
+                Shopify до гибких Laravel, Node.js и React. Подбираем<br className="br-desktop" />
+                стек под задачи бизнеса, а не навязываем шаблоны.
+              </p>
+              <div className="approach-card-tags-clean">
+                <span className="approach-card-tag-clean">WordPress</span>
+                <span className="approach-card-tag-clean">OpenCart</span>
+                <span className="approach-card-tag-clean">Shopify</span>
+                <span className="approach-card-tag-clean">Laravel</span>
+                <span className="approach-card-tag-clean">Node.js</span>
+                <span className="approach-card-tag-clean">React</span>
               </div>
-              
-              <div 
-                className={`card ${activeCategory === 'team' ? 'active' : ''}`} 
-                ref={card2Ref}
-                onMouseMove={handleCardMouseMove}
-                onMouseLeave={handleCardMouseLeave}
-              >
-                <div className="card-top">
-                  <span className="card-number">02</span>
-                  <h3 className="heading">СИЛЬНАЯ КОМАНДА</h3>
-                </div>
-                <p className="description">В нашей команде нет случайных людей. Мы проактивны, честны и берем ответственность за каждый релиз. Работаем короткими итерациями с прозрачным результатом.</p>
-                <div className="card-tags">
-                  <span>Proactive</span>
-                  <span>Responsible</span>
-                  <span>Decent</span>
-                </div>
+            </div>
+
+            {/* Card 2 */}
+            <div className="approach-card-item-clean">
+              <span className="approach-card-number-clean">02</span>
+              <h3 className="approach-card-title-clean">СИЛЬНАЯ КОМАНДА</h3>
+              <p className="approach-card-desc-clean">
+                В нашей команде нет случайных людей. Мы<br className="br-desktop" />
+                проактивны, честны и берем ответственность за<br className="br-desktop" />
+                каждый релиз. Работаем короткими итерациями с<br className="br-desktop" />
+                прозрачным результатом.
+              </p>
+              <div className="approach-card-tags-clean">
+                <span className="approach-card-tag-clean">Proactive</span>
+                <span className="approach-card-tag-clean">Responsible</span>
+                <span className="approach-card-tag-clean">Decent</span>
               </div>
-              
-              <div 
-                className={`card ${activeCategory === 'marketing' ? 'active' : ''}`} 
-                ref={card3Ref}
-                onMouseMove={handleCardMouseMove}
-                onMouseLeave={handleCardMouseLeave}
-              >
-                <div className="card-top">
-                  <span className="card-number">03</span>
-                  <h3 className="heading">ЭФФЕКТИВНЫЙ МАРКЕТИНГ</h3>
-                </div>
-                <p className="description">Интегрируем инструменты интернет-маркетинга и глубокую аналитику в единую стратегию. Ориентируемся на окупаемость (ROI) и реальный рост продаж, а не на пустые клики.</p>
-                <div className="card-tags">
-                  <span>Strategy</span>
-                  <span>Analytics</span>
-                  <span>Growth</span>
-                </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="approach-card-item-clean">
+              <span className="approach-card-number-clean">03</span>
+              <h3 className="approach-card-title-clean">ЭФФЕКТИВНЫЙ МАРКЕТИНГ</h3>
+              <p className="approach-card-desc-clean">
+                Интегрируем инструменты интернет-маркетинга и<br className="br-desktop" />
+                глубокую аналитику в единую стратегию.<br className="br-desktop" />
+                Ориентируемся на окупаемость (ROI) и реальный рост<br className="br-desktop" />
+                продаж, а не на пустые клики.
+              </p>
+              <div className="approach-card-tags-clean">
+                <span className="approach-card-tag-clean">Strategy</span>
+                <span className="approach-card-tag-clean">Analytics</span>
+                <span className="approach-card-tag-clean">Growth</span>
               </div>
             </div>
           </div>
-
-
-        </div>
-
-      </section>
-
-
+        </section>
 
       {/* ----------------- SELECTED WORKS VIEWPORT STICKY SECTION ----------------- */}
       <section id="dedicated" ref={dedicatedRef}>
