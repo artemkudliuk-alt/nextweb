@@ -1471,7 +1471,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
 
 
-            if (divider2) {
+            if (divider2 && !(currentScrollY >= vh * 1.3 && currentScrollY < vh * 2.3)) {
               divider2.style.transform = 'none';
               divider2.style.opacity = '0';
             }
