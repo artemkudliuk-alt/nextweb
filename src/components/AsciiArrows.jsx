@@ -152,6 +152,8 @@ export default function AsciiArrows({ isHovered = false }) {
       const { width, height } = dimensions;
       const tick = Date.now();
       const mouse = mouseRef.current;
+      const cellW = width / cols;
+      const cellH = height / rows;
       
       // Clear canvas
       ctx.clearRect(0, 0, width, height);
@@ -180,7 +182,8 @@ export default function AsciiArrows({ isHovered = false }) {
       gradient.addColorStop(0.5, '#A020F0'); // Violet
       gradient.addColorStop(1, '#00D9FF');   // Cyan
 
-      ctx.font = '12px "Geist Mono", monospace';
+      const fontSize = Math.max(5, Math.round(cellW * 0.95));
+      ctx.font = `${fontSize}px "Geist Mono", monospace`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -197,16 +200,13 @@ export default function AsciiArrows({ isHovered = false }) {
         }
       }
 
-      const cellW = width / cols;
-      const cellH = height / rows;
-
       cells.forEach((cell) => {
         const baseX = cell.x * width + cellW / 2;
         const baseY = cell.y * height + cellH / 2;
 
         let drawX = baseX;
         let drawY = baseY;
-        let opacity = 0.08; // Base background character opacity
+        let opacity = 0; // Default background character opacity is 0 (fully transparent)
         let char = '-';
         let isGradientColor = false;
 
@@ -232,7 +232,7 @@ export default function AsciiArrows({ isHovered = false }) {
 
             // Faintly light up non-active cells
             if (!cell.isActive) {
-              opacity = 0.08 + pushFactor * 0.16;
+              opacity = pushFactor * 0.18;
               if (pushFactor > 0.4 && Math.random() < 0.15) {
                 char = symbolSet[Math.floor(Math.random() * symbolSet.length)];
               }
@@ -283,10 +283,10 @@ export default function AsciiArrows({ isHovered = false }) {
           } else {
             // Outside spotlight: renders as standard background cell (faint white dash)
             char = '-';
-            opacity = 0.08;
+            opacity = 0;
             // Also light up background dash slightly if mouse is near
             if (mouseDist < 90) {
-              opacity += (1 - mouseDist / 90) * 0.16;
+              opacity = (1 - mouseDist / 90) * 0.16;
             }
           }
         }
