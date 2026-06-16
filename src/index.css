@@ -1844,7 +1844,7 @@ ul, ol {
   border-bottom: none;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  padding: 6vw 8vw 3vw 8vw;
+  padding: 150px 8vw 4vw 8vw;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35);
@@ -1853,7 +1853,7 @@ ul, ol {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: calc(5.5rem - 50px);
 }
 
@@ -1987,27 +1987,95 @@ ul, ol {
 }
 
 .footer-download-btn {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 1.25rem;
   width: 100%;
   max-width: 380px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(12, 12, 16, 0.85);
+  border: 1.5px solid transparent;
   border-radius: 12px;
   padding: 1.1rem 2rem;
   text-decoration: none;
   box-sizing: border-box;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+  z-index: 1;
   text-align: left;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, box-shadow 0.3s;
+}
+
+/* Iridescent moving border gradient using masking */
+.footer-download-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1.5px;
+  background: linear-gradient(90deg, #00D9FF, #A020F0, #FF1493, #00D9FF);
+  background-size: 300% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+  animation: borderShimmer 6s linear infinite;
+  opacity: 0.45;
+  transition: opacity 0.3s ease;
+}
+
+/* Glowing backing backdrop */
+.footer-download-btn::after {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.22) 0%, rgba(160, 32, 240, 0.12) 45%, transparent 70%);
+  z-index: -2;
+  opacity: 0;
+  filter: blur(12px);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: 24px;
 }
 
 .footer-download-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(16, 16, 22, 0.95);
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.45),
+    0 0 16px rgba(0, 217, 255, 0.08);
+}
+
+.footer-download-btn:hover::before {
+  opacity: 1;
+}
+
+.footer-download-btn:hover::after {
+  opacity: 1;
+}
+
+/* Glass shine sheen reflection effect */
+.btn-sheen {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  transform: skewX(-25deg);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.footer-download-btn:hover .btn-sheen {
+  animation: sheenSweep 1.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
 }
 
 .footer-download-btn .download-icon {
@@ -2017,7 +2085,7 @@ ul, ol {
 }
 
 .footer-download-btn:hover .download-icon {
-  transform: translateY(2px);
+  animation: iconBounce 1.2s ease-in-out infinite;
 }
 
 .footer-download-btn .download-title {
@@ -2036,14 +2104,18 @@ ul, ol {
   display: block;
 }
 
+/* Absolute Watermark Logo Setup */
 .footer-logo-wrap {
-  width: 100%;
+  position: absolute;
+  bottom: 6vh;
+  left: 8vw;
+  right: 8vw;
+  width: calc(100% - 16vw);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: auto;
-  padding-top: 1.5rem;
-  z-index: 3;
+  z-index: 1;
+  pointer-events: none;
   overflow: hidden;
 }
 
@@ -2057,8 +2129,40 @@ ul, ol {
   pointer-events: none;
 }
 
-.footer-logo-wrap:hover .footer-brand-logo {
-  opacity: 0.15;
+/* Light up logo when hovering over the card */
+.footer-glass-card:hover .footer-brand-logo {
+  opacity: 0.12;
+}
+
+/* Keyframes */
+@keyframes borderShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes sheenSweep {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+@keyframes iconBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
 }
 
 .footer-tags-group {
@@ -2070,23 +2174,48 @@ ul, ol {
 }
 
 .footer-tag-pill {
+  position: relative;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
   padding: 0.5rem 1.1rem;
   border-radius: 50px;
   text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+  z-index: 1;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+.footer-tag-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  padding: 1px;
+  background: linear-gradient(135deg, #00D9FF 0%, #A020F0 50%, #FF1493 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+}
+
 .footer-tag-pill:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
   color: #fff;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 217, 255, 0.12);
+}
+
+.footer-tag-pill:hover::before {
+  opacity: 1;
 }
 
 .footer-contact-row {
@@ -2337,6 +2466,19 @@ ul, ol {
   }
   .footer-legal-divider {
     display: none;
+  }
+  .footer-logo-wrap {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 3rem;
+    padding-top: 1rem;
+    z-index: 1;
+  }
+  .footer-brand-logo {
+    transform: none !important;
   }
 }
 
