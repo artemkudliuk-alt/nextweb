@@ -1025,7 +1025,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             const fadeProgress = Math.max(0, Math.min((currentScrollY - vh * 1.3) / vh, 1));
             stickyInner.style.opacity = fadeProgress;
             stickyInner.style.filter = `blur(${(1 - fadeProgress) * 15}px)`;
-            stickyInner.style.transform = 'translateY(0px)';
+            const scale = 0.92 + 0.38 * fadeProgress - 0.30 * (fadeProgress * fadeProgress);
+            stickyInner.style.transform = `scale(${scale})`;
           } else {
             const exitProgress = Math.max(0, Math.min((currentScrollY - vh * 5.2) / vh, 1));
             stickyInner.style.opacity = 1 - exitProgress;
