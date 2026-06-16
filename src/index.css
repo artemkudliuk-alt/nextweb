@@ -4538,7 +4538,7 @@ ul, ol {
 
 .contact-title {
   font-family: 'Unbounded', var(--font-sans), sans-serif;
-  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-size: clamp(2.42rem, 4.95vw, 4.18rem);
   font-weight: 800;
   color: #ffffff;
   line-height: 1.15;

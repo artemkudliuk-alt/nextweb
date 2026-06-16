@@ -2408,7 +2408,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   <span className="time-clock">{currentTime}</span>
                   <span className="time-tz">UTC+3</span>
                 </div>
-                <h2 className="contact-title">Обсудить проект</h2>
+                <h2 className="contact-title">
+                  <TextReveal text={"Обсудить\nпроект"} glitch={true} />
+                </h2>
                 <p className="contact-subtitle">
                   Мы работаем в тесном контакте с нашими клиентами для решения конкретных бизнес-задач
                 </p>
