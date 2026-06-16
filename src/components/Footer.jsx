@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
-import AsciiArrows from './AsciiArrows';
 
 export default function Footer() {
   const ref = useRef(null);
@@ -9,6 +8,15 @@ export default function Footer() {
   const [isArrowsHovered, setIsArrowsHovered] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -61,7 +69,7 @@ export default function Footer() {
   };
 
   return (
-    <footer ref={ref} className="main-footer">
+    <footer ref={ref} className="main-footer" style={{ padding: 0 }}>
       {/* Glow Line Sweep Divider */}
       <div className="tech-glow-divider" style={{ top: '-60px' }}>
         <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
@@ -83,107 +91,152 @@ export default function Footer() {
         </svg>
       </div>
 
-      {/* Background WebGL Scene removed to let global main background show through */}
-
-      <div className="footer-inner" style={{ position: 'relative', zIndex: 2 }}>
-        <div className="footer-main-row">
-
-          {/* Right Column: Information Grid */}
-          <div className="footer-right-content">
-            <div className="footer-grid">
-              {/* Column 1: Navigation (No title to match screenshot) */}
-              <div className="footer-grid-col">
-                <ul className="footer-col-list">
-                  <li>
-                    <Link to="/works" className="footer-col-link">Работы</Link>
-                  </li>
-                  <li>
-                    <a href="#approach" className="footer-col-link" onClick={(e) => handleNavClick(e, '#approach')}>Подход</a>
-                  </li>
-                  <li>
-                    <a href="#whyus" className="footer-col-link" onClick={(e) => handleNavClick(e, '#whyus')}>Почему мы</a>
-                  </li>
-                  <li>
-                    <a href="#pricing" className="footer-col-link" onClick={(e) => handleNavClick(e, '#pricing')}>Цены</a>
-                  </li>
-                  <li>
-                    <a href="#configurator" className="footer-col-link" onClick={(e) => handleNavClick(e, '#configurator')}>Конфигуратор</a>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Column 2: Follow Us & Contacts (Centered) */}
-              <div className="footer-grid-col footer-col-center">
-                <h4 className="footer-col-title">Мы в сети</h4>
-                <div className="footer-contact-details">
-                  <a href="mailto:office@nextweb.ua" className="footer-contact-item highlight">office@nextweb.ua</a>
-                  <a href="tel:+380937894504" className="footer-contact-item">+38 (093) 789-45-04</a>
-                </div>
-                <div className="footer-social-icons">
-                  <a href="https://t.me/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-icon-card" title="Telegram">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                      <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.47-.52-.17l-9.49 5.96-4.11-1.28c-.9-.28-.92-.9.19-1.33L19.82 5c.74-.28 1.39.18 1.15 1.25l-2.73 12.87c-.2.96-.77 1.2-1.57.75l-4.16-3.06-2.01 1.94c-.22.22-.41.41-.83.41z"/>
-                    </svg>
-                  </a>
-                  <a href="https://behance.net/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-icon-card" title="Behance">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                      <path d="M22 10.4h-5.2c0-.7.4-1.2 1-1.2.6 0 .9.3.9.9h1.7c-.1-1.4-1.2-2.3-2.6-2.3-1.6 0-2.7 1.1-2.7 2.7s1.1 2.7 2.7 2.7c1.5 0 2.6-.9 2.7-2.3-1.6-.2-1.7-.5-1.7-.5zm-4.3-.2c0-.4.3-.7.7-.7.4 0 .7.3.7.7h-1.4zm-7.6-.8h-2V7h2c.7 0 1.2.3 1.2.9s-.5.9-1.2.9zm.2 3.1H8.1v-2.1H10.1c.8 0 1.3.4 1.3 1s-.5 1-1.1 1zM11.9 11c.5-.5.8-1.2.8-2 0-1.8-1.4-3.1-3.3-3.1H4.3v12.2h5.7c2 0 3.5-1.3 3.5-3.2 0-1.6-.8-2.6-1.6-2.9z"/>
-                    </svg>
-                  </a>
-                  <a href="https://dribbble.com/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-icon-card" title="Dribbble">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                      <path d="M12 24C5.38 24 0 18.62 0 12S5.38 0 12 0s12 5.38 12 12-5.38 12-12 12zm9.36-11.83c-.37-.09-3.24-.75-6.52.34 1.37 3.66 1.94 6.56 1.99 6.83 2.66-1.72 4.46-4.63 4.53-7.17zm-6.24 8.14c-.08-.43-.72-3.4-2.19-7.14-3.13 1.03-5.78 1.03-6.09 1.03-.03 0-.05.01-.06.01-.02 3.88 2.65 7.15 6.27 7.74.87-.23 1.62-.77 2.07-1.64zm-9.36-1.57c.05-.28 1.01-4.88 6.57-6.43-.2-.45-.4-.9-.62-1.35-5.52 1.62-7.89 6.24-7.94 6.34 1.25 1.54 2.91 2.62 4.79 2.98zM2.03 9.9c.05-.09 3.03-5.26 8.35-6.19-.49 1.06-1 2.2-1.46 3.32-5.29 1.26-7.79 6.07-7.85 6.19a9.88 9.88 0 0 1-.04-3.32zm10.43-7.75c-1.9 0-3.69.5-5.26 1.38.4.82.83 1.67 1.28 2.52 4.75-1.59 6.83-4.57 6.95-4.74a9.88 9.88 0 0 0-2.96-.865zm4.85 2.47c-.09.135-2.03 2.945-6.66 4.305.22.485.42.98.62 1.47 4.78-1.255 7.82.16 7.92.205a9.88 9.88 0 0 0-1.87-5.98z"/>
-                    </svg>
-                  </a>
-                  <a href="https://vk.com/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-icon-card" title="VKontakte">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                      <path d="M22.46 7.57c.18-.61-.3-1.07-1.17-1.07h-2.9c-.73 0-1.06.39-1.24.8 0 0-1.48 3.57-3.57 5.89-.67.67-.97.89-1.34.89-.19 0-.46-.22-.46-.85V7.57c0-.73-.21-1.07-.82-1.07H6.38c-.46 0-.73.34-.73.66 0 .69 1.03.85 1.14 2.79v4.22c0 .93-.17 1.1-.54 1.1-.99 0-3.41-3.6-4.84-7.72C1.13 6.78.89 6.5 1.18 6.5h2.9c.67 0 .97.31 1.14.8 0 0 2.25 5.25 5.23 8.61.93.93 1.34 1.25 1.85 1.25.28 0 .46-.31.46-1.21v-3.79c0-1.16-.34-1.63-1.35-1.75-.52-.06-.84-.37-.84-.37 0-.31.43-.63 1.21-.63h3.9c.56 0 .77.31.77.93v5.04c0 .58.11.8.34.8.46 0 1.27-.49 2.54-1.95 1.63-1.88 2.86-5.22 2.86-5.22.17-.46.52-.8 1.21-.8h2.9c.87 0 1.05.46.86 1.07-1.02 2.4-4.73 6.78-4.73 6.78-.46.67-.62.93 0 1.56 0 0 3.52 3.29 4.79 5.21.73 1.1 1.05 1.95.28 1.95h-2.9c-.93 0-1.34-.58-2.22-1.46-1.12-1.12-2.15-2.25-2.94-2.25-.37 0-.67.22-.67.89v2.01c0 .73-.21 1.07-.82 1.07H8.88C5.23 23 1 14.88 1 7.57"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-
-              {/* Column 3: Address & Call to Action (Right-aligned) */}
-              <div className="footer-grid-col footer-col-right">
-                <h4 className="footer-col-title">Адрес</h4>
-                <div className="footer-address-details">
-                  <span>Украина, г. Киев</span>
-                  <span>ул. Михаила Гришко, 3</span>
-                  <span>БЦ «Палладиум Сити»</span>
-                </div>
-                <div className="footer-cta-wrapper" style={{ marginTop: '1.5rem' }}>
-                  <Button text="Запланировать звонок" href="https://cal.com/nextweb/15min" target="_blank" rel="noopener noreferrer" variant="light" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom section wrapper containing copyright and giant wordmark */}
-      <div className="footer-bottom-wrapper" style={{
-        transform: revealed ? 'translateY(0%)' : 'translateY(100%)',
-        transition: 'transform 1.4s cubic-bezier(0.16, 1, 0.3, 1)'
+      {/* Glass Card Container: Stretched to cover the entire footer area */}
+      <div className="footer-glass-card" onMouseMove={handleMouseMove} style={{
+        opacity: revealed ? 1 : 0,
+        transform: revealed ? 'translateY(0)' : 'translateY(30px)',
+        transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
-        {/* Bottom copyright & credits */}
-        <div className="footer-bottom">
-          <div className="footer-copyright-row">
-            <span>© 2026 NEXTWEB. Все права защищены.</span>
-            <div className="footer-bottom-legal-links">
-              <Link to="/terms" className="footer-bottom-legal-link">Пользовательское соглашение</Link>
-              <Link to="/privacy" className="footer-bottom-legal-link">Политика конфиденциальности</Link>
+        
+        {/* Top Content Row (Statement & Download Button vs Tags & Socials) */}
+        <div className="footer-glass-layout">
+          {/* Left Column */}
+          <div className="footer-glass-left">
+            <h3 className="footer-brand-statement">
+              Сложная веб-разработка,<br />
+              дизайн на основе данных<br />
+              и маркетинг в цифровой среде
+            </h3>
+            <span className="footer-brand-copyright">© NEXTWEB, 2009-2026</span>
+            
+            <a href="/presentation.pdf" className="footer-download-btn" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="download-icon">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <div className="download-text-wrap">
+                <span className="download-title">Скачать презентацию</span>
+                <span className="download-meta">.PDF / 6.8MB</span>
+              </div>
+            </a>
+          </div>
+
+          {/* Right Column */}
+          <div className="footer-glass-right">
+            <div className="footer-tags-group">
+              <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>РАЗРАБОТКА</a>
+              <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>ДИЗАЙН</a>
+              <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>ПРОДВИЖЕНИЕ</a>
+              <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>ПОДДЕРЖКА</a>
+              <a href="#whyus" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#whyus')}>О НАС</a>
+              <a href="#screen7" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#screen7')}>КОНТАКТЫ</a>
+              <a href="#screen6" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#screen6')}>ОТЗЫВЫ</a>
+              <a href="#whyus" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#whyus')}>ПАРТНЕРЫ</a>
+              <Link to="/works" className="footer-tag-pill">БЛОГ</Link>
             </div>
-            <span>Разработано с любовью к деталям</span>
+
+            <div className="footer-contact-row">
+              <a href="tel:+380487723543" className="footer-phone-large">048 772 35 43</a>
+              <a href="mailto:office@nextweb.ua" className="footer-email-muted">OFFICE@NEXTWEB.UA</a>
+            </div>
+
+            <div className="footer-social-circles">
+              <a href="https://t.me/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-circle telegram" title="Telegram">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701-.332 4.965c.487 0 .702-.223.974-.485l2.337-2.27 4.861 3.59c.897.494 1.543.239 1.766-.83l3.189-15.032c.327-1.31-.5-1.905-1.363-1.517z"/>
+                </svg>
+              </a>
+              <a href="https://facebook.com/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-circle facebook" title="Facebook">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/>
+                </svg>
+              </a>
+              <a href="https://instagram.com/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-circle instagram" title="Instagram">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                </svg>
+              </a>
+              <a href="https://behance.net/nextweb" target="_blank" rel="noopener noreferrer" className="footer-social-circle behance" title="Behance">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M22 14.2h-6.2c.1 1 .9 1.7 2 1.7 1.1 0 1.7-.5 1.9-1.2h2.2c-.4 1.9-2 3.3-4.1 3.3-2.6 0-4.3-1.8-4.3-4.3 0-2.6 1.8-4.3 4.3-4.3 2.5 0 4.2 1.8 4.2 4.3v.8zm-2-1.7c-.1-.9-.8-1.5-1.8-1.5-.9 0-1.7.6-1.9 1.5h3.7zm-9.3.8H8.3v1.8h2.4c.8 0 1.3-.4 1.3-1s-.5-.8-1.3-.8zm-.3-3.8H8.3v1.5h2.2c.7 0 1.1-.3 1.1-.8 0-.5-.4-.7-1.1-.7zm1.2 2.1c.5-.4.8-1 .8-1.8 0-1.6-1.2-2.6-3-2.6H4v11.7h6.6c2 0 3.2-1.1 3.2-2.7 0-1.1-.6-1.8-1.5-2.1zm5.1-4.7h4.8v1.3h-4.8v-1.3z"/>
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Giant Fullscreen Wordmark placed absolutely at the bottom */}
-        <div className="footer-giant-wordmark">
-          <div className="footer-ascii-canvas-small">
-            <AsciiArrows isHovered={true} />
+        {/* Middle Row (Directory Links Grid) */}
+        <div className="footer-directory-grid">
+          {/* Column 1: Brand details */}
+          <div className="footer-directory-col brand-col">
+            <h4 className="footer-logo-small">NEXTWEB</h4>
+            <p className="footer-desc-text">
+              Создаём цифровые продукты и решения, которые помогают бизнесам расти, автоматизировать процессы и выигрывать в конкурентной среде.
+            </p>
+            <div className="footer-heart-credit">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style={{ color: '#FF1493' }}>
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+              <span>Разработано с любовью к деталям</span>
+            </div>
           </div>
-          <span className="footer-wordmark-text">NEXTWEB</span>
+
+          {/* Column 2: РАЗРАБОТКА */}
+          <div className="footer-directory-col">
+            <h4 className="footer-directory-title">РАЗРАБОТКА</h4>
+            <ul className="footer-directory-list">
+              <li><Link to="/works" className="footer-directory-link">Веб-разработка</Link></li>
+              <li><Link to="/works" className="footer-directory-link">Интеграция и API</Link></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Поддержка и развитие</a></li>
+            </ul>
+          </div>
+
+          {/* Column 3: ДИЗАЙН */}
+          <div className="footer-directory-col">
+            <h4 className="footer-directory-title">ДИЗАЙН</h4>
+            <ul className="footer-directory-list">
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Веб-дизайн</a></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>UX/UI проектирование</a></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Брендинг</a></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Дизайн-системы</a></li>
+            </ul>
+          </div>
+
+          {/* Column 4: ПРОДВИЖЕНИЕ */}
+          <div className="footer-directory-col">
+            <h4 className="footer-directory-title">ПРОДВИЖЕНИЕ</h4>
+            <ul className="footer-directory-list">
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>SEO-продвижение</a></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Контекстная реклама</a></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>SMM</a></li>
+              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Аналитика и стратегия</a></li>
+            </ul>
+          </div>
+
+          {/* Column 5: КОМПАНИЯ */}
+          <div className="footer-directory-col">
+            <h4 className="footer-directory-title">КОМПАНИЯ</h4>
+            <ul className="footer-directory-list">
+              <li><a href="#whyus" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#whyus')}>О нас</a></li>
+              <li><a href="#whyus" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#whyus')}>Партнёры</a></li>
+              <li><a href="#screen6" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#screen6')}>Отзывы</a></li>
+              <li><Link to="/works" className="footer-directory-link">Блог</Link></li>
+              <li><a href="#screen7" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#screen7')}>Контакты</a></li>
+            </ul>
+          </div>
         </div>
+
+        {/* Bottom Bar: Copyright & Address */}
+        <div className="footer-bottom-bar">
+          <span>© 2026 NEXTWEB. Все права защищены.</span>
+          <div className="footer-bottom-links">
+            <Link to="/terms" className="footer-bottom-link">Пользовательское соглашение</Link>
+            <Link to="/privacy" className="footer-bottom-link">Политика конфиденциальности</Link>
+          </div>
+          <span className="footer-bottom-address">Украина, г. Одесса, ул. Софиевская, 9, офис 21</span>
+        </div>
+
       </div>
     </footer>
   );

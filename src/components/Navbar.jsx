@@ -79,7 +79,7 @@ export default function Navbar({ onPlayClick }) {
               <a href="#whyus" className="nav-link active" onClick={(e) => handleNavClick(e, '#whyus')}>О нас</a>
               <a href="#approach" className="nav-link" onClick={(e) => handleNavClick(e, '#approach')}>Услуги</a>
               <Link to="/works" className="nav-link" onClick={() => setMenuOpen(false)}>Портфолио</Link>
-              <a href="#pricing" className="nav-link" onClick={(e) => handleNavClick(e, '#pricing')}>Контакты</a>
+              <a href="#screen7" className="nav-link" onClick={(e) => handleNavClick(e, '#screen7')}>Контакты</a>
             </div>
  
             {/* Mobile menu button */}
@@ -140,7 +140,7 @@ export default function Navbar({ onPlayClick }) {
               <a href="#whyus" className="nav-link active" onClick={(e) => handleNavClick(e, '#whyus')}>О нас</a>
               <a href="#approach" className="nav-link" onClick={(e) => handleNavClick(e, '#approach')}>Услуги</a>
               <Link to="/works" className="nav-link" onClick={() => setMenuOpen(false)}>Портфолио</Link>
-              <a href="#pricing" className="nav-link" onClick={(e) => handleNavClick(e, '#pricing')}>Контакты</a>
+              <a href="#screen7" className="nav-link" onClick={(e) => handleNavClick(e, '#screen7')}>Контакты</a>
             </div>
 
             {/* Right: Phone and Button */}
@@ -254,7 +254,7 @@ export default function Navbar({ onPlayClick }) {
           <a href="#whyus" onClick={(e) => handleNavClick(e, '#whyus')} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>О нас</a>
           <a href="#approach" onClick={(e) => handleNavClick(e, '#approach')} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>Услуги</a>
           <Link to="/works" onClick={() => setMenuOpen(false)} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>Портфолио</Link>
-          <a href="#pricing" onClick={(e) => handleNavClick(e, '#pricing')} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>Контакты</a>
+          <a href="#screen7" onClick={(e) => handleNavClick(e, '#screen7')} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>Контакты</a>
         </div>
         <div style={{ marginTop: '4rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
