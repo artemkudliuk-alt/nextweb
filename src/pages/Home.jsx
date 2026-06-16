@@ -422,6 +422,34 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     message: 'Привет, очень хочу новый сайт. Жду ответа :)'
   });
   const [formStatus, setFormStatus] = useState('idle');
+  const [currentTime, setCurrentTime] = useState('');
+  const formCardRef = useRef(null);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const options = {
+        timeZone: 'Europe/Kiev',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+      setCurrentTime(new Intl.DateTimeFormat('ru-RU', options).format(now));
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleFormCardMouseMove = (e) => {
+    if (!formCardRef.current) return;
+    const rect = formCardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    formCardRef.current.style.setProperty('--mouse-x', `${x}px`);
+    formCardRef.current.style.setProperty('--mouse-y', `${y}px`);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -2346,6 +2374,10 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
       <div id="screen7-container">
         <section id="screen7" className="contact-section">
+          {/* Ambient Glow Orbs */}
+          <div className="contact-glow-orb orb-1" />
+          <div className="contact-glow-orb orb-2" />
+
           {/* Glow Line Sweep Divider */}
           <div className="tech-glow-divider tech-glow-divider-7">
             <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
@@ -2371,6 +2403,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             <div className="contact-grid">
               {/* Left Side: Info */}
               <div className="contact-info">
+                <div className="contact-time-widget">
+                  <span className="time-loc">KYIV, UA</span>
+                  <span className="time-clock">{currentTime}</span>
+                  <span className="time-tz">UTC+3</span>
+                </div>
                 <h2 className="contact-title">Обсудить проект</h2>
                 <p className="contact-subtitle">
                   Мы работаем в тесном контакте с нашими клиентами для решения конкретных бизнес-задач
@@ -2384,16 +2421,23 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                     <div className="contact-avatar-circle circle-2">
                       <img src="/avatar_shark.png" alt="Smiling shark avatar" />
                     </div>
+                    <span className="online-indicator-pulsing"></span>
                   </div>
                   <div className="contact-avatar-text">
-                    <span className="contact-avatar-label">ОБЫЧНО МЫ ОТВЕЧАЕМ</span>
+                    <span className="contact-avatar-label">
+                      <span className="online-text">● В СЕТИ</span> — ОБЫЧНО МЫ ОТВЕЧАЕМ
+                    </span>
                     <span className="contact-avatar-sublabel">В ТЕЧЕНИЕ ОДНОГО РАБОЧЕГО ДНЯ</span>
                   </div>
                 </div>
               </div>
 
               {/* Right Side: Form */}
-              <div className="contact-form-card">
+              <div 
+                ref={formCardRef}
+                className="contact-form-card"
+                onMouseMove={handleFormCardMouseMove}
+              >
                 {formStatus === 'success' ? (
                   <div className="contact-success-message">
                     <div className="success-icon-wrap">
