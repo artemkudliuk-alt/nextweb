@@ -1061,7 +1061,7 @@ ul, ol {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 8vh 4vw 8vh 4vw;
+  padding: 14vh 4vw 8vh 4vw;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
