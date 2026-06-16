@@ -305,7 +305,8 @@ const worksData = [
     title: "Car Detail Lab",
     subtitle: "Детейлинг-маркет и обучение",
     link: "https://cardetaillab.ua/",
-    image: "/1.png"
+    image: "/1.png",
+    video: "/cardetailed.mp4"
   },
   {
     id: 2,
@@ -1977,7 +1978,18 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                     >
                       <a href={project.link} target="_blank" rel="noopener noreferrer" className="work-grid-link">
                         <div className="work-grid-image-wrap">
-                          <img src={project.image} alt={project.title} className="work-parallax-img" />
+                          {project.video ? (
+                            <video 
+                              src={project.video} 
+                              className="work-parallax-img" 
+                              autoPlay 
+                              loop 
+                              muted 
+                              playsInline 
+                            />
+                          ) : (
+                            <img src={project.image} alt={project.title} className="work-parallax-img" />
+                          )}
                         </div>
                         {/* Hidden on desktop, shown on mobile for redundancy */}
                         <div className="work-grid-meta">
