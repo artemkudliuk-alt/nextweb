@@ -4844,17 +4844,23 @@ ul, ol {
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
-  max-width: 580px !important;
+  max-width: 650px !important;
 }
 
 .approach-card-item-clean {
   background: #ffffff !important;
   border-radius: 20px !important;
-  padding: 16px 20px !important;
-  border: 1px solid #ECECF1 !important;
+  padding: 18px 22px !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+  box-shadow: inset 0 0 0 1px #fff !important;
+  background: linear-gradient(#fff, #fff) padding-box, 
+              linear-gradient(135deg, #00D1FF, #7B3FF2, #FF2EBE, #00D1FF) border-box !important;
+  background-size: 100% 100%, 200% 200% !important;
+  animation: borderGradientShift 6s linear infinite !important;
   display: flex !important;
   flex-direction: column !important;
-  min-height: 240px !important;
+  min-height: 252px !important;
   height: auto !important;
   box-sizing: border-box !important;
   transition: 0.3s ease !important;
@@ -4862,33 +4868,19 @@ ul, ol {
 
 .approach-card-item-clean:hover {
   transform: translateY(-8px) !important;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04) !important;
-}
-
-/* Active card rounded gradient border */
-.approach-card-item-clean.approach-card-first {
-  border: 2px solid transparent !important;
-  background-clip: padding-box !important;
-  box-shadow: inset 0 0 0 1px #fff !important;
-  background: linear-gradient(#fff, #fff) padding-box, 
-              linear-gradient(135deg, #00D1FF, #7B3FF2, #FF2EBE) border-box !important;
-}
-
-.approach-card-item-clean.approach-card-first:hover {
-  transform: translateY(-8px) !important;
-  box-shadow: inset 0 0 0 1px #fff, 0 15px 35px rgba(123, 63, 242, 0.08) !important;
+  box-shadow: inset 0 0 0 1px #fff, 0 15px 35px rgba(123, 63, 242, 0.12) !important;
 }
 
 .approach-card-number-clean {
   font-family: var(--font-mono) !important;
-  font-size: 16px !important;
+  font-size: 17px !important;
   font-weight: 700 !important;
   color: #00B8FF !important;
 }
 
 .approach-card-title-clean {
   font-family: 'Unbounded', var(--font-sans) !important;
-  font-size: 16px !important;
+  font-size: 17px !important;
   font-weight: 700 !important;
   line-height: 1.2 !important;
   color: #000000 !important;
@@ -4897,7 +4889,7 @@ ul, ol {
 
 .approach-card-desc-clean {
   font-family: var(--font-sans) !important;
-  font-size: 13px !important;
+  font-size: 14px !important;
   line-height: 1.4 !important;
   color: #5F6470 !important;
   margin: 10px 0 0 0 !important;
@@ -4912,17 +4904,27 @@ ul, ol {
 }
 
 .approach-card-tag-clean {
-  height: 24px !important;
-  padding: 0 8px !important;
+  height: 25px !important;
+  padding: 0 9px !important;
   border-radius: 999px !important;
-  background: #F7F7FA !important;
-  border: 1px solid #ECECF1 !important;
-  font-size: 10px !important;
+  border: 1px solid transparent !important;
+  background-clip: padding-box !important;
+  box-shadow: inset 0 0 0 1px #fff !important;
+  background: linear-gradient(#fff, #fff) padding-box, 
+              linear-gradient(135deg, #00D1FF, #7B3FF2, #FF2EBE) border-box !important;
+  font-size: 11px !important;
   color: #5F6470 !important;
   font-family: var(--font-sans) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.approach-card-tag-clean:hover {
+  transform: translateY(-2px) !important;
+  color: #7B3FF2 !important;
+  box-shadow: inset 0 0 0 1px #fff, 0 5px 12px rgba(123, 63, 242, 0.15) !important;
 }
 
 .br-desktop {
