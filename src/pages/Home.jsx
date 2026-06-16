@@ -349,6 +349,7 @@ const testimonialsData = [
     projectTitle: "Barba Textile (Btex)",
     shortName: "BTEX",
     projectUrl: "https://barbatextile.ua/",
+    pdf: "/reviews/btex_review.pdf",
     authorName: "Дмитрий Баранов",
     authorRole: "Директор по маркетингу",
     avatar: "/avatar_btex.png",
@@ -362,6 +363,7 @@ const testimonialsData = [
     projectTitle: "Redling Hotel",
     shortName: "REDLING",
     projectUrl: "https://redling-hotel.com.ua/",
+    pdf: "/reviews/redling_review.pdf",
     authorName: "Екатерина Ковальчук",
     authorRole: "Управляющая отелем",
     avatar: "/avatar_redling.png",
@@ -375,6 +377,7 @@ const testimonialsData = [
     projectTitle: "Устрой Благо",
     shortName: "BLAGO",
     projectUrl: "https://blagoustroy.com.ua/",
+    pdf: "/reviews/blago_review.pdf",
     authorName: "Сергей Яковлев",
     authorRole: "Руководитель студии",
     avatar: "/avatar_blago.png",
@@ -388,6 +391,7 @@ const testimonialsData = [
     projectTitle: "Ресторан Куманец",
     shortName: "KUMANETS",
     projectUrl: "https://kumanets.com.ua/",
+    pdf: "/reviews/kumanets_review.pdf",
     authorName: "Ольга Петренко",
     authorRole: "Управляющая рестораном",
     avatar: "/avatar_kumanets.png",
@@ -1861,10 +1865,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             <div className="approach-col-text-clean">
               <span className="approach-label-clean">// 01 . НАШ ПОДХОД</span>
               <h2 className="approach-heading-clean">
-                NextWeb работает на рынке информационных<br />
-                технологий с 2009 года и за это время эффективно<br />
-                реализовали множество проектов в областях<br />
-                электронной коммерции и интернет-маркетинга.
+                NextWeb работает на рынке информационных технологий с 2009 года и за это время эффективно реализовали множество проектов в областях электронной коммерции и интернет-маркетинга.
               </h2>
               <p className="approach-desc-clean">
                 Мы работаем в тесном контакте с нашими клиентами для<br className="br-desktop" />
@@ -2246,7 +2247,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       opacity: 1,
                       filter: 'none',
                       pointerEvents: 'auto',
-                      display: 'grid'
+                      display: 'grid',
+                      '--brand-glow': item.glowColor
                     } : {
                       transform: `translateX(calc(-50% + ${offset * 764}px)) scale(${isActive ? 1 : 0.9})`,
                       left: '50%',
@@ -2255,7 +2257,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       opacity: isActive ? 1 : (isSide ? 0.45 : 0),
                       filter: isActive ? 'blur(0)' : (isSide ? 'blur(6px) grayscale(0.3)' : 'blur(12px)'),
                       pointerEvents: isActive ? 'auto' : (isSide ? 'auto' : 'none'),
-                      display: isHidden ? 'none' : 'grid'
+                      display: isHidden ? 'none' : 'grid',
+                      '--brand-glow': item.glowColor
                     }}
                     onClick={() => {
                       if (!isActive) {
@@ -2282,16 +2285,13 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                         </div>
                       </div>
 
-                      {/* Brand Name & Logo below it */}
-                      <div className="testimonial-brand-wrap">
-                        <span className="testimonial-brand-name">{item.projectTitle}</span>
-                        <div className="testimonial-brand-logo-container">
-                          <img 
-                            src={item.logoPath} 
-                            alt={`${item.projectTitle} logo`} 
-                            className="testimonial-brand-logo" 
-                          />
-                        </div>
+                      {/* Brand Logo only below the photo */}
+                      <div className="testimonial-brand-logo-container">
+                        <img 
+                          src={item.logoPath} 
+                          alt={`${item.projectTitle} logo`} 
+                          className="testimonial-brand-logo" 
+                        />
                       </div>
                     </div>
 
@@ -2327,21 +2327,23 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                         )}
                       </div>
 
-                      {/* Button Action */}
-                      <div className="testimonial-action">
-                        <a 
-                          href={item.projectUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="testimonial-site-btn"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <span>Перейти на сайт</span>
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.5 10.5L10.5 1.5M10.5 1.5H3.5M10.5 1.5V8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </a>
-                      </div>
+                      {/* PDF Action Button in bottom right corner */}
+                      <a 
+                        href={item.pdf} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="testimonial-pdf-btn"
+                        onClick={(e) => e.stopPropagation()}
+                        title="Открыть полный отзыв в формате PDF с печатью"
+                      >
+                        <svg className="pdf-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
+                          <path d="M14 2V8H20" />
+                          <path d="M16 13H8" />
+                          <path d="M16 17H8" />
+                          <path d="M10 9H8" />
+                        </svg>
+                      </a>
                     </div>
                   </div>
                 );
