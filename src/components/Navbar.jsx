@@ -175,47 +175,6 @@ export default function Navbar({ onPlayClick }) {
         </div>
       </nav>
 
-      {/* Floating Logo Icon (Arrows) when scrolled */}
-      <Link 
-        to="/" 
-        className={`scroll-fixed-icon ${showFloating ? 'visible' : ''}`} 
-        onClick={(e) => {
-          e.preventDefault();
-          setMenuOpen(false);
-          if (location.pathname !== '/') {
-            navigate('/');
-            setTimeout(() => {
-              if (onPlayClick) onPlayClick();
-            }, 150);
-          } else {
-            if (onPlayClick) onPlayClick();
-          }
-        }}
-        style={{
-          position: 'fixed',
-          top: '12px',
-          zIndex: 101,
-          opacity: showFloating ? 1 : 0,
-          transform: showFloating ? 'scale(1)' : 'scale(0.8)',
-          transition: 'opacity 0.3s, transform 0.3s',
-          pointerEvents: showFloating ? 'auto' : 'none',
-          display: 'flex',
-          alignItems: 'center'
-        }}
-        aria-label="Home"
-      >
-        <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="nav-video-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#FF1493" />
-              <stop offset="50%" stopColor="#A020F0" />
-              <stop offset="100%" stopColor="#00D9FF" />
-            </linearGradient>
-          </defs>
-          <circle cx="50" cy="50" r="44" stroke="url(#nav-video-gradient)" strokeWidth="4" fill="url(#nav-video-gradient)" fillOpacity="0.15" />
-          <path d="M42 35 L70 50 L42 65 Z" fill="url(#nav-video-gradient)" stroke="url(#nav-video-gradient)" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      </Link>
 
       {/* Floating Button when scrolled */}
       <div 

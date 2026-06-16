@@ -1731,14 +1731,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   <br className="desktop-only" />
                   От идеи и проектирования до запуска и масштабирования бизнеса.
                 </p>
-                
-                <div className="button-wrap" style={{
-                  animation: 'fadeInUp 1.2s ease forwards',
-                  animationDelay: '1s',
-                  opacity: 0
-                }}>
-                  <Button text="Обсудить проект" href="https://cal.com/verteal/15min" target="_blank" rel="noopener noreferrer" variant="light" />
-                </div>
+
               </div>
             </div>
           </div>
@@ -1779,6 +1772,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 </button>
                 <span className="hero-video-label">Смотреть шоурил</span>
               </div>
+
               <div className="services" style={{ gridColumn: '6 / span 3', alignSelf: 'center' }}>
                 <div className="services-video-wrap">
                   <video className="services-video" src="/websites.mp4" autoPlay loop muted playsInline />

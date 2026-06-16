@@ -314,9 +314,10 @@ ul, ol {
 .nav-logo-link {
   grid-column: 2;
   justify-self: center;
-  align-self: center !important;
+  align-self: flex-start !important;
   display: inline-flex;
   line-height: 0;
+  margin-top: 0.15rem;
 }
 
 .nav-logo-stack {
