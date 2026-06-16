@@ -94,11 +94,10 @@ export default function Footer() {
       {/* Glass Card Container: Stretched to cover the entire footer area */}
       <div className="footer-glass-card" onMouseMove={handleMouseMove} style={{
         opacity: revealed ? 1 : 0,
-        transform: revealed ? 'translateY(0)' : 'translateY(30px)',
-        transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)'
+        transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         
-        {/* Top Content Row (Statement & Download Button vs Tags & Socials) */}
+        {/* Top Content Row */}
         <div className="footer-glass-layout">
           {/* Left Column */}
           <div className="footer-glass-left">
@@ -107,13 +106,20 @@ export default function Footer() {
               дизайн на основе данных<br />
               и маркетинг в цифровой среде
             </h3>
-            <span className="footer-brand-copyright">© NEXTWEB, 2009-2026</span>
+            <span className="footer-brand-copyright">
+              © NEXTWEB, 2009-2026
+              <span className="footer-legal-inline">
+                <Link to="/terms" className="footer-legal-link-inline">Пользовательское соглашение</Link>
+                <span className="footer-legal-divider">•</span>
+                <Link to="/privacy" className="footer-legal-link-inline">Политика конфиденциальности</Link>
+              </span>
+            </span>
             
             <a href="/presentation.pdf" className="footer-download-btn" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="download-icon">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
+                <polyline points="8 17 12 21 16 17" />
+                <line x1="12" y1="12" x2="12" y2="21" />
+                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29" />
               </svg>
               <div className="download-text-wrap">
                 <span className="download-title">Скачать презентацию</span>
@@ -166,75 +172,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Middle Row (Directory Links Grid) */}
-        <div className="footer-directory-grid">
-          {/* Column 1: Brand details */}
-          <div className="footer-directory-col brand-col">
-            <h4 className="footer-logo-small">NEXTWEB</h4>
-            <p className="footer-desc-text">
-              Создаём цифровые продукты и решения, которые помогают бизнесам расти, автоматизировать процессы и выигрывать в конкурентной среде.
-            </p>
-            <div className="footer-heart-credit">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style={{ color: '#FF1493' }}>
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-              <span>Разработано с любовью к деталям</span>
-            </div>
-          </div>
 
-          {/* Column 2: РАЗРАБОТКА */}
-          <div className="footer-directory-col">
-            <h4 className="footer-directory-title">РАЗРАБОТКА</h4>
-            <ul className="footer-directory-list">
-              <li><Link to="/works" className="footer-directory-link">Веб-разработка</Link></li>
-              <li><Link to="/works" className="footer-directory-link">Интеграция и API</Link></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Поддержка и развитие</a></li>
-            </ul>
-          </div>
 
-          {/* Column 3: ДИЗАЙН */}
-          <div className="footer-directory-col">
-            <h4 className="footer-directory-title">ДИЗАЙН</h4>
-            <ul className="footer-directory-list">
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Веб-дизайн</a></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>UX/UI проектирование</a></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Брендинг</a></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Дизайн-системы</a></li>
-            </ul>
-          </div>
-
-          {/* Column 4: ПРОДВИЖЕНИЕ */}
-          <div className="footer-directory-col">
-            <h4 className="footer-directory-title">ПРОДВИЖЕНИЕ</h4>
-            <ul className="footer-directory-list">
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>SEO-продвижение</a></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Контекстная реклама</a></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>SMM</a></li>
-              <li><a href="#approach" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#approach')}>Аналитика и стратегия</a></li>
-            </ul>
-          </div>
-
-          {/* Column 5: КОМПАНИЯ */}
-          <div className="footer-directory-col">
-            <h4 className="footer-directory-title">КОМПАНИЯ</h4>
-            <ul className="footer-directory-list">
-              <li><a href="#whyus" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#whyus')}>О нас</a></li>
-              <li><a href="#whyus" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#whyus')}>Партнёры</a></li>
-              <li><a href="#screen6" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#screen6')}>Отзывы</a></li>
-              <li><Link to="/works" className="footer-directory-link">Блог</Link></li>
-              <li><a href="#screen7" className="footer-directory-link" onClick={(e) => handleNavClick(e, '#screen7')}>Контакты</a></li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Bar: Copyright & Address */}
-        <div className="footer-bottom-bar">
-          <span>© 2026 NEXTWEB. Все права защищены.</span>
-          <div className="footer-bottom-links">
-            <Link to="/terms" className="footer-bottom-link">Пользовательское соглашение</Link>
-            <Link to="/privacy" className="footer-bottom-link">Политика конфиденциальности</Link>
-          </div>
-          <span className="footer-bottom-address">Украина, г. Одесса, ул. Софиевская, 9, офис 21</span>
+        {/* Brand Logo Watermark */}
+        <div className="footer-logo-wrap">
+          <img src="/Nextweb_logo.svg" alt="NEXTWEB" className="footer-brand-logo" />
         </div>
 
       </div>

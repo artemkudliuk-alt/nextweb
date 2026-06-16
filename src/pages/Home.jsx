@@ -1370,7 +1370,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   const glowDividerF = footerEl.querySelector('.tech-glow-divider');
                   const lineF = footerEl.querySelector('#tech-glow-line-footer');
 
-                  const translateYVal = (1 - progressF) * vh;
+                  const translateYVal = (1 - progressF) * vh - 2;
                   footerEl.style.transform = `translateY(${translateYVal}px)`;
 
                   footerEl.style.clipPath = 'none';
