@@ -2915,11 +2915,35 @@ ul, ol {
   font-family: 'Geist Mono', monospace;
   font-size: 0.65rem;
   font-weight: 600;
-  color: #8a8a93;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  padding: 0.2rem 0.5rem;
+  color: #64748b;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+              linear-gradient(135deg, rgba(0, 217, 255, 0.25), rgba(160, 32, 240, 0.25), rgba(255, 20, 147, 0.25)) border-box;
+  border: 1px solid transparent;
+  padding: 0.2rem 0.6rem;
   border-radius: 9999px;
   text-transform: uppercase;
+  display: inline-block;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  user-select: none;
+}
+
+.sequence-menu-tag:hover {
+  transform: translateY(-2px) scale(1.02);
+  color: #0f172a;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+              linear-gradient(135deg, #00D9FF, #A020F0, #FF1493) border-box;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 217, 255, 0.12), 0 2px 4px rgba(255, 20, 147, 0.08);
+  animation: tag-gradient-flow 4s linear infinite;
+}
+
+@keyframes tag-gradient-flow {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
 }
 
 .sequence-menu-desc {
@@ -3042,11 +3066,17 @@ ul, ol {
   .sequence-mobile-tag {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    padding: 0.15rem 0.5rem;
+    padding: 0.15rem 0.6rem;
     border-radius: 9999px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, rgba(0, 217, 255, 0.25), rgba(160, 32, 240, 0.25), rgba(255, 20, 147, 0.25)) border-box;
+    border: 1px solid transparent;
     color: #4e4e54;
-    background-color: #ffffff;
+    display: inline-block;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .sequence-mobile-tag:active {
+    transform: scale(0.97);
   }
 
   .sequence-mobile-desc {
