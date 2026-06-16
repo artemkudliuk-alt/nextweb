@@ -2553,7 +2553,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
       <Footer />
 
-      <div className="testimonials-spacer" style={{ height: isMobile ? '0px' : '600vh' }}></div>
+      <div className="testimonials-spacer" style={{ height: isMobile ? '0px' : '800vh' }}></div>
       </div>
 
       {/* Keyframe drift animation inject */}
