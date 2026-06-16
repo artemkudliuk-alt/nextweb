@@ -692,51 +692,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     };
   }, [activeTechTab]);
 
-  useEffect(() => {
-    const containerEl = carouselContainerRef.current;
-    if (!containerEl) return;
-
-    let accumDelta = 0;
-    const threshold = 60;
-
-    const handleWheelCarousel = (e) => {
-      if (window.innerWidth <= 1024) return;
-
-      const direction = e.deltaY > 0 ? 1 : -1;
-      const isAtEnd = activeTestimonialIdx === testimonialsData.length - 1;
-      const isAtStart = activeTestimonialIdx === 0;
-
-      // Allow default page scrolling if trying to scroll out of testimonials bounds
-      if ((direction === 1 && isAtEnd) || (direction === -1 && isAtStart)) {
-        return;
-      }
-
-      // Intercept wheel scroll specifically over the carousel container to cycle reviews
-      e.preventDefault();
-
-      // Reset accumulation on scroll direction change
-      if ((direction === 1 && accumDelta < 0) || (direction === -1 && accumDelta > 0)) {
-        accumDelta = 0;
-      }
-
-      accumDelta += e.deltaY;
-
-      if (direction === 1 && accumDelta >= threshold) {
-        setIsReviewExpanded(false);
-        setActiveTestimonialIdx((prev) => prev + 1);
-        accumDelta = 0;
-      } else if (direction === -1 && accumDelta <= -threshold) {
-        setIsReviewExpanded(false);
-        setActiveTestimonialIdx((prev) => prev - 1);
-        accumDelta = 0;
-      }
-    };
-
-    containerEl.addEventListener('wheel', handleWheelCarousel, { passive: false });
-    return () => {
-      containerEl.removeEventListener('wheel', handleWheelCarousel);
-    };
-  }, [activeTestimonialIdx]);
 
   useEffect(() => {
     return () => {
@@ -1248,7 +1203,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
             // --- Screen 6 (Testimonials) Fixed Positioning Logic ---
             if (screen6El) {
-              if (currentScrollY < vh * 12.2) {
+              if (currentScrollY < vh * 14.2) {
                 // Active range for Screen 6
                 screen6El.style.setProperty('position', 'fixed', 'important');
                 screen6El.style.setProperty('top', '0', 'important');
@@ -1293,7 +1248,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             // --- Screen 7 (Contact Form) Position & Transition Logic ---
             const screen7El = document.getElementById('screen7-container');
             if (screen7El) {
-              if (currentScrollY >= vh * 10.2 && currentScrollY < vh * 13.2) {
+              if (currentScrollY >= vh * 12.2 && currentScrollY < vh * 15.2) {
                 screen7El.style.setProperty('position', 'fixed', 'important');
                 screen7El.style.setProperty('top', '0', 'important');
                 screen7El.style.setProperty('left', '0', 'important');
@@ -1306,9 +1261,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 const glowDivider7 = screen7El.querySelector('.tech-glow-divider-7');
                 const line7 = screen7El.querySelector('#tech-glow-line-7');
 
-                if (currentScrollY < vh * 11.2) {
+                if (currentScrollY < vh * 13.2) {
                   // Sliding up
-                  const contactProgress = Math.max(0, Math.min((currentScrollY - vh * 10.2) / vh, 1));
+                  const contactProgress = Math.max(0, Math.min((currentScrollY - vh * 12.2) / vh, 1));
                   const translateYVal = (1 - contactProgress) * vh;
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
@@ -1326,9 +1281,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   if (bottomDivider) {
                     bottomDivider.style.opacity = '0';
                   }
-                } else if (currentScrollY >= vh * 12.2) {
+                } else if (currentScrollY >= vh * 14.2) {
                   // Sliding up and out (Screen 8 / Footer entry)
-                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 12.2) / vh, 1));
+                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
                   const translateYVal = -progressF * vh;
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
@@ -1373,7 +1328,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             const footerEl = document.querySelector('.main-footer');
             if (footerEl) {
               if (window.innerWidth > 1024) {
-                if (currentScrollY >= vh * 12.2) {
+                if (currentScrollY >= vh * 14.2) {
                   footerEl.style.setProperty('position', 'fixed', 'important');
                   footerEl.style.setProperty('top', '0', 'important');
                   footerEl.style.setProperty('left', '0', 'important');
@@ -1383,7 +1338,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   footerEl.style.pointerEvents = 'auto';
                   footerEl.style.display = 'flex';
 
-                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 12.2) / vh, 1));
+                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
                   const glowDividerF = footerEl.querySelector('.tech-glow-divider');
                   const lineF = footerEl.querySelector('#tech-glow-line-footer');
 
