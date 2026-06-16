@@ -495,42 +495,43 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     const current = currentFrameRef.current;
     const target = targetFrameRef.current;
 
-    if (current === target) {
+    const diff = target - current;
+
+    // If we are extremely close (within less than 0.15 of a frame), snap to target and finish
+    if (Math.abs(diff) < 0.15) {
+      currentFrameRef.current = target;
+      
+      const roundedFrame = target;
+      if (imagesRef.current && imagesRef.current.length > 0) {
+        const img = imagesRef.current[roundedFrame - 1];
+        if (img && img.complete) {
+          const canvas = canvasRef.current;
+          const ctx = canvas?.getContext('2d');
+          if (ctx && canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          }
+        }
+      }
+      if (dividerBarRef.current) {
+        const progress = (roundedFrame - 1) / 299;
+        dividerBarRef.current.style.height = `${progress * 100}%`;
+      }
       animationFrameIdRef.current = null;
       return;
     }
 
-    const diff = Math.abs(target - current);
-    let step = 1;
+    // Easing factor: a lower value means a longer deceleration phase / larger braking distance.
+    // 0.02 for normal sequential transitions (scrolling) and 0.045 for distant click transitions.
+    const easeFactor = isChaoticRef.current ? 0.045 : 0.022;
 
-    if (isChaoticRef.current) {
-      // Chaotic transition: high-speed playback with soft deceleration (ease-out) near target
-      if (diff > 200) step = 30;
-      else if (diff > 120) step = 20;
-      else if (diff > 60) step = 12;
-      else if (diff > 30) step = 7;
-      else if (diff > 15) step = 4;
-      else if (diff > 5) step = 2;
-      else step = 1;
-    } else {
-      // Normal sequential transition: speed untouched
-      if (diff > 100) step = 8;
-      else if (diff > 50) step = 5;
-      else if (diff > 20) step = 3;
-      else if (diff > 5) step = 2;
-    }
-
-    let nextFrame = current;
-    if (current < target) {
-      nextFrame = Math.min(target, current + step);
-    } else {
-      nextFrame = Math.max(target, current - step);
-    }
-
+    const nextFrame = current + diff * easeFactor;
     currentFrameRef.current = nextFrame;
 
+    const roundedFrame = Math.max(1, Math.min(300, Math.round(nextFrame)));
+
     if (imagesRef.current && imagesRef.current.length > 0) {
-      const img = imagesRef.current[nextFrame - 1];
+      const img = imagesRef.current[roundedFrame - 1];
       if (img && img.complete) {
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
@@ -542,7 +543,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     }
 
     if (dividerBarRef.current) {
-      const progress = (nextFrame - 1) / 299;
+      const progress = (roundedFrame - 1) / 299;
       dividerBarRef.current.style.height = `${progress * 100}%`;
     }
 
