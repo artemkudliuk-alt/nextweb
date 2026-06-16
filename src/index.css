@@ -1528,7 +1528,7 @@ ul, ol {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 8vh 0 0 0;
+  padding: 14vh 0 0 0;
   box-sizing: border-box;
   position: relative;
   margin-top: calc(-100vh + 120px) !important;
@@ -3272,6 +3272,11 @@ ul, ol {
   display: none;
 }
 
+/* Smooth tech icon child transitions for hover-exit */
+.tech-icon-svg * {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), fill 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .tech-card {
   position: relative;
   height: 152px;
@@ -3497,6 +3502,7 @@ ul, ol {
 
 /* PostgreSQL waving elephant */
 .tech-card:hover .tech-icon-svg.pg {
+  transform-origin: 50px 50px;
   animation: pgScale 1.5s ease-in-out infinite alternate;
 }
 @keyframes pgScale {
@@ -3505,7 +3511,7 @@ ul, ol {
 }
 
 /* MongoDB leaf swaying */
-.tech-card:hover .mongo-body {
+.tech-card:hover .tech-icon-svg.mongo {
   transform-origin: 50px 80px;
   animation: mongoSway 2s ease-in-out infinite alternate;
 }
@@ -3515,10 +3521,14 @@ ul, ol {
 }
 
 /* Redis vertical separation */
-.tech-card:hover .redis-layer.layer-1 {
+.tech-card:hover .redis-layer.layer-1,
+.tech-card:hover .redis-layer-side-1,
+.tech-card:hover .redis-layer-side-2 {
   animation: redisL1 1.5s ease-in-out infinite alternate;
 }
-.tech-card:hover .redis-layer.layer-2 {
+.tech-card:hover .redis-layer.layer-2,
+.tech-card:hover .redis-layer-side-3,
+.tech-card:hover .redis-layer-side-4 {
   animation: redisL2 1.5s ease-in-out infinite alternate;
 }
 @keyframes redisL1 {
@@ -3546,10 +3556,26 @@ ul, ol {
 .tech-card:hover .elastic-part-3 { animation: elasticPart3Reveal 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 .tech-card:hover .elastic-part-4 { animation: elasticPart4Reveal 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
-@keyframes elasticPart1Reveal { 0% { fill: #1e293b; } 15% { fill: #ffffff; } 100% { fill: #00bfb3; } }
-@keyframes elasticPart2Reveal { 0% { fill: #1e293b; } 15% { fill: #ffffff; } 100% { fill: #f04e98; } }
-@keyframes elasticPart3Reveal { 0% { fill: #1e293b; } 15% { fill: #ffffff; } 100% { fill: #fec514; } }
-@keyframes elasticPart4Reveal { 0% { fill: #1e293b; } 15% { fill: #ffffff; } 100% { fill: #005571; } }
+@keyframes elasticPart1Reveal {
+  0% { fill: #1e293b; transform: translate(0, 0); }
+  15% { fill: #ffffff; }
+  100% { fill: #00bfb3; transform: translate(-3px, -3px); }
+}
+@keyframes elasticPart2Reveal {
+  0% { fill: #1e293b; transform: translate(0, 0); }
+  15% { fill: #ffffff; }
+  100% { fill: #f04e98; transform: translate(-3px, 3px); }
+}
+@keyframes elasticPart3Reveal {
+  0% { fill: #1e293b; transform: translate(0, 0); }
+  15% { fill: #ffffff; }
+  100% { fill: #fec514; transform: translate(3px, 3px); }
+}
+@keyframes elasticPart4Reveal {
+  0% { fill: #1e293b; transform: translate(0, 0); }
+  15% { fill: #ffffff; }
+  100% { fill: #005571; transform: translate(3px, -3px); }
+}
 
 /* Docker container float */
 .tech-card:hover .docker-whale-body {
@@ -3609,6 +3635,84 @@ ul, ol {
 @keyframes ansiblePulse {
   0% { transform: scale(1); }
   100% { transform: scale(1.05); }
+}
+
+/* Material UI isometric shift */
+.tech-card:hover .mui-side-top {
+  animation: muiTop 1.5s ease-in-out infinite alternate;
+}
+.tech-card:hover .mui-side-left {
+  animation: muiLeft 1.5s ease-in-out infinite alternate;
+}
+.tech-card:hover .mui-side-right {
+  animation: muiRight 1.5s ease-in-out infinite alternate;
+}
+@keyframes muiTop { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+@keyframes muiLeft { 0% { transform: translate(0, 0); } 100% { transform: translate(-3px, 2px); } }
+@keyframes muiRight { 0% { transform: translate(0, 0); } 100% { transform: translate(3px, 2px); } }
+
+/* React Hook Form shield pulse & check draw */
+.tech-card:hover .rhf-shield {
+  transform-origin: 50px 50px;
+  animation: rhfShieldPulse 1.5s ease-in-out infinite alternate;
+}
+.tech-card:hover .tech-icon-svg.rhf path[stroke="#ffffff"] {
+  animation: rhfCheckDraw 0.6s ease-out forwards;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+}
+@keyframes rhfShieldPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+@keyframes rhfCheckDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Git sway */
+.tech-card:hover .tech-icon-svg.git {
+  transform-origin: 50px 50px;
+  animation: gitSway 1.8s ease-in-out infinite alternate;
+}
+@keyframes gitSway {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(8deg); }
+}
+
+/* Flutter pulse */
+.tech-card:hover .flutter-logo {
+  animation: flutterPulse 1.5s ease-in-out infinite alternate;
+}
+@keyframes flutterPulse {
+  0% { transform: scale(1); transform-origin: 50px 45px; }
+  100% { transform: scale(1.08); transform-origin: 50px 45px; }
+}
+
+/* Swift bird glide */
+.tech-card:hover .swift-bird {
+  animation: swiftFly 1.5s ease-in-out infinite alternate;
+}
+@keyframes swiftFly {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(4px, -4px) scale(1.05); }
+}
+
+/* Android nod & antenna wiggle */
+.tech-card:hover .android-head {
+  transform-origin: 50px 45px;
+  animation: androidNod 1.2s ease-in-out infinite alternate;
+}
+.tech-card:hover .android-antenna {
+  transform-origin: 50px 28px;
+  animation: androidAntennaWiggle 0.8s ease-in-out infinite alternate;
+}
+@keyframes androidNod {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
+}
+@keyframes androidAntennaWiggle {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
 }
 
 /* Mobile responsive layout for Screen 5 */
