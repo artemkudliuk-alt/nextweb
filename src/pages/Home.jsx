@@ -719,6 +719,79 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     }
   }, []);
 
+  // Mobile-only DVD screensaver bounce animation for the ASCII arrows
+  useEffect(() => {
+    if (window.innerWidth > 1024) return;
+
+    const element = document.querySelector('.hero-tryzub-hover-zone');
+    const heroSection = document.getElementById('hero');
+    if (!element || !heroSection) return;
+
+    const arrowsWidth = 160;
+    const arrowsHeight = 220;
+
+    // Random initial positions inside the safe boundary zone
+    const parentWidth = heroSection.clientWidth || window.innerWidth;
+    const parentHeight = heroSection.clientHeight || window.innerHeight;
+    
+    const minX = 10;
+    const maxX = parentWidth - arrowsWidth - 10;
+    const minY = 80; // Below navbar
+    const maxY = parentHeight - arrowsHeight - 120; // Above footer
+
+    let x = Math.random() * (maxX - minX) + minX;
+    let y = Math.random() * (maxY - minY) + minY;
+    
+    // Smooth, diagonal speed vectors
+    let vx = (Math.random() > 0.5 ? 1 : -1) * 0.8;
+    let vy = (Math.random() > 0.5 ? 1 : -1) * 0.8;
+
+    let animId;
+
+    const updatePosition = () => {
+      const currentWidth = heroSection.clientWidth || window.innerWidth;
+      const currentHeight = heroSection.clientHeight || window.innerHeight;
+
+      const currentMaxX = currentWidth - arrowsWidth - 10;
+      const currentMaxY = currentHeight - arrowsHeight - 120;
+
+      // Update positions
+      x += vx;
+      y += vy;
+
+      // Bounce off horizontal boundaries
+      if (x <= minX) {
+        x = minX;
+        vx = -vx;
+      } else if (x >= currentMaxX) {
+        x = currentMaxX;
+        vx = -vx;
+      }
+
+      // Bounce off vertical boundaries
+      if (y <= minY) {
+        y = minY;
+        vy = -vy;
+      } else if (y >= currentMaxY) {
+        y = currentMaxY;
+        vy = -vy;
+      }
+
+      // Apply coordinates directly to the DOM for performance
+      element.style.left = `${x}px`;
+      element.style.top = `${y}px`;
+      element.style.transform = 'none';
+
+      animId = requestAnimationFrame(updatePosition);
+    };
+
+    updatePosition();
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, []);
+
   const handleCardMouseMove = (e) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
@@ -1768,7 +1841,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   animationDelay: '0.8s',
                   opacity: 0
                 }}>
-                  Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг.
+                  Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг.{" "}
                   <br className="br-desktop" />
                   От идеи и проектирования до запуска и масштабирования бизнеса.
                 </p>
