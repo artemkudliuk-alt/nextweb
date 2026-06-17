@@ -625,13 +625,16 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
     changeStage(idx);
 
-    if (whyUsRef.current) {
-      whyUsRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (window.innerWidth > 1024) {
+      if (whyUsRef.current) {
+        whyUsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
+    const pauseDuration = window.innerWidth <= 1024 ? 15000 : 1000;
     clickTimeoutRef.current = setTimeout(() => {
       isClickingRef.current = false;
-    }, 1000);
+    }, pauseDuration);
   };
 
   useEffect(() => {
@@ -690,6 +693,31 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   useEffect(() => {
     activeStageRef.current = activeStage;
   }, [activeStage]);
+
+  // Auto-rotation of sequence stages on mobile screens (<= 1024px)
+  useEffect(() => {
+    if (window.innerWidth > 1024) return;
+
+    const interval = setInterval(() => {
+      if (!isClickingRef.current) {
+        const nextStage = (activeStageRef.current + 1) % sequenceStages.length;
+        changeStage(nextStage);
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Flatten the Why Us screen divider line on mobile screens
+  useEffect(() => {
+    if (window.innerWidth <= 1024) {
+      const line3 = document.getElementById('tech-glow-line-3');
+      if (line3) {
+        line3.setAttribute('y1', '0');
+        line3.setAttribute('y2', '0');
+      }
+    }
+  }, []);
 
   const handleCardMouseMove = (e) => {
     const card = e.currentTarget;
@@ -884,6 +912,57 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         }
       }
 
+      // Mobile-specific Screen 2 -> Screen 3 Slide-over transition
+      const isMobile = window.innerWidth <= 1024;
+      if (isMobile) {
+        const approachEl = document.getElementById('approach');
+        const dedicatedEl = dedicatedRef.current;
+        if (approachEl && dedicatedEl) {
+          const approachHeight = approachEl.offsetHeight || vh;
+          const scrollStart = vh + approachHeight - vh;
+          const scrollEnd = vh + approachHeight;
+          
+          if (currentScrollY >= scrollStart && currentScrollY < scrollEnd) {
+            const progress = Math.max(0, Math.min((currentScrollY - scrollStart) / vh, 1));
+            
+            const translateY = progress * vh;
+            approachEl.style.transform = `translateY(${translateY}px)`;
+            approachEl.style.visibility = 'visible';
+            
+            const blurVal = progress * 12;
+            approachEl.style.filter = `blur(${blurVal}px)`;
+            
+            const divider1_5 = dedicatedEl.querySelector('.tech-glow-divider-1-5');
+            if (divider1_5) {
+              divider1_5.style.opacity = Math.max(0.6, 1 - progress * 0.4).toString();
+              const sheenLine = divider1_5.querySelector('.tech-glow-line-sheen');
+              if (sheenLine) {
+                const sheenOffset = 200 - progress * 1640;
+                sheenLine.setAttribute('stroke-dashoffset', sheenOffset.toString());
+              }
+            }
+          } else if (currentScrollY >= scrollEnd) {
+            approachEl.style.transform = 'none';
+            approachEl.style.filter = 'none';
+            approachEl.style.visibility = 'hidden';
+            
+            const divider1_5 = dedicatedEl.querySelector('.tech-glow-divider-1-5');
+            if (divider1_5) divider1_5.style.opacity = '0';
+          } else {
+            approachEl.style.transform = 'none';
+            approachEl.style.filter = 'none';
+            approachEl.style.visibility = 'visible';
+            
+            const divider1_5 = dedicatedEl.querySelector('.tech-glow-divider-1-5');
+            if (divider1_5) {
+              divider1_5.style.opacity = '1';
+              const sheenLine = divider1_5.querySelector('.tech-glow-line-sheen');
+              if (sheenLine) sheenLine.setAttribute('stroke-dashoffset', '200');
+            }
+          }
+        }
+      }
+
       // Category menu slides in horizontally from the left
       if (menuRef.current) {
         if (window.innerWidth > 1024) {
@@ -960,10 +1039,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             approachEl.style.pointerEvents = 'auto';
           }
         } else {
-          approachEl.style.transform = '';
-          approachEl.style.visibility = '';
-          approachEl.style.pointerEvents = '';
-          
           if (divider2) {
             divider2.style.transform = '';
             divider2.style.opacity = '';
@@ -1693,7 +1768,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   animationDelay: '0.8s',
                   opacity: 0
                 }}>
-                  Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг. 
+                  Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг.
+                  <br className="br-desktop" />
                   От идеи и проектирования до запуска и масштабирования бизнеса.
                 </p>
 
@@ -1885,6 +1961,34 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
       {/* ----------------- SELECTED WORKS VIEWPORT STICKY SECTION ----------------- */}
       <section id="dedicated" ref={dedicatedRef}>
+        {/* Divider 1.5: Glowing Line at the top of #dedicated for mobile slide transition */}
+        <div className="tech-glow-divider tech-glow-divider-1-5">
+          <svg viewBox="0 0 1440 20" width="100%" height="20" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+            <defs>
+              <linearGradient id="tech-glow-grad-1-5" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#00D9FF" />
+                <stop offset="50%" stopColor="#A020F0" />
+                <stop offset="100%" stopColor="#FF1493" />
+              </linearGradient>
+              <filter id="tech-glow-sheen-blur-1-5" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="tech-glow-sheen-blur-mobile-1-5" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <line className="tech-glow-line-main" x1="0" y1="10" x2="1440" y2="10" stroke="url(#tech-glow-grad-1-5)" strokeWidth="4" />
+            <line className="tech-glow-line-sheen" x1="0" y1="10" x2="1440" y2="10" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1440" strokeDashoffset="1440" filter="url(#tech-glow-sheen-blur-1-5)" />
+          </svg>
+        </div>
         <div className="dedicated-sticky-container">
           <div className="dedicated-sticky-inner">
             <div className="works-split-layout">
