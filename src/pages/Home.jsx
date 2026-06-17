@@ -650,76 +650,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     };
   }, []);
 
-  useEffect(() => {
-    const workEl = document.getElementById('work');
-    if (!workEl) return;
-
-    let accumDelta = 0;
-    const threshold = 60; // threshold to switch tab
-
-    const handleWheel = (e) => {
-      if (window.innerWidth <= 1024) return;
-      if (window.scrollY >= window.innerHeight * 9.2 - 5) return;
-
-      const categories = ['web', 'database', 'cloud'];
-      const currentIdx = categories.indexOf(activeTechTab);
-      const direction = e.deltaY > 0 ? 1 : -1;
-
-      const rect = workEl.getBoundingClientRect();
-      // If scrolling down, but top of #work hasn't reached the top of the viewport yet
-      if (direction === 1 && rect.top > 5) {
-        return;
-      }
-      // If scrolling up, but top of #work has already moved below the top of the viewport
-      if (direction === -1 && rect.top < -5) {
-        return;
-      }
-
-      // Reset accumulation on scroll direction change
-      if ((direction === 1 && accumDelta < 0) || (direction === -1 && accumDelta > 0)) {
-        accumDelta = 0;
-      }
-
-      // Check if we can change tabs in this direction
-      if (direction === 1 && currentIdx < categories.length - 1) {
-        e.preventDefault();
-        const rectAfter = workEl.getBoundingClientRect();
-        if (Math.abs(rectAfter.top) > 1) {
-          window.scrollTo({
-            top: window.scrollY + rectAfter.top,
-            behavior: 'auto'
-          });
-        }
-        accumDelta += e.deltaY;
-        if (accumDelta >= threshold) {
-          setActiveTechTab(categories[currentIdx + 1]);
-          accumDelta = 0;
-        }
-      } else if (direction === -1 && currentIdx > 0) {
-        e.preventDefault();
-        const rectAfter = workEl.getBoundingClientRect();
-        if (Math.abs(rectAfter.top) > 1) {
-          window.scrollTo({
-            top: window.scrollY + rectAfter.top,
-            behavior: 'auto'
-          });
-        }
-        accumDelta += e.deltaY;
-        if (accumDelta <= -threshold) {
-          setActiveTechTab(categories[currentIdx - 1]);
-          accumDelta = 0;
-        }
-      } else {
-        accumDelta = 0;
-      }
-    };
-
-    workEl.addEventListener('wheel', handleWheel, { passive: false });
-    return () => {
-      workEl.removeEventListener('wheel', handleWheel);
-    };
-  }, [activeTechTab]);
-
 
   useEffect(() => {
     return () => {
@@ -1352,61 +1282,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               }
             }
 
-            // --- Screen 8 (Footer) Position & Transition Logic ---
-            const footerEl = document.querySelector('.main-footer');
-            if (footerEl) {
-              if (window.innerWidth > 1024) {
-                if (currentScrollY >= vh * 14.2) {
-                  footerEl.style.setProperty('position', 'fixed', 'important');
-                  footerEl.style.setProperty('top', '0', 'important');
-                  footerEl.style.setProperty('left', '0', 'important');
-                  footerEl.style.setProperty('width', '100%', 'important');
-                  footerEl.style.setProperty('height', '100vh', 'important');
-                  footerEl.style.visibility = 'visible';
-                  footerEl.style.pointerEvents = 'auto';
-                  footerEl.style.display = 'flex';
-
-                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
-                  const glowDividerF = footerEl.querySelector('.tech-glow-divider');
-                  const lineF = footerEl.querySelector('#tech-glow-line-footer');
-
-                  const translateYVal = (1 - progressF) * vh - 2;
-                  footerEl.style.transform = `translateY(${translateYVal}px)`;
-
-                  footerEl.style.clipPath = 'none';
-                  if (lineF) {
-                    lineF.setAttribute('y2', '60');
-                  }
-                  if (glowDividerF) {
-                    glowDividerF.style.opacity = '0';
-                  }
-                } else {
-                  // Hidden before scroll reach
-                  footerEl.style.removeProperty('position');
-                  footerEl.style.removeProperty('top');
-                  footerEl.style.removeProperty('left');
-                  footerEl.style.removeProperty('width');
-                  footerEl.style.removeProperty('height');
-                  footerEl.style.transform = 'translateY(100vh)';
-                  footerEl.style.visibility = 'hidden';
-                  footerEl.style.pointerEvents = 'none';
-                  footerEl.style.display = 'none';
-                  footerEl.style.clipPath = '';
-                }
-              } else {
-                // Mobile reset
-                footerEl.style.transform = '';
-                footerEl.style.visibility = '';
-                footerEl.style.pointerEvents = '';
-                footerEl.style.removeProperty('position');
-                footerEl.style.removeProperty('top');
-                footerEl.style.removeProperty('left');
-                footerEl.style.removeProperty('width');
-                footerEl.style.removeProperty('height');
-                footerEl.style.display = '';
-                footerEl.style.clipPath = '';
-              }
-            }
+            // --- Footer logic moved to run globally on scroll ---
 
           } else {
             // --- Default state before currentScrollY reaches vh * 9.2 ---
@@ -1521,7 +1397,61 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       }
     }
 
+      // --- Screen 8 (Footer) Position & Transition Logic ---
+      const footerEl = document.querySelector('.main-footer');
+      if (footerEl) {
+        if (window.innerWidth > 1024) {
+          if (currentScrollY >= vh * 14.2) {
+            footerEl.style.setProperty('position', 'fixed', 'important');
+            footerEl.style.setProperty('top', '0', 'important');
+            footerEl.style.setProperty('left', '0', 'important');
+            footerEl.style.setProperty('width', '100%', 'important');
+            footerEl.style.setProperty('height', '100vh', 'important');
+            footerEl.style.visibility = 'visible';
+            footerEl.style.pointerEvents = 'auto';
+            footerEl.style.display = 'flex';
 
+            const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
+            const glowDividerF = footerEl.querySelector('.tech-glow-divider');
+            const lineF = footerEl.querySelector('#tech-glow-line-footer');
+
+            const translateYVal = (1 - progressF) * vh - 2;
+            footerEl.style.transform = `translateY(${translateYVal}px)`;
+
+            footerEl.style.clipPath = 'none';
+            if (lineF) {
+              lineF.setAttribute('y2', '60');
+            }
+            if (glowDividerF) {
+              glowDividerF.style.opacity = '0';
+            }
+          } else {
+            // Hidden before scroll reach
+            footerEl.style.removeProperty('position');
+            footerEl.style.removeProperty('top');
+            footerEl.style.removeProperty('left');
+            footerEl.style.removeProperty('width');
+            footerEl.style.removeProperty('height');
+            footerEl.style.transform = 'translateY(100vh)';
+            footerEl.style.visibility = 'hidden';
+            footerEl.style.pointerEvents = 'none';
+            footerEl.style.display = 'none';
+            footerEl.style.clipPath = '';
+          }
+        } else {
+          // Mobile reset
+          footerEl.style.transform = '';
+          footerEl.style.visibility = '';
+          footerEl.style.pointerEvents = '';
+          footerEl.style.removeProperty('position');
+          footerEl.style.removeProperty('top');
+          footerEl.style.removeProperty('left');
+          footerEl.style.removeProperty('width');
+          footerEl.style.removeProperty('height');
+          footerEl.style.display = '';
+          footerEl.style.clipPath = '';
+        }
+      }
 
       // Hide hero when fully covered by subsequent section
       if (heroRef.current) {
