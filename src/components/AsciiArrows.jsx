@@ -158,23 +158,30 @@ export default function AsciiArrows({ isHovered = false }) {
       // Clear canvas
       ctx.clearRect(0, 0, width, height);
 
+      const isMobile = window.innerWidth <= 1024;
+
       // Interpolate shape hover morph progress (slower and smoother transition)
-      const targetProgress = isHovered ? 1 : 0;
+      // On mobile, the arrow shape breathes between 0.70 and 0.86 to feel dynamic without hover
+      const targetProgress = isHovered 
+        ? 1 
+        : (isMobile ? (0.78 + Math.sin(tick * 0.001) * 0.08) : 0);
       shapeProgress += (targetProgress - shapeProgress) * 0.035;
 
-
-
-      // Smooth mouse-following parallax offset
+      // Smooth mouse-following parallax offset or automatic organic floating
       let targetOffsetX = 0;
       let targetOffsetY = 0;
       if (mouse.active) {
         const centerX = width / 2;
         const centerY = height / 2;
-        targetOffsetX = ((mouse.x - centerX) / centerX) * 22; // Max 22px parallax offset (safely within margins)
+        targetOffsetX = ((mouse.x - centerX) / centerX) * 22; // Max 22px parallax offset
         targetOffsetY = ((mouse.y - centerY) / centerY) * 22;
+      } else {
+        // Slow organic orbiting drift when mouse is inactive (essential for mobile background energy)
+        targetOffsetX = Math.sin(tick * 0.0006) * 14;
+        targetOffsetY = Math.cos(tick * 0.0006) * 14;
       }
-      currentOffsetX += (targetOffsetX - currentOffsetX) * 0.06;
-      currentOffsetY += (targetOffsetY - currentOffsetY) * 0.06;
+      currentOffsetX += (targetOffsetX - currentOffsetX) * 0.04;
+      currentOffsetY += (targetOffsetY - currentOffsetY) * 0.04;
 
       // Create horizontal gradient for active symbols
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
@@ -187,13 +194,14 @@ export default function AsciiArrows({ isHovered = false }) {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      // Periodic scanline glitch every 2 seconds on hover
+      // Periodic scanline glitch (lasts 150ms every 3.5 seconds) on hover or automatically on mobile
       let isGlitching = false;
       let glitchOffsetX = 0;
       let glitchOffsetY = 0;
-      if (isHovered && shapeProgress > 0.3) {
-        const cycle = tick % 2000;
-        if (cycle < 180) { // Glitch lasts 180ms out of every 2000ms
+      const canGlitch = isHovered || isMobile;
+      if (canGlitch && shapeProgress > 0.3) {
+        const cycle = tick % 3500;
+        if (cycle < 150) {
           isGlitching = true;
           glitchOffsetX = (Math.random() - 0.5) * 12;
           glitchOffsetY = (Math.random() - 0.5) * 6;

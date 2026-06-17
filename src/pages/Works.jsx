@@ -57,9 +57,9 @@ export default function Works() {
 
         {/* Gallery Cards */}
         <div className="work-cards" style={{ marginTop: '3rem' }}>
-          <Grid cols={3}>
+          <div className="works-gallery-grid">
             {allWorks.map((work) => (
-              <div key={work.id} className="work-card" style={{ gridColumn: 'span 1' }}>
+              <div key={work.id} className="work-card">
                 <a className="work-card-link" href={`/work/${work.id}`}>
                   <div className="work-card-image">
                     <div className="work-card-image-inner" style={{ transform: `translateY(${work.translateY})` }}>
@@ -80,7 +80,7 @@ export default function Works() {
                 </a>
               </div>
             ))}
-          </Grid>
+          </div>
         </div>
       </div>
 

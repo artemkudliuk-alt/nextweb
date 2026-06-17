@@ -473,6 +473,34 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleCarouselScroll = (e) => {
+    if (!isMobile) return;
+    const container = e.currentTarget;
+    const scrollLeft = container.scrollLeft;
+    const containerWidth = container.offsetWidth;
+    const cards = container.querySelectorAll('.testimonial-card');
+    let minDistance = Infinity;
+    let activeIdx = 0;
+
+    cards.forEach((card, idx) => {
+      const cardOffsetLeft = card.offsetLeft;
+      const cardWidth = card.offsetWidth;
+      const cardCenter = cardOffsetLeft + cardWidth / 2;
+      const viewportCenter = scrollLeft + containerWidth / 2;
+      const distance = Math.abs(cardCenter - viewportCenter);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        activeIdx = idx;
+      }
+    });
+
+    if (activeIdx !== activeTestimonialIdx) {
+      setActiveTestimonialIdx(activeIdx);
+      setIsReviewExpanded(false);
+    }
+  };
+
   
   const heroRef = useRef(null);
   const dimmerRef = useRef(null);
@@ -780,6 +808,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       
       const vh = Math.max(window.innerHeight || 0, 1);
       const progress = Math.min(currentScrollY / vh, 1);
+      const divider2 = divider2Ref.current;
 
 
 
@@ -827,10 +856,21 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           // Animate Divider 1 slope and opacity
           const divider1 = sectionsWrapRef.current.querySelector('.tech-glow-divider-1');
           if (divider1) {
-            divider1.style.opacity = Math.max(0, 1 - transitionProgress).toString();
-            const line1 = divider1.querySelector('line');
-            if (line1) {
-              line1.setAttribute('y1', slantHeight.toString());
+            const isMobile = window.innerWidth <= 1024;
+            const targetOpacity = isMobile
+              ? Math.max(0.6, 1 - transitionProgress * 0.4).toString()
+              : Math.max(0, 1 - transitionProgress).toString();
+            divider1.style.opacity = targetOpacity;
+            
+            const lines = divider1.querySelectorAll('line');
+            lines.forEach(line => {
+              line.setAttribute('y1', slantHeight.toString());
+            });
+
+            const sheenLine = divider1.querySelector('.tech-glow-line-sheen');
+            if (sheenLine) {
+              const sheenOffset = 200 - transitionProgress * 1645;
+              sheenLine.setAttribute('stroke-dashoffset', sheenOffset.toString());
             }
           }
         } else {
@@ -890,7 +930,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       // Dynamic sticky behavior & reverse diagonal slide-out for #approach
       if (approachEl) {
         if (window.innerWidth > 1024) {
-          const divider2 = divider2Ref.current;
           if (currentScrollY >= vh * 1.3) {
             const progress3 = Math.max(0, Math.min((currentScrollY - vh * 1.3) / vh, 1));
             const translateX = progress3 * 100; // slides horizontally to the right
@@ -925,7 +964,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           approachEl.style.visibility = '';
           approachEl.style.pointerEvents = '';
           
-          const divider2 = divider2Ref.current;
           if (divider2) {
             divider2.style.transform = '';
             divider2.style.opacity = '';
@@ -1132,8 +1170,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       const screen6El = document.getElementById('screen6');
       if (workEl) {
         if (window.innerWidth > 1024) {
-          const divider2 = divider2Ref.current;
-          
           if (currentScrollY >= vh * 9.2) {
             // Set default hidden styles for workEl when we are past testimonials entry
             if (currentScrollY >= vh * 10.2) {
@@ -1647,9 +1683,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             <div className="grid-content" style={{ '--cols': 8 }}>
               <div className="content" style={{ gridColumn: '2 / span 6' }}>
                 <h1 className="heading hero-main-heading" style={{ margin: 0 }}>
-                  <TextReveal text="ПРОЕКТИРУЕМ" delay={0.2} glitch={true} />
-                  <TextReveal text="СОЗДАЁМ" delay={0.35} className="gradient-text-cyan-pink" glitch={true} />
-                  <TextReveal text="РАЗВИВАЕМ" delay={0.5} className="gradient-text-cyan-pink" glitch={true} />
+                  <TextReveal text="ПРОЕКТИРУЕМ" delay={0.2} className="hero-word-1" glitch={true} />
+                  <TextReveal text="СОЗДАЁМ" delay={0.35} className="hero-word-2 gradient-text-cyan-pink" glitch={true} />
+                  <TextReveal text="РАЗВИВАЕМ" delay={0.5} className="hero-word-3 gradient-text-cyan-pink" glitch={true} />
                 </h1>
                 
                 <p className="subtitle" style={{
@@ -1658,7 +1694,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   opacity: 0
                 }}>
                   Разработка сайтов, брендинг, интерфейсы и интернет-маркетинг. 
-                  <br className="desktop-only" />
                   От идеи и проектирования до запуска и масштабирования бизнеса.
                 </p>
 
@@ -1678,10 +1713,10 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }}
           >
             <Grid cols={8} className="hero-footer-grid">
-              <div className="tagline" style={{ gridColumn: '1 / span 3', alignSelf: 'center' }}>
+              <div className="tagline" style={{ alignSelf: 'center' }}>
                 <p style={{ margin: 0, whiteSpace: 'nowrap' }}>Цифровое агентство полного цикла</p>
               </div>
-              <div className="hero-video-trigger-wrap" style={{ gridColumn: '4 / span 2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+              <div className="hero-video-trigger-wrap" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
                 <button 
                   className="hero-video-play-btn" 
                   onClick={() => setIsVideoOpen(true)}
@@ -1700,10 +1735,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                     <path d="M42 32 L70 50 L42 68 Z" fill="url(#tryzub-gradient)" stroke="url(#tryzub-gradient)" strokeWidth="2" strokeLinejoin="round" />
                   </svg>
                 </button>
-                <span className="hero-video-label">Смотреть шоурил</span>
               </div>
 
-              <div className="services" style={{ gridColumn: '6 / span 3', alignSelf: 'center' }}>
+              <div className="services" style={{ alignSelf: 'center' }}>
                 <div className="services-video-wrap">
                   <video className="services-video" src="/websites.mp4" autoPlay loop muted playsInline />
                 </div>
@@ -1733,21 +1767,31 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 <stop offset="50%" stopColor="#A020F0" />
                 <stop offset="100%" stopColor="#FF1493" />
               </linearGradient>
-              <filter id="tech-glow-blur-1" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="12" result="blur" />
+              <filter id="tech-glow-sheen-blur" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="tech-glow-sheen-blur-mobile" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
-            <line x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-1)" strokeWidth="8" filter="url(#tech-glow-blur-1)" />
+            <line className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-1)" strokeWidth="4" />
+            <line className="tech-glow-line-sheen" x1="0" y1="120" x2="1440" y2="0" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1445" strokeDashoffset="1445" filter="url(#tech-glow-sheen-blur)" />
           </svg>
         </div>
 
         {/* ----------------- APPROACH SECTION ----------------- */}
         <section id="approach" className="approach-section-clean">
           <div className="approach-container-clean">
+            <span className="approach-label-clean mobile-only-label">// 01 . НАШ ПОДХОД</span>
+
             {/* Left Column: CEO */}
             <div className="approach-col-avatar-clean">
               <div className="ceo-avatar-wrap-clean" onClick={() => setIsVideoOpen && setIsVideoOpen(true)}>
@@ -1773,7 +1817,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
             {/* Right Column: Text content */}
             <div className="approach-col-text-clean">
-              <span className="approach-label-clean">// 01 . НАШ ПОДХОД</span>
+              <span className="approach-label-clean desktop-only-label">// 01 . НАШ ПОДХОД</span>
               <h2 className="approach-heading-clean">
                 NextWeb работает на рынке информационных технологий с 2009 года и за это время эффективно реализовали множество проектов в областях электронной коммерции и интернет-маркетинга.
               </h2>
@@ -2149,7 +2193,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           </div>
 
           {/* Testimonials Carousel Track with Infinite Circular Layout */}
-          <div ref={carouselContainerRef} className="testimonials-carousel-container">
+          <div ref={carouselContainerRef} className="testimonials-carousel-container" onScroll={handleCarouselScroll}>
             <div className="testimonials-track">
               {testimonialsData.map((item, idx) => {
                 const isActive = idx === activeTestimonialIdx;

@@ -101,7 +101,7 @@ export default function Navbar({ onPlayClick }) {
             </Link>
  
             {/* Right button */}
-            <div className="navbar-right" style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="navbar-right">
 
               <a href="tel:+380937894504" className="nav-phone-link" aria-label="Phone: +38 (093) 789-45-04">
                 <div className="nav-phone-icon-wrap">
@@ -144,7 +144,7 @@ export default function Navbar({ onPlayClick }) {
             </div>
 
             {/* Right: Phone and Button */}
-            <div className="navbar-right" style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="navbar-right">
               <a href="tel:+380937894504" className="nav-phone-link" aria-label="Phone: +38 (093) 789-45-04">
                 <div className="nav-phone-icon-wrap">
                   <svg className="nav-phone-icon" viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">

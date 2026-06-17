@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-function GlitchChar({ char }) {
+function GlitchChar({ char, revealed, delay = 0, index = 0 }) {
   const [displayChar, setDisplayChar] = useState(char);
   const [isGlitching, setIsGlitching] = useState(false);
   const timerRef = useRef(null);
 
-  const handleMouseEnter = () => {
+  const startGlitch = (durationTicks = 3) => {
     if (isGlitching || char === ' ') return;
     setIsGlitching(true);
     
@@ -13,7 +13,7 @@ function GlitchChar({ char }) {
     const glitchSymbols = 'ΔX01Ø&@#%?*+=-_';
     
     const tick = () => {
-      if (count < 3) {
+      if (count < durationTicks) {
         const randomChar = glitchSymbols[Math.floor(Math.random() * glitchSymbols.length)];
         setDisplayChar(randomChar);
         count++;
@@ -25,6 +25,24 @@ function GlitchChar({ char }) {
     };
     tick();
   };
+
+  const handleMouseEnter = () => {
+    startGlitch(3);
+  };
+
+  useEffect(() => {
+    if (revealed && char !== ' ') {
+      const baseDelay = delay * 1000;
+      const staggerDelay = index * 20; // 20ms staggered delay per letter
+      const totalDelay = baseDelay + staggerDelay;
+
+      const timer = setTimeout(() => {
+        startGlitch(6); // 6 ticks (360ms) for initial page load to make the loader visible
+      }, totalDelay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [revealed]);
 
   useEffect(() => {
     return () => {
@@ -75,8 +93,23 @@ export default function TextReveal({ text, className = '', delay = 0, glitch = f
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setRevealed(true);
-          observer.unobserve(entry.target);
+          const triggerReveal = () => {
+            setRevealed(true);
+            observer.unobserve(entry.target);
+          };
+
+          const pageWrapper = document.querySelector('.page-wrapper');
+          if (pageWrapper && pageWrapper.classList.contains('loading')) {
+            const mutationObserver = new MutationObserver((mutations) => {
+              if (!pageWrapper.classList.contains('loading')) {
+                triggerReveal();
+                mutationObserver.disconnect();
+              }
+            });
+            mutationObserver.observe(pageWrapper, { attributes: true, attributeFilter: ['class'] });
+          } else {
+            triggerReveal();
+          }
         }
       },
       {
@@ -110,7 +143,13 @@ export default function TextReveal({ text, className = '', delay = 0, glitch = f
           >
             {glitch && typeof line === 'string'
               ? line.split('').map((char, charIndex) => (
-                  <GlitchChar key={charIndex} char={char} />
+                  <GlitchChar 
+                    key={charIndex} 
+                    char={char} 
+                    revealed={revealed} 
+                    delay={delay + index * 0.15} 
+                    index={charIndex} 
+                  />
                 ))
               : line}
           </span>
