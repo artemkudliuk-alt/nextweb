@@ -1005,9 +1005,19 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             const blurVal = progress * 12;
             approachEl.style.filter = `blur(${blurVal}px)`;
             
+            // Dynamic clip-path during transition (slanted edge that flattens out)
+            const slantHeight = (1 - progress) * 120;
+            dedicatedEl.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
+            
             const divider1_5 = dedicatedEl.querySelector('.tech-glow-divider-1-5');
             if (divider1_5) {
               divider1_5.style.opacity = Math.max(0.6, 1 - progress * 0.4).toString();
+              
+              const lines = divider1_5.querySelectorAll('line');
+              lines.forEach(line => {
+                line.setAttribute('y2', slantHeight.toString());
+              });
+              
               const sheenLine = divider1_5.querySelector('.tech-glow-line-sheen');
               if (sheenLine) {
                 const sheenOffset = 200 - progress * 1640;
@@ -1019,20 +1029,39 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             approachEl.style.filter = 'none';
             approachEl.style.visibility = 'hidden';
             
+            dedicatedEl.style.clipPath = 'none';
+            
             const divider1_5 = dedicatedEl.querySelector('.tech-glow-divider-1-5');
-            if (divider1_5) divider1_5.style.opacity = '0';
+            if (divider1_5) {
+              divider1_5.style.opacity = '0';
+              const lines = divider1_5.querySelectorAll('line');
+              lines.forEach(line => {
+                line.setAttribute('y2', '0');
+              });
+            }
           } else {
             approachEl.style.transform = 'none';
             approachEl.style.filter = 'none';
             approachEl.style.visibility = 'visible';
             
+            dedicatedEl.style.clipPath = 'polygon(0 0, 100% 120px, 100% 100%, 0 100%)';
+            
             const divider1_5 = dedicatedEl.querySelector('.tech-glow-divider-1-5');
             if (divider1_5) {
               divider1_5.style.opacity = '1';
+              const lines = divider1_5.querySelectorAll('line');
+              lines.forEach(line => {
+                line.setAttribute('y2', '120');
+              });
               const sheenLine = divider1_5.querySelector('.tech-glow-line-sheen');
               if (sheenLine) sheenLine.setAttribute('stroke-dashoffset', '200');
             }
           }
+        }
+      } else {
+        const dedicatedEl = dedicatedRef.current;
+        if (dedicatedEl) {
+          dedicatedEl.style.clipPath = '';
         }
       }
 
@@ -2036,7 +2065,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       <section id="dedicated" ref={dedicatedRef}>
         {/* Divider 1.5: Glowing Line at the top of #dedicated for mobile slide transition */}
         <div className="tech-glow-divider tech-glow-divider-1-5">
-          <svg viewBox="0 0 1440 20" width="100%" height="20" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+          <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
             <defs>
               <linearGradient id="tech-glow-grad-1-5" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#00D9FF" />
@@ -2058,8 +2087,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 </feMerge>
               </filter>
             </defs>
-            <line className="tech-glow-line-main" x1="0" y1="10" x2="1440" y2="10" stroke="url(#tech-glow-grad-1-5)" strokeWidth="4" />
-            <line className="tech-glow-line-sheen" x1="0" y1="10" x2="1440" y2="10" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1440" strokeDashoffset="1440" filter="url(#tech-glow-sheen-blur-1-5)" />
+            <line className="tech-glow-line-main" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-1-5)" strokeWidth="4" />
+            <line className="tech-glow-line-sheen" x1="0" y1="0" x2="1440" y2="120" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1440" strokeDashoffset="1440" filter="url(#tech-glow-sheen-blur-1-5)" />
           </svg>
         </div>
         <div className="dedicated-sticky-container">
