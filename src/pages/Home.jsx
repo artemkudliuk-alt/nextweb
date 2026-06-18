@@ -1472,58 +1472,50 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               workEl.style.pointerEvents = 'auto';
             }
 
-            // --- Screen 6 (Testimonials) Positioning Logic ---
+            // --- Screen 6 (Testimonials) Fixed Positioning Logic ---
             if (screen6El) {
               if (currentScrollY < vh * 14.2) {
                 // Active range for Screen 6
+                screen6El.style.setProperty('position', 'fixed', 'important');
+                screen6El.style.setProperty('top', '0', 'important');
+                screen6El.style.setProperty('left', '0', 'important');
+                screen6El.style.setProperty('width', '100%', 'important');
+                screen6El.style.setProperty('height', '100vh', 'important');
                 screen6El.style.visibility = 'visible';
                 screen6El.style.pointerEvents = 'auto';
                 screen6El.style.display = 'flex';
 
                 if (currentScrollY < vh * 10.2) {
-                  // Entry transition: scrolls up naturally over fixed #work
-                  screen6El.style.removeProperty('position');
-                  screen6El.style.removeProperty('top');
-                  screen6El.style.removeProperty('left');
-                  screen6El.style.removeProperty('width');
-                  screen6El.style.removeProperty('height');
-                  
+                  // Sliding in horizontally
                   const progress5 = Math.max(0, Math.min((currentScrollY - vh * 9.2) / vh, 1));
-                  const slantHeight = (1 - progress5) * 120;
-                  screen6El.style.clipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
-                  screen6El.style.transform = 'none';
-                  
-                  const divider6 = screen6El.querySelector('.tech-glow-divider-6');
-                  if (divider6) {
-                    divider6.style.opacity = Math.max(0.6, 1 - progress5 * 0.4).toString();
-                    const lines = divider6.querySelectorAll('line');
-                    lines.forEach(line => {
-                      line.setAttribute('y1', slantHeight.toString());
-                    });
-                    const sheenLine = divider6.querySelector('.tech-glow-line-sheen');
-                    if (sheenLine) {
-                      const totalLength = 1445;
-                      sheenLine.setAttribute('stroke-dashoffset', (totalLength - progress5 * totalLength).toString());
-                    }
-                  }
-                } else {
-                  // Locked active range: fixed full screen
-                  screen6El.style.setProperty('position', 'fixed', 'important');
-                  screen6El.style.setProperty('top', '0', 'important');
-                  screen6El.style.setProperty('left', '0', 'important');
-                  screen6El.style.setProperty('width', '100%', 'important');
-                  screen6El.style.setProperty('height', '100vh', 'important');
-                  
+                  const translateXScreen6 = (-1 + progress5) * 100;
+                  screen6El.style.transform = `translateX(${translateXScreen6}vw)`;
                   screen6El.style.clipPath = 'none';
-                  screen6El.style.transform = 'none';
                   
+                  const divider2 = divider2Ref.current;
+                  if (divider2) {
+                    divider2.style.transform = `translateX(${translateXScreen6 + 100}vw)`;
+                    divider2.style.opacity = Math.max(0, 1 - progress5).toString();
+                  }
+
                   const divider6 = screen6El.querySelector('.tech-glow-divider-6');
                   if (divider6) {
                     divider6.style.opacity = '0';
-                    const lines = divider6.querySelectorAll('line');
-                    lines.forEach(line => {
-                      line.setAttribute('y1', '0');
-                    });
+                  }
+                } else {
+                  // Resting visible
+                  screen6El.style.transform = 'none';
+                  screen6El.style.clipPath = 'none';
+                  
+                  const divider2 = divider2Ref.current;
+                  if (divider2) {
+                    divider2.style.transform = 'none';
+                    divider2.style.opacity = '0';
+                  }
+
+                  const divider6 = screen6El.querySelector('.tech-glow-divider-6');
+                  if (divider6) {
+                    divider6.style.opacity = '0';
                   }
                 }
               } else {
@@ -1777,7 +1769,38 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             screen7El.style.removeProperty('width');
             screen7El.style.removeProperty('height');
             screen7El.style.display = '';
-            screen7El.style.clipPath = '';
+            screen7El.style.filter = '';
+            screen7El.style.opacity = '';
+
+            const contactSec = screen7El.querySelector('.contact-section');
+            if (contactSec) {
+              const rect7 = contactSec.getBoundingClientRect();
+              const progress7 = Math.max(0, Math.min(1, 1 - (rect7.top / vh)));
+
+              if (progress7 >= 0.99) {
+                contactSec.style.clipPath = 'none';
+                const divider7 = contactSec.querySelector('.tech-glow-divider-7');
+                if (divider7) {
+                  divider7.style.opacity = '0';
+                  const lines = divider7.querySelectorAll('line');
+                  lines.forEach(line => {
+                    line.setAttribute('y2', '0');
+                  });
+                }
+              } else {
+                const slantHeight7 = (1 - progress7) * 120;
+                contactSec.style.clipPath = `polygon(0 0, 100% ${slantHeight7}px, 100% 100%, 0 100%)`;
+
+                const divider7 = contactSec.querySelector('.tech-glow-divider-7');
+                if (divider7) {
+                  divider7.style.opacity = Math.max(0.6, 1 - progress7 * 0.4).toString();
+                  const lines = divider7.querySelectorAll('line');
+                  lines.forEach(line => {
+                    line.setAttribute('y2', slantHeight7.toString());
+                  });
+                }
+              }
+            }
           }
 
 
@@ -1842,6 +1865,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           footerEl.style.removeProperty('height');
           footerEl.style.display = '';
           footerEl.style.clipPath = '';
+
         }
       }
 
@@ -2775,10 +2799,10 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             })}
           </div>
 
-          {/* Mobile Swiping Arrows & Dots Navigation (Mobile only) */}
-          <div className="testimonials-mobile-arrows">
+          {/* Mobile Terminal-Style Navigation (Mobile only) */}
+          <div className="testimonials-terminal-nav">
             <button 
-              className="mobile-arrow-btn prev"
+              className="terminal-nav-btn prev"
               onClick={() => {
                 setIsReviewExpanded(false);
                 setActiveTestimonialIdx((prev) => (prev === 0 ? testimonialsData.length - 1 : prev - 1));
@@ -2787,29 +2811,32 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 '--brand-color': testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0'
               }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
+              <span className="terminal-btn-inner">[ &lt; ]</span>
             </button>
 
-            <div className="mobile-dots-indicator">
-              {testimonialsData.map((item, idx) => (
-                <span 
-                  key={item.id} 
-                  className={`mobile-dot ${idx === activeTestimonialIdx ? 'active' : ''}`}
+            <div className="terminal-nav-dashboard">
+              <div className="terminal-nav-counter">
+                <span className="counter-active" style={{ color: testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0' }}>
+                  {String(activeTestimonialIdx + 1).padStart(2, '0')}
+                </span>
+                <span className="counter-divider">/</span>
+                <span className="counter-total">
+                  {String(testimonialsData.length).padStart(2, '0')}
+                </span>
+              </div>
+              <div className="terminal-progress-bar-wrap">
+                <div 
+                  className="terminal-progress-fill"
                   style={{
-                    '--brand-color': item.glowColor
-                  }}
-                  onClick={() => {
-                    setIsReviewExpanded(false);
-                    setActiveTestimonialIdx(idx);
+                    width: `${((activeTestimonialIdx + 1) / testimonialsData.length) * 100}%`,
+                    background: `linear-gradient(90deg, #A020F0, ${testimonialsData[activeTestimonialIdx]?.glowColor || '#00D9FF'})`
                   }}
                 />
-              ))}
+              </div>
             </div>
 
             <button 
-              className="mobile-arrow-btn next"
+              className="terminal-nav-btn next"
               onClick={() => {
                 setIsReviewExpanded(false);
                 setActiveTestimonialIdx((prev) => (prev === testimonialsData.length - 1 ? 0 : prev + 1));
@@ -2818,9 +2845,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 '--brand-color': testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0'
               }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              <span className="terminal-btn-inner">[ &gt; ]</span>
             </button>
           </div>
       </section>
@@ -2999,7 +3024,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             boxShadow: '0 0 10px #00D9FF, 0 0 20px #A020F0, 0 0 30px #FF1493',
             pointerEvents: 'none',
             transition: 'opacity 0.05s ease-out',
-            opacity: 0
+            opacity: isMobile ? 1 : 0
           }} 
         />
       </div>
