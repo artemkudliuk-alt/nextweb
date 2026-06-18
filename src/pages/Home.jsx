@@ -496,6 +496,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     });
 
     if (activeIdx !== activeTestimonialIdx) {
+      isScrollingCarouselRef.current = true;
       setActiveTestimonialIdx(activeIdx);
       setIsReviewExpanded(false);
     }
@@ -528,6 +529,45 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const sequenceMenuRef = useRef(null);
   const techTabsRef = useRef(null);
   const carouselContainerRef = useRef(null);
+  const isScrollingCarouselRef = useRef(false);
+
+  // Synchronize carousel scroll position when activeTestimonialIdx is changed by bottom tabs on mobile
+  useEffect(() => {
+    if (!isMobile || !carouselContainerRef.current) return;
+    
+    if (isScrollingCarouselRef.current) {
+      isScrollingCarouselRef.current = false;
+      return;
+    }
+    
+    const container = carouselContainerRef.current;
+    const cards = container.querySelectorAll('.testimonial-card');
+    const targetCard = cards[activeTestimonialIdx];
+    if (targetCard) {
+      const containerWidth = container.offsetWidth;
+      const cardWidth = targetCard.offsetWidth;
+      const cardLeft = targetCard.offsetLeft;
+      
+      const targetScrollLeft = cardLeft - (containerWidth - cardWidth) / 2;
+      container.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  }, [activeTestimonialIdx, isMobile]);
+
+  // Scroll active tab into view on mobile
+  useEffect(() => {
+    if (!isMobile) return;
+    const activeTabEl = document.querySelector('.brand-tab-btn.active');
+    if (activeTabEl) {
+      activeTabEl.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  }, [activeTestimonialIdx, isMobile]);
   
   const [activeCategory, setActiveCategory] = useState('tech');
   const [activeTechTab, setActiveTechTab] = useState('web');
@@ -694,19 +734,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     activeStageRef.current = activeStage;
   }, [activeStage]);
 
-  // Auto-rotation of sequence stages on mobile screens (<= 1024px)
-  useEffect(() => {
-    if (window.innerWidth > 1024) return;
 
-    const interval = setInterval(() => {
-      if (!isClickingRef.current) {
-        const nextStage = (activeStageRef.current + 1) % sequenceStages.length;
-        changeStage(nextStage);
-      }
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Flatten the Why Us screen divider line on mobile screens
   useEffect(() => {
@@ -1065,6 +1093,79 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         }
       }
 
+      // Mobile-specific Screen 3 -> Screen 4 Slide-over transition (#dedicated -> #whyus)
+      if (isMobile) {
+        const dedicatedEl = dedicatedRef.current;
+        const whyUsEl = whyUsRef.current;
+        if (dedicatedEl && whyUsEl) {
+          const approachEl = document.getElementById('approach');
+          const approachHeight = approachEl ? approachEl.offsetHeight : vh;
+          const dedicatedHeight = dedicatedEl.offsetHeight || vh;
+          const scrollStart3 = approachHeight + dedicatedHeight;
+          const scrollEnd3 = scrollStart3 + vh;
+          
+          if (currentScrollY >= scrollStart3 && currentScrollY < scrollEnd3) {
+            const progress = Math.max(0, Math.min((currentScrollY - scrollStart3) / vh, 1));
+            
+            const translateY = progress * vh;
+            dedicatedEl.style.transform = `translateY(${translateY}px)`;
+            dedicatedEl.style.visibility = 'visible';
+            
+            const blurVal = progress * 12;
+            dedicatedEl.style.filter = `blur(${blurVal}px)`;
+            
+            // Dynamic clip-path during transition (slanted edge that flattens out, 120px to 0px on left side)
+            const slantHeight = (1 - progress) * 120;
+            whyUsEl.style.clipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
+            
+            const divider3 = whyUsEl.querySelector('.tech-glow-divider-3');
+            if (divider3) {
+              divider3.style.opacity = Math.max(0.6, 1 - progress * 0.4).toString();
+              
+              const lines = divider3.querySelectorAll('line');
+              lines.forEach(line => {
+                line.setAttribute('y1', slantHeight.toString());
+              });
+            }
+          } else if (currentScrollY >= scrollEnd3) {
+            dedicatedEl.style.transform = 'none';
+            dedicatedEl.style.filter = 'none';
+            dedicatedEl.style.visibility = 'hidden';
+            
+            whyUsEl.style.clipPath = 'none';
+            
+            const divider3 = whyUsEl.querySelector('.tech-glow-divider-3');
+            if (divider3) {
+              divider3.style.opacity = '0';
+              const lines = divider3.querySelectorAll('line');
+              lines.forEach(line => {
+                line.setAttribute('y1', '0');
+              });
+            }
+          } else {
+            dedicatedEl.style.transform = 'none';
+            dedicatedEl.style.filter = 'none';
+            dedicatedEl.style.visibility = 'visible';
+            
+            whyUsEl.style.clipPath = 'polygon(0 120px, 100% 0, 100% 100%, 0 100%)';
+            
+            const divider3 = whyUsEl.querySelector('.tech-glow-divider-3');
+            if (divider3) {
+              divider3.style.opacity = '1';
+              const lines = divider3.querySelectorAll('line');
+              lines.forEach(line => {
+                line.setAttribute('y1', '120');
+              });
+            }
+          }
+        }
+      } else {
+        const whyUsEl = whyUsRef.current;
+        if (whyUsEl) {
+          whyUsEl.style.clipPath = '';
+        }
+      }
+
       // Category menu slides in horizontally from the left
       if (menuRef.current) {
         if (window.innerWidth > 1024) {
@@ -1334,7 +1435,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           }
         } else {
           if (whyUsEl) {
-            whyUsEl.style.clipPath = 'none';
             whyUsEl.style.visibility = '';
             whyUsEl.style.pointerEvents = '';
           }
@@ -1372,34 +1472,58 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               workEl.style.pointerEvents = 'auto';
             }
 
-            // --- Screen 6 (Testimonials) Fixed Positioning Logic ---
+            // --- Screen 6 (Testimonials) Positioning Logic ---
             if (screen6El) {
               if (currentScrollY < vh * 14.2) {
                 // Active range for Screen 6
-                screen6El.style.setProperty('position', 'fixed', 'important');
-                screen6El.style.setProperty('top', '0', 'important');
-                screen6El.style.setProperty('left', '0', 'important');
-                screen6El.style.setProperty('width', '100%', 'important');
-                screen6El.style.setProperty('height', '100vh', 'important');
                 screen6El.style.visibility = 'visible';
                 screen6El.style.pointerEvents = 'auto';
                 screen6El.style.display = 'flex';
 
                 if (currentScrollY < vh * 10.2) {
-                  // Sliding in
+                  // Entry transition: scrolls up naturally over fixed #work
+                  screen6El.style.removeProperty('position');
+                  screen6El.style.removeProperty('top');
+                  screen6El.style.removeProperty('left');
+                  screen6El.style.removeProperty('width');
+                  screen6El.style.removeProperty('height');
+                  
                   const progress5 = Math.max(0, Math.min((currentScrollY - vh * 9.2) / vh, 1));
-                  const translateXScreen6 = (-1 + progress5) * 100;
-                  screen6El.style.transform = `translateX(${translateXScreen6}vw)`;
-                  if (divider2) {
-                    divider2.style.transform = `translateX(${translateXScreen6 + 100}vw)`;
-                    divider2.style.opacity = Math.max(0, 1 - progress5).toString();
+                  const slantHeight = (1 - progress5) * 120;
+                  screen6El.style.clipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
+                  screen6El.style.transform = 'none';
+                  
+                  const divider6 = screen6El.querySelector('.tech-glow-divider-6');
+                  if (divider6) {
+                    divider6.style.opacity = Math.max(0.6, 1 - progress5 * 0.4).toString();
+                    const lines = divider6.querySelectorAll('line');
+                    lines.forEach(line => {
+                      line.setAttribute('y1', slantHeight.toString());
+                    });
+                    const sheenLine = divider6.querySelector('.tech-glow-line-sheen');
+                    if (sheenLine) {
+                      const totalLength = 1445;
+                      sheenLine.setAttribute('stroke-dashoffset', (totalLength - progress5 * totalLength).toString());
+                    }
                   }
                 } else {
-                  // Resting visible
+                  // Locked active range: fixed full screen
+                  screen6El.style.setProperty('position', 'fixed', 'important');
+                  screen6El.style.setProperty('top', '0', 'important');
+                  screen6El.style.setProperty('left', '0', 'important');
+                  screen6El.style.setProperty('width', '100%', 'important');
+                  screen6El.style.setProperty('height', '100vh', 'important');
+                  
+                  screen6El.style.clipPath = 'none';
                   screen6El.style.transform = 'none';
-                  if (divider2) {
-                    divider2.style.transform = 'none';
-                    divider2.style.opacity = '0';
+                  
+                  const divider6 = screen6El.querySelector('.tech-glow-divider-6');
+                  if (divider6) {
+                    divider6.style.opacity = '0';
+                    const lines = divider6.querySelectorAll('line');
+                    lines.forEach(line => {
+                      line.setAttribute('y1', '0');
+                    });
                   }
                 }
               } else {
@@ -1413,6 +1537,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 screen6El.style.visibility = 'hidden';
                 screen6El.style.pointerEvents = 'none';
                 screen6El.style.display = 'none';
+                screen6El.style.clipPath = '';
               }
             }
 
@@ -1514,7 +1639,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             const workTopDoc = window.scrollY + rect.top;
             const easedRectTop = workTopDoc - currentScrollY;
             let workProgress = 1 - (easedRectTop / vh);
-            if (window.scrollY >= vh * 9.2 || currentScrollY >= vh * 8.79) {
+            const isMobile = window.innerWidth <= 1024;
+            if (!isMobile && (window.scrollY >= vh * 9.2 || currentScrollY >= vh * 8.79)) {
               workProgress = 1;
             } else {
               workProgress = Math.max(0, Math.min(1, workProgress));
@@ -1530,9 +1656,16 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             const glowDivider = workEl.querySelector('.tech-glow-divider');
             if (glowDivider) {
               glowDivider.style.opacity = Math.max(0, 1 - workProgress).toString();
-              const line = glowDivider.querySelector('#tech-glow-line');
-              if (line && workProgress < 0.99) {
-                line.setAttribute('y2', ((1 - workProgress) * 120).toString());
+              const lines = glowDivider.querySelectorAll('line');
+              lines.forEach(line => {
+                if (workProgress < 0.99) {
+                  line.setAttribute('y2', ((1 - workProgress) * 120).toString());
+                }
+              });
+              const sheenLine = glowDivider.querySelector('.tech-glow-line-sheen');
+              if (sheenLine && workProgress < 0.99) {
+                const totalLength = 1445; 
+                sheenLine.setAttribute('stroke-dashoffset', (totalLength - workProgress * totalLength).toString());
               }
             }
 
@@ -1570,10 +1703,29 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
           }
         } else {
-          // Mobile reset
+          // Mobile reset & slant flattening animation
           workEl.style.transform = '';
           workEl.style.visibility = '';
           workEl.style.pointerEvents = '';
+
+          const rect = workEl.getBoundingClientRect();
+          const progress = Math.max(0, Math.min(1, 1 - (rect.top / vh)));
+          const slantHeight = (1 - progress) * 120;
+          workEl.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
+
+          const glowDivider = workEl.querySelector('.tech-glow-divider');
+          if (glowDivider) {
+            glowDivider.style.opacity = Math.max(0, 1 - progress).toString();
+            const lines = glowDivider.querySelectorAll('line');
+            lines.forEach(line => {
+              line.setAttribute('y2', slantHeight.toString());
+            });
+            const sheenLine = glowDivider.querySelector('.tech-glow-line-sheen');
+            if (sheenLine && progress < 0.99) {
+              const totalLength = 1445; 
+              sheenLine.setAttribute('stroke-dashoffset', (totalLength - progress * totalLength).toString());
+            }
+          }
           
           if (screen6El) {
             screen6El.style.removeProperty('position');
@@ -1585,6 +1737,33 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             screen6El.style.visibility = '';
             screen6El.style.pointerEvents = '';
             screen6El.style.display = '';
+
+            // Mobile dynamic clip-path transition (slanted edge that flattens out)
+            const rect6 = screen6El.getBoundingClientRect();
+            const progress6 = Math.max(0, Math.min(1, 1 - (rect6.top / vh)));
+            if (progress6 >= 0.99) {
+              screen6El.style.clipPath = 'none';
+              const divider6 = screen6El.querySelector('.tech-glow-divider-6');
+              if (divider6) {
+                divider6.style.opacity = '0';
+                const lines = divider6.querySelectorAll('line');
+                lines.forEach(line => {
+                  line.setAttribute('y1', '0');
+                });
+              }
+            } else {
+              const slantHeight6 = (1 - progress6) * 120;
+              screen6El.style.clipPath = `polygon(0 ${slantHeight6}px, 100% 0, 100% 100%, 0 100%)`;
+
+              const divider6 = screen6El.querySelector('.tech-glow-divider-6');
+              if (divider6) {
+                divider6.style.opacity = Math.max(0.6, 1 - progress6 * 0.4).toString();
+                const lines = divider6.querySelectorAll('line');
+                lines.forEach(line => {
+                  line.setAttribute('y1', slantHeight6.toString());
+                });
+              }
+            }
           }
 
           const screen7El = document.getElementById('screen7-container');
@@ -2274,22 +2453,30 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       <section id="work">
         {/* Glow Line Sweep Divider */}
         <div className="tech-glow-divider">
-          <svg viewBox="0 0 1440 150" width="100%" height="150" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+          <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
             <defs>
               <linearGradient id="tech-glow-grad-work" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#00D9FF" />
                 <stop offset="50%" stopColor="#A020F0" />
                 <stop offset="100%" stopColor="#FF1493" />
               </linearGradient>
-              <filter id="tech-glow-blur-work" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="12" result="blur" />
+              <filter id="tech-glow-sheen-blur-work" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="tech-glow-sheen-blur-mobile-work" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
-            <line id="tech-glow-line" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-work)" strokeWidth="8" filter="url(#tech-glow-blur-work)" />
+            <line className="tech-glow-line-main" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-work)" strokeWidth="4" />
+            <line className="tech-glow-line-sheen" x1="0" y1="0" x2="1440" y2="120" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1440" strokeDashoffset="1440" filter="url(#tech-glow-sheen-blur-work)" />
           </svg>
         </div>
 
@@ -2353,36 +2540,79 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
         {/* Mobile responsive fallback layout */}
         <div className="tech-mobile-layout">
-          <h2 className="tech-mobile-heading">Стек технологий</h2>
-          <div className="tech-mobile-categories">
-            {techCategories.map((category) => (
-              <div key={category.id} className="tech-mobile-category">
-                <h3 className="tech-mobile-category-title">{category.title}</h3>
-                <div className="tech-mobile-grid">
-                  {category.items.map((tech) => (
-                    <div 
-                      key={tech.name} 
-                      className="tech-mobile-card"
-                      style={{ '--tech-color': tech.color }}
-                    >
-                      <div className="tech-card-icon-wrap">
-                        <TechIcon name={tech.name} />
-                      </div>
-                      <div className="tech-card-info">
-                        <span className="tech-card-name">[{tech.label.toUpperCase()}]</span>
-                        <span className="tech-card-devs">{getDevelopersText(tech.developers)}</span>
-                      </div>
-                    </div>
-                  ))}
+          <h2 className="tech-mobile-heading">
+            <TextReveal text="Стек технологий" glitch={true} />
+          </h2>
+          
+          {/* Horizontal category tabs */}
+          <div className="tech-mobile-tabs-container">
+            <div className="tech-mobile-tabs">
+              {techCategories.map((category) => (
+                <button
+                  key={category.id}
+                  className={`tech-mobile-tab-btn ${activeTechTab === category.id ? 'active' : ''}`}
+                  onClick={() => setActiveTechTab(category.id)}
+                >
+                  {category.title.replace(' Platform', '').replace(' & Creative', '').replace(' & DevOps', '')}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Active category tech cards */}
+          <div className="tech-mobile-grid-container">
+            <div className="tech-mobile-grid">
+              {techCategories.find(c => c.id === activeTechTab)?.items.map((tech) => (
+                <div 
+                  key={tech.name} 
+                  className="tech-mobile-card"
+                  style={{ '--tech-color': tech.color }}
+                >
+                  <div className="tech-card-icon-wrap">
+                    <TechIcon name={tech.name} />
+                  </div>
+                  <div className="tech-card-info">
+                    <span className="tech-card-name">[{tech.label.toUpperCase()}]</span>
+                    <span className="tech-card-devs">{getDevelopersText(tech.developers)}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* ----------------- SCREEN 6: TESTIMONIALS SLIDER ----------------- */}
       <section id="screen6" className="testimonials-section">
+        {/* Divider 6: Dynamic Glowing Line at the top of #screen6 */}
+        <div className="tech-glow-divider tech-glow-divider-6">
+          <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+            <defs>
+              <linearGradient id="tech-glow-grad-6" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#00D9FF" />
+                <stop offset="50%" stopColor="#A020F0" />
+                <stop offset="100%" stopColor="#FF1493" />
+              </linearGradient>
+              <filter id="tech-glow-sheen-blur-6" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="tech-glow-sheen-blur-mobile-6" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <line className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-6)" strokeWidth="4" />
+            <line className="tech-glow-line-sheen" x1="0" y1="120" x2="1440" y2="0" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1445" strokeDashoffset="1445" filter="url(#tech-glow-sheen-blur-6)" />
+          </svg>
+        </div>
+
         {/* Shifting neon background glow */}
         <div 
           className="testimonials-glow" 
@@ -2522,7 +2752,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             </div>
           </div>
 
-          {/* Brand Tabs Navigation */}
+          {/* Brand Tabs Navigation (Desktop only) */}
           <div className="testimonials-brand-tabs">
             {testimonialsData.map((item, idx) => {
               const isActive = idx === activeTestimonialIdx;
@@ -2543,6 +2773,55 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 </button>
               );
             })}
+          </div>
+
+          {/* Mobile Swiping Arrows & Dots Navigation (Mobile only) */}
+          <div className="testimonials-mobile-arrows">
+            <button 
+              className="mobile-arrow-btn prev"
+              onClick={() => {
+                setIsReviewExpanded(false);
+                setActiveTestimonialIdx((prev) => (prev === 0 ? testimonialsData.length - 1 : prev - 1));
+              }}
+              style={{
+                '--brand-color': testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0'
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <div className="mobile-dots-indicator">
+              {testimonialsData.map((item, idx) => (
+                <span 
+                  key={item.id} 
+                  className={`mobile-dot ${idx === activeTestimonialIdx ? 'active' : ''}`}
+                  style={{
+                    '--brand-color': item.glowColor
+                  }}
+                  onClick={() => {
+                    setIsReviewExpanded(false);
+                    setActiveTestimonialIdx(idx);
+                  }}
+                />
+              ))}
+            </div>
+
+            <button 
+              className="mobile-arrow-btn next"
+              onClick={() => {
+                setIsReviewExpanded(false);
+                setActiveTestimonialIdx((prev) => (prev === testimonialsData.length - 1 ? 0 : prev + 1));
+              }}
+              style={{
+                '--brand-color': testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0'
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
       </section>
 
