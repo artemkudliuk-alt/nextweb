@@ -142,7 +142,7 @@ export default function Footer() {
               дизайн на основе данных<br />
               и маркетинг в цифровой среде
             </h3>
-            <span className="footer-brand-copyright">
+            <span className="footer-brand-copyright footer-desktop-copyright">
               © NEXTWEB, 2009-2026
               <span className="footer-legal-inline">
                 <Link to="/terms" className="footer-legal-link-inline">Пользовательское соглашение</Link>
@@ -251,6 +251,18 @@ export default function Footer() {
         {/* Brand Logo Watermark */}
         <div className="footer-logo-wrap">
           <img src="/Nextweb_logo.svg" alt="NEXTWEB" className="footer-brand-logo" />
+        </div>
+
+        {/* Mobile Copyright (under logo) */}
+        <div className="footer-mobile-copyright">
+          <span className="footer-brand-copyright">
+            © NEXTWEB, 2009-2026
+            <span className="footer-legal-inline">
+              <Link to="/terms" className="footer-legal-link-inline">Пользовательское соглашение</Link>
+              <span className="footer-legal-divider">•</span>
+              <Link to="/privacy" className="footer-legal-link-inline">Политика конфиденциальности</Link>
+            </span>
+          </span>
         </div>
 
       </div>
