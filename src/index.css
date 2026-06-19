@@ -5512,6 +5512,7 @@ ul, ol {
     -webkit-mask-image: none !important;
     mask-image: none !important;
     touch-action: pan-x !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .testimonials-carousel-container::-webkit-scrollbar {

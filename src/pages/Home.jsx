@@ -531,39 +531,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const carouselContainerRef = useRef(null);
   const isScrollingCarouselRef = useRef(false);
 
-  const touchStartRef = useRef(0);
-  const touchEndRef = useRef(0);
 
-  const handleTouchStart = (e) => {
-    if (!isMobile) return;
-    touchStartRef.current = e.targetTouches[0].clientX;
-    touchEndRef.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isMobile) return;
-    touchEndRef.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (!isMobile) return;
-    const diff = touchStartRef.current - touchEndRef.current;
-    const threshold = 40; // minimum swipe distance in pixels
-    
-    if (diff > threshold) {
-      // Swipe left -> Next testimonial
-      if (activeTestimonialIdx < testimonialsData.length - 1) {
-        setActiveTestimonialIdx(prev => prev + 1);
-        setIsReviewExpanded(false);
-      }
-    } else if (diff < -threshold) {
-      // Swipe right -> Previous testimonial
-      if (activeTestimonialIdx > 0) {
-        setActiveTestimonialIdx(prev => prev - 1);
-        setIsReviewExpanded(false);
-      }
-    }
-  };
 
   // Synchronize carousel scroll position when activeTestimonialIdx is changed by bottom tabs on mobile
   useEffect(() => {
@@ -2789,9 +2757,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             ref={carouselContainerRef} 
             className="testimonials-carousel-container" 
             onScroll={handleCarouselScroll}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
           >
             <div className="testimonials-track">
               {testimonialsData.map((item, idx) => {
