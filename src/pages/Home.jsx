@@ -892,6 +892,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
+    if (window.innerWidth <= 1024) return;
     let loadedCount = 0;
     const totalFrames = 300;
     const loadedImages = [];
