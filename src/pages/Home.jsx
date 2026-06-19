@@ -1952,6 +1952,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
 
   useEffect(() => {
+    if (window.innerWidth <= 1024) return;
     const initUnicorn = () => {
       if (window.UnicornStudio && window.UnicornStudio.init) {
         try {
@@ -2001,7 +2002,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
       {/* Global SVG gradients and filters moved to local divider SVGs to resolve rendering and clipping issues */}
 
-      {/* WebGL Canvas Background — global fixed layer */}
+      {/* WebGL Canvas Background or Mobile Video Background — global fixed layer */}
       <div 
         ref={heroSceneRef} 
         style={{ 
@@ -2015,25 +2016,50 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           pointerEvents: 'none'
         }}
       >
-        <div 
-          id="unicorn-BX9TXhOJpVNQUH431cnU" 
-          className="scene" 
-          data-us-project="BX9TXhOJpVNQUH431cnU" 
-          data-us-scale="1" 
-          data-us-dpi="1.5" 
-          data-us-fps="60" 
-          data-us-lazyload="false" 
-          style={{ 
-            opacity: 0, 
-            transition: 'opacity 1.2s ease', 
-            position: 'absolute', 
-            top: 0, 
-            left: 0, 
-            width: '100%', 
-            height: '100%', 
-            zIndex: 0 
-          }}
-        />
+        {isMobile ? (
+          <video
+            ref={(el) => {
+              if (el) {
+                el.playbackRate = 2.0;
+              }
+            }}
+            src="/Mob_hero_banner.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              zIndex: 0,
+              pointerEvents: 'none'
+            }}
+          />
+        ) : (
+          <div 
+            id="unicorn-BX9TXhOJpVNQUH431cnU" 
+            className="scene" 
+            data-us-project="BX9TXhOJpVNQUH431cnU" 
+            data-us-scale="1" 
+            data-us-dpi="1.5" 
+            data-us-fps="60" 
+            data-us-lazyload="false" 
+            style={{ 
+              opacity: 0, 
+              transition: 'opacity 1.2s ease', 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              zIndex: 0 
+            }}
+          />
+        )}
       </div>
       
       {/* Overlay gradient to colorize WebGL grayscale particles into magenta/cyan */}
