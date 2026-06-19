@@ -1931,15 +1931,16 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     updateParallax();
     
+    const heroSceneVal = heroSceneRef.current;
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (reqId) cancelAnimationFrame(reqId);
       if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
 
-      if (heroSceneRef.current) {
-        heroSceneRef.current.style.transform = '';
-        heroSceneRef.current.style.zIndex = '';
-        heroSceneRef.current.style.display = '';
+      if (heroSceneVal) {
+        heroSceneVal.style.transform = '';
+        heroSceneVal.style.zIndex = '';
+        heroSceneVal.style.display = '';
       }
       const overlayEl = document.querySelector('.scene-overlay');
       if (overlayEl) {
