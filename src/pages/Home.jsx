@@ -2465,7 +2465,32 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           <span className="cyber-section-label sequence-section-label">// 03 . НАШИ УСЛУГИ</span>
           <div className="sequence-island" ref={sequenceIslandRef}>
             <div className="sequence-canvas-wrap">
-              <canvas ref={canvasRef} className="sequence-canvas" />
+              {!isMobile ? (
+                <canvas ref={canvasRef} className="sequence-canvas" />
+              ) : (
+                /* Mobile-only service illustrations with smooth cross-fade */
+                <>
+                  {[1, 2, 3, 4, 5].map((num, idx) => (
+                    <img
+                      key={num}
+                      src={`/service_${num}.jpg`}
+                      alt=""
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        opacity: activeStage === idx ? 1 : 0,
+                        transition: 'opacity 0.4s ease-in-out',
+                        pointerEvents: 'none',
+                        zIndex: activeStage === idx ? 2 : 1
+                      }}
+                    />
+                  ))}
+                </>
+              )}
               <div className="sequence-canvas-mask" />
             </div>
             
@@ -2527,14 +2552,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   <span className="sequence-mobile-text">{stage.title}</span>
                 </div>
                 <div className="sequence-mobile-details-static">
-                  {/* Mobile-only service illustration */}
-                  <div className="sequence-mobile-image-wrap" style={{ margin: '15px 0 20px', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    <img 
-                      src={`/service_${idx + 1}.jpg`} 
-                      alt={stage.title} 
-                      style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} 
-                    />
-                  </div>
                   <div className="sequence-mobile-tags">
                     {stage.tags.map((tag, tIdx) => (
                       <span key={tIdx} className="sequence-mobile-tag">{tag}</span>
