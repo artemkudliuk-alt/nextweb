@@ -3790,8 +3790,6 @@ ul, ol {
     align-items: center !important;
     justify-content: center !important;
     background-color: #ffffff !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
     z-index: 100 !important;
     margin-bottom: 1rem !important;
     border-bottom: none !important;

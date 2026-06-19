@@ -531,6 +531,40 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const carouselContainerRef = useRef(null);
   const isScrollingCarouselRef = useRef(false);
 
+  const touchStartRef = useRef(0);
+  const touchEndRef = useRef(0);
+
+  const handleTouchStart = (e) => {
+    if (!isMobile) return;
+    touchStartRef.current = e.targetTouches[0].clientX;
+    touchEndRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isMobile) return;
+    touchEndRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isMobile) return;
+    const diff = touchStartRef.current - touchEndRef.current;
+    const threshold = 40; // minimum swipe distance in pixels
+    
+    if (diff > threshold) {
+      // Swipe left -> Next testimonial
+      if (activeTestimonialIdx < testimonialsData.length - 1) {
+        setActiveTestimonialIdx(prev => prev + 1);
+        setIsReviewExpanded(false);
+      }
+    } else if (diff < -threshold) {
+      // Swipe right -> Previous testimonial
+      if (activeTestimonialIdx > 0) {
+        setActiveTestimonialIdx(prev => prev - 1);
+        setIsReviewExpanded(false);
+      }
+    }
+  };
+
   // Synchronize carousel scroll position when activeTestimonialIdx is changed by bottom tabs on mobile
   useEffect(() => {
     if (!isMobile || !carouselContainerRef.current) return;
@@ -1039,9 +1073,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             approachEl.style.transform = `translateY(${translateY}px)`;
             approachEl.style.visibility = 'visible';
             
-            const blurVal = progress * 12;
-            approachEl.style.filter = `blur(${blurVal}px)`;
-            
             // Dynamic clip-path during transition (slanted edge that flattens out)
             const slantHeight = (1 - progress) * 120;
             dedicatedEl.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
@@ -1063,7 +1094,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
           } else if (currentScrollY >= scrollEnd) {
             approachEl.style.transform = 'none';
-            approachEl.style.filter = 'none';
+            // approachEl.style.filter = 'none';
             approachEl.style.visibility = 'hidden';
             
             dedicatedEl.style.clipPath = 'none';
@@ -1078,7 +1109,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
           } else {
             approachEl.style.transform = 'none';
-            approachEl.style.filter = 'none';
+            // approachEl.style.filter = 'none';
             approachEl.style.visibility = 'visible';
             
             dedicatedEl.style.clipPath = 'polygon(0 0, 100% 120px, 100% 100%, 0 100%)';
@@ -1120,9 +1151,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             dedicatedEl.style.transform = `translateY(${translateY}px)`;
             dedicatedEl.style.visibility = 'visible';
             
-            const blurVal = progress * 12;
-            dedicatedEl.style.filter = `blur(${blurVal}px)`;
-            
             // Dynamic clip-path during transition (slanted edge that flattens out, 120px to 0px on left side)
             const slantHeight = (1 - progress) * 120;
             whyUsEl.style.clipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
@@ -1138,7 +1166,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
           } else if (currentScrollY >= scrollEnd3) {
             dedicatedEl.style.transform = 'none';
-            dedicatedEl.style.filter = 'none';
+            // dedicatedEl.style.filter = 'none';
             dedicatedEl.style.visibility = 'hidden';
             
             whyUsEl.style.clipPath = 'none';
@@ -1153,7 +1181,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
           } else {
             dedicatedEl.style.transform = 'none';
-            dedicatedEl.style.filter = 'none';
+            // dedicatedEl.style.filter = 'none';
             dedicatedEl.style.visibility = 'visible';
             
             whyUsEl.style.clipPath = 'polygon(0 120px, 100% 0, 100% 100%, 0 100%)';
@@ -2752,12 +2780,19 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           <div className="testimonials-header">
             <span className="cyber-section-label">// 05 . ОТЗЫВЫ КЛИЕНТОВ</span>
             <h2 className="testimonials-title">
-              <TextReveal text="Истории успеха наших партнеров" glitch={true} />
+              <TextReveal text={isMobile ? "Истории успеха\nнаших партнеров" : "Истории успеха наших партнеров"} glitch={true} />
             </h2>
           </div>
 
           {/* Testimonials Carousel Track with Infinite Circular Layout */}
-          <div ref={carouselContainerRef} className="testimonials-carousel-container" onScroll={handleCarouselScroll}>
+          <div 
+            ref={carouselContainerRef} 
+            className="testimonials-carousel-container" 
+            onScroll={handleCarouselScroll}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className="testimonials-track">
               {testimonialsData.map((item, idx) => {
                 const isActive = idx === activeTestimonialIdx;
