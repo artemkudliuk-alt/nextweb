@@ -1536,6 +1536,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             // --- Screen 7 (Contact Form) Position & Transition Logic ---
             const screen7El = document.getElementById('screen7-container');
             if (screen7El) {
+              const contactContainer = screen7El.querySelector('.contact-container');
               if (currentScrollY >= vh * 12.2 && currentScrollY < vh * 15.2) {
                 screen7El.style.setProperty('position', 'fixed', 'important');
                 screen7El.style.setProperty('top', '0', 'important');
@@ -1569,6 +1570,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   if (bottomDivider) {
                     bottomDivider.style.opacity = '0';
                   }
+
+                  if (contactContainer) {
+                    contactContainer.style.transform = '';
+                    contactContainer.style.opacity = '';
+                  }
                 } else if (currentScrollY >= vh * 14.2) {
                   // Sliding up and out (Screen 8 / Footer entry)
                   const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
@@ -1584,6 +1590,15 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                     const opacityVal = progressF <= 0.5 ? 1 : Math.max(0, 2 * (1 - progressF));
                     bottomDivider.style.opacity = opacityVal.toString();
                   }
+
+                  // Parallax down + fade + scale
+                  if (contactContainer) {
+                    const formTranslateY = progressF * 120;
+                    const formScale = 1 - progressF * 0.08;
+                    const formOpacity = 1 - progressF;
+                    contactContainer.style.transform = `translateY(${formTranslateY}px) scale(${formScale})`;
+                    contactContainer.style.opacity = formOpacity.toString();
+                  }
                 } else {
                   // Resting visible
                   screen7El.style.transform = 'none';
@@ -1595,6 +1610,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   const bottomDivider = screen7El.querySelector('.tech-glow-divider-7-bottom');
                   if (bottomDivider) {
                     bottomDivider.style.opacity = '0';
+                  }
+
+                  if (contactContainer) {
+                    contactContainer.style.transform = '';
+                    contactContainer.style.opacity = '';
                   }
                 }
               } else {
@@ -1609,6 +1629,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 screen7El.style.pointerEvents = 'none';
                 screen7El.style.display = 'none';
                 screen7El.style.clipPath = '';
+
+                if (contactContainer) {
+                  contactContainer.style.transform = '';
+                  contactContainer.style.opacity = '';
+                }
               }
             }
 
@@ -3031,7 +3056,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
       <Footer />
 
-      <div className="testimonials-spacer" style={{ height: isMobile ? '0px' : '800vh' }}></div>
+      <div className="testimonials-spacer" style={{ height: isMobile ? '0px' : '950vh' }}></div>
       </div>
 
       {/* Keyframe drift animation inject */}
