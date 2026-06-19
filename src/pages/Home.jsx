@@ -2527,6 +2527,14 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   <span className="sequence-mobile-text">{stage.title}</span>
                 </div>
                 <div className="sequence-mobile-details-static">
+                  {/* Mobile-only service illustration */}
+                  <div className="sequence-mobile-image-wrap" style={{ margin: '15px 0 20px', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <img 
+                      src={`/service_${idx + 1}.jpg`} 
+                      alt={stage.title} 
+                      style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} 
+                    />
+                  </div>
                   <div className="sequence-mobile-tags">
                     {stage.tags.map((tag, tIdx) => (
                       <span key={tIdx} className="sequence-mobile-tag">{tag}</span>
