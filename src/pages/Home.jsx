@@ -2489,6 +2489,19 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       }}
                     />
                   ))}
+                  {/* Radial gradient mask to hide image edge lines on mobile */}
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'radial-gradient(circle, rgba(255,255,255,0) 45%, rgba(255,255,255,1) 90%)',
+                      pointerEvents: 'none',
+                      zIndex: 10
+                    }}
+                  />
                 </>
               )}
               <div className="sequence-canvas-mask" />
