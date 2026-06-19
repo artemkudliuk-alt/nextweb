@@ -950,9 +950,17 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       
       // Slow WebGL scene upward parallax (12% of scroll, clamped to 12% of viewport height max)
       if (heroSceneRef.current) {
-        const bgY = -(progress * vh * 0.12);
-        heroSceneRef.current.style.transform = `translateY(${bgY}px)`;
-        heroSceneRef.current.style.zIndex = '0';
+        const overlayEl = document.querySelector('.scene-overlay');
+        if (currentScrollY < vh * 1.5) {
+          const bgY = -(progress * vh * 0.12);
+          heroSceneRef.current.style.transform = `translateY(${bgY}px)`;
+          heroSceneRef.current.style.zIndex = '0';
+          heroSceneRef.current.style.display = 'block';
+          if (overlayEl) overlayEl.style.display = 'block';
+        } else {
+          heroSceneRef.current.style.display = 'none';
+          if (overlayEl) overlayEl.style.display = 'none';
+        }
       }
 
       // Center content: moves up gently + scales down slightly (10% shrink) and fades out
@@ -1931,6 +1939,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       if (heroSceneRef.current) {
         heroSceneRef.current.style.transform = '';
         heroSceneRef.current.style.zIndex = '';
+        heroSceneRef.current.style.display = '';
+      }
+      const overlayEl = document.querySelector('.scene-overlay');
+      if (overlayEl) {
+        overlayEl.style.display = '';
       }
     };
   }, []);
