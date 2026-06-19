@@ -5511,6 +5511,7 @@ ul, ol {
     display: block !important;
     -webkit-mask-image: none !important;
     mask-image: none !important;
+    touch-action: pan-x !important;
   }
 
   .testimonials-carousel-container::-webkit-scrollbar {
@@ -5537,6 +5538,7 @@ ul, ol {
     min-height: auto !important;
     scroll-snap-align: center;
     flex-shrink: 0 !important;
+    touch-action: pan-x !important;
   }
 
   .testimonial-card.inactive {
