@@ -415,6 +415,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const [isArrowsHovered, setIsArrowsHovered] = useState(false);
   const [activeTestimonialIdx, setActiveTestimonialIdx] = useState(0);
   const [isReviewExpanded, setIsReviewExpanded] = useState(false);
+  const [isTestimonialsInteracted, setIsTestimonialsInteracted] = useState(false);
+  const [isAllReviewsModalOpen, setIsAllReviewsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -424,6 +426,23 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const [formStatus, setFormStatus] = useState('idle');
   const [currentTime, setCurrentTime] = useState('');
   const formCardRef = useRef(null);
+  const prevActiveTestimonialIdxRef = useRef(activeTestimonialIdx);
+
+  useEffect(() => {
+    prevActiveTestimonialIdxRef.current = activeTestimonialIdx;
+  }, [activeTestimonialIdx]);
+
+  // Prevent body scrolling when reviews modal is open
+  useEffect(() => {
+    if (isAllReviewsModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isAllReviewsModalOpen]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -472,6 +491,17 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Autoplay testimonials every 8 seconds
+  useEffect(() => {
+    if (isReviewExpanded || isTestimonialsInteracted || isAllReviewsModalOpen) return;
+
+    const timer = setInterval(() => {
+      setActiveTestimonialIdx((prev) => (prev + 1) % testimonialsData.length);
+    }, 8000);
+
+    return () => clearInterval(timer);
+  }, [activeTestimonialIdx, isReviewExpanded, isTestimonialsInteracted, isAllReviewsModalOpen]);
 
   const handleCarouselScroll = (e) => {
     if (!isMobile) return;
@@ -2757,13 +2787,18 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             ref={carouselContainerRef} 
             className="testimonials-carousel-container" 
             onScroll={handleCarouselScroll}
+            onMouseEnter={() => setIsTestimonialsInteracted(true)}
+            onMouseLeave={() => setIsTestimonialsInteracted(false)}
+            onTouchStart={() => setIsTestimonialsInteracted(true)}
+            onTouchEnd={() => setIsTestimonialsInteracted(false)}
           >
             <div className="testimonials-track">
               {testimonialsData.map((item, idx) => {
                 const isActive = idx === activeTestimonialIdx;
                 const offset = getCardOffset(idx, activeTestimonialIdx, testimonialsData.length);
+                const prevOffset = getCardOffset(idx, prevActiveTestimonialIdxRef.current, testimonialsData.length);
                 const isSide = Math.abs(offset) === 1;
-                const isHidden = Math.abs(offset) > 1;
+                const isWrapping = Math.abs(offset - prevOffset) > 1;
                 
                 return (
                   <div 
@@ -2786,7 +2821,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       opacity: isActive ? 1 : (isSide ? 0.45 : 0),
                       filter: isActive ? 'blur(0)' : (isSide ? 'blur(6px) grayscale(0.3)' : 'blur(12px)'),
                       pointerEvents: isActive ? 'auto' : (isSide ? 'auto' : 'none'),
-                      display: isHidden ? 'none' : 'grid',
+                      transition: isWrapping ? 'none' : undefined,
                       '--brand-glow': item.glowColor
                     }}
                     onClick={() => {
@@ -2843,17 +2878,16 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                         <p className={`testimonial-text ${isActive && isReviewExpanded ? 'expanded' : ''}`}>
                           {item.reviewText}
                         </p>
-                        {isActive && (
-                          <button 
-                            className="testimonial-toggle-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsReviewExpanded(!isReviewExpanded);
-                            }}
-                          >
-                            {isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
-                          </button>
-                        )}
+                        <button 
+                          className="testimonial-toggle-btn"
+                          onClick={(e) => {
+                            if (!isActive) return;
+                            e.stopPropagation();
+                            setIsReviewExpanded(!isReviewExpanded);
+                          }}
+                        >
+                          {isActive && isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
+                        </button>
                       </div>
 
                       {/* PDF Action Button in bottom right corner */}
@@ -2903,53 +2937,17 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             })}
           </div>
 
-          {/* Mobile Terminal-Style Navigation (Mobile only) */}
-          <div className="testimonials-terminal-nav">
+          {/* View All Reviews Button */}
+          <div className="testimonials-actions-footer">
             <button 
-              className="terminal-nav-btn prev"
-              onClick={() => {
-                setIsReviewExpanded(false);
-                setActiveTestimonialIdx((prev) => (prev === 0 ? testimonialsData.length - 1 : prev - 1));
-              }}
-              style={{
-                '--brand-color': testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0'
-              }}
+              className="view-all-reviews-btn"
+              onClick={() => setIsAllReviewsModalOpen(true)}
             >
-              <span className="terminal-btn-inner">[ &lt; ]</span>
-            </button>
-
-            <div className="terminal-nav-dashboard">
-              <div className="terminal-nav-counter">
-                <span className="counter-active" style={{ color: testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0' }}>
-                  {String(activeTestimonialIdx + 1).padStart(2, '0')}
-                </span>
-                <span className="counter-divider">/</span>
-                <span className="counter-total">
-                  {String(testimonialsData.length).padStart(2, '0')}
-                </span>
-              </div>
-              <div className="terminal-progress-bar-wrap">
-                <div 
-                  className="terminal-progress-fill"
-                  style={{
-                    width: `${((activeTestimonialIdx + 1) / testimonialsData.length) * 100}%`,
-                    background: `linear-gradient(90deg, #A020F0, ${testimonialsData[activeTestimonialIdx]?.glowColor || '#00D9FF'})`
-                  }}
-                />
-              </div>
-            </div>
-
-            <button 
-              className="terminal-nav-btn next"
-              onClick={() => {
-                setIsReviewExpanded(false);
-                setActiveTestimonialIdx((prev) => (prev === testimonialsData.length - 1 ? 0 : prev + 1));
-              }}
-              style={{
-                '--brand-color': testimonialsData[activeTestimonialIdx]?.glowColor || '#A020F0'
-              }}
-            >
-              <span className="terminal-btn-inner">[ &gt; ]</span>
+              <span>Смотреть все отзывы</span>
+              <svg className="view-all-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
             </button>
           </div>
       </section>
@@ -3163,6 +3161,105 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           }
         }
       `}</style>
+
+      {/* All Reviews Modal Overlay */}
+      {isAllReviewsModalOpen && (
+        <div 
+          className="reviews-modal-overlay" 
+          onClick={() => setIsAllReviewsModalOpen(false)}
+        >
+          <div 
+            className="reviews-modal-content" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="reviews-modal-header">
+              <span className="reviews-modal-subtitle">// ВСЕ ОТЗЫВЫ КЛИЕНТОВ</span>
+              <button 
+                className="reviews-modal-close-btn" 
+                onClick={() => setIsAllReviewsModalOpen(false)}
+                aria-label="Закрыть"
+              >
+                <span className="close-text">[ ЗАКРЫТЬ ]</span>
+                <svg className="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <div className="reviews-modal-scroll">
+              <div className="reviews-modal-grid">
+                {testimonialsData.map((item) => (
+                  <div key={item.id} className="reviews-modal-card">
+                    
+                    {/* Top part: project name, client company logo */}
+                    <div className="reviews-modal-card-top">
+                      <div className="reviews-modal-company-info">
+                        <span className="reviews-modal-project-title">{item.projectTitle}</span>
+                        <a 
+                          href={item.projectUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="reviews-modal-project-link"
+                        >
+                          {item.shortName} →
+                        </a>
+                      </div>
+                      {item.logoPath && (
+                        <img 
+                          src={item.logoPath} 
+                          alt={item.projectTitle} 
+                          className="reviews-modal-brand-logo" 
+                        />
+                      )}
+                    </div>
+
+                    {/* Middle part: rating stars, full review text */}
+                    <div className="reviews-modal-card-mid">
+                      <div className="reviews-modal-stars">
+                        {[...Array(item.rating)].map((_, i) => (
+                          <svg key={i} className="reviews-modal-star-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                          </svg>
+                        ))}
+                      </div>
+                      <p className="reviews-modal-review-text">{item.reviewText}</p>
+                    </div>
+
+                    {/* Bottom part: author info and PDF review */}
+                    <div className="reviews-modal-card-bottom">
+                      <div className="reviews-modal-author-wrap">
+                        <img src={item.avatar} alt={item.authorName} className="reviews-modal-avatar" />
+                        <div className="reviews-modal-author-details">
+                          <span className="reviews-modal-author-name">{item.authorName}</span>
+                          <span className="reviews-modal-author-role">{item.authorRole}</span>
+                        </div>
+                      </div>
+                      <a 
+                        href={item.pdf} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="reviews-modal-pdf-btn"
+                        title="Открыть полный отзыв в формате PDF с печатью"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
+                          <path d="M14 2V8H20" />
+                          <path d="M16 13H8" />
+                          <path d="M16 17H8" />
+                          <path d="M10 9H8" />
+                        </svg>
+                        <span>PDF-версия</span>
+                      </a>
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Parallax Video Revealer Screen */}
       <div 
