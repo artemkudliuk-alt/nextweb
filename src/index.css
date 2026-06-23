@@ -435,7 +435,7 @@ ul, ol {
   padding: 1px;
   background: linear-gradient(135deg, var(--accent-secondary), var(--accent-color));
   text-decoration: none;
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   border: none;
   outline: none;
   cursor: pointer;
@@ -444,6 +444,16 @@ ul, ol {
 
 .btn-premium:hover {
   transform: translateY(-1px);
+}
+
+.btn-premium:active {
+  transform: translateY(0) scale(0.96);
+  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-premium:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
 }
 
 .btn-premium::after {
@@ -567,7 +577,7 @@ ul, ol {
   position: absolute;
   top: 0;
   left: 0;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
 }
 
 .btn-arrow-incoming {

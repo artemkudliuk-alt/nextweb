@@ -483,9 +483,73 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     }, 1200);
   };
 
+  const approachHeightRef = useRef(0);
+  const dedicatedHeightRef = useRef(0);
+  const workTopDocRef = useRef(0);
+  const screen6TopDocRef = useRef(0);
+  const contactSecTopDocRef = useRef(0);
+
+  const getApproachHeight = () => {
+    if (approachHeightRef.current > 0) return approachHeightRef.current;
+    const el = document.getElementById('approach');
+    if (el) {
+      approachHeightRef.current = el.offsetHeight;
+      return approachHeightRef.current;
+    }
+    return window.innerHeight;
+  };
+
+  const getDedicatedHeight = () => {
+    if (dedicatedHeightRef.current > 0) return dedicatedHeightRef.current;
+    const el = dedicatedRef.current;
+    if (el) {
+      dedicatedHeightRef.current = el.offsetHeight;
+      return dedicatedHeightRef.current;
+    }
+    return window.innerHeight;
+  };
+
+  const getWorkTopDoc = () => {
+    if (workTopDocRef.current > 0) return workTopDocRef.current;
+    const el = document.getElementById('work');
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      workTopDocRef.current = window.scrollY + rect.top;
+      return workTopDocRef.current;
+    }
+    return window.innerHeight * 8.2;
+  };
+
+  const getScreen6TopDoc = () => {
+    if (screen6TopDocRef.current > 0) return screen6TopDocRef.current;
+    const el = document.getElementById('screen6');
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      screen6TopDocRef.current = window.scrollY + rect.top;
+      return screen6TopDocRef.current;
+    }
+    return window.innerHeight * 9.2;
+  };
+
+  const getContactSecTopDoc = () => {
+    if (contactSecTopDocRef.current > 0) return contactSecTopDocRef.current;
+    const el = document.querySelector('.contact-section');
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      contactSecTopDocRef.current = window.scrollY + rect.top;
+      return contactSecTopDocRef.current;
+    }
+    return window.innerHeight * 11.0;
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1024);
+      approachHeightRef.current = 0;
+      dedicatedHeightRef.current = 0;
+      workTopDocRef.current = 0;
+      screen6TopDocRef.current = 0;
+      contactSecTopDocRef.current = 0;
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -1060,7 +1124,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         const approachEl = document.getElementById('approach');
         const dedicatedEl = dedicatedRef.current;
         if (approachEl && dedicatedEl) {
-          const approachHeight = approachEl.offsetHeight || vh;
+          const approachHeight = getApproachHeight();
           const scrollStart = vh + approachHeight - vh;
           const scrollEnd = vh + approachHeight;
           
@@ -1136,9 +1200,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         const dedicatedEl = dedicatedRef.current;
         const whyUsEl = whyUsRef.current;
         if (dedicatedEl && whyUsEl) {
-          const approachEl = document.getElementById('approach');
-          const approachHeight = approachEl ? approachEl.offsetHeight : vh;
-          const dedicatedHeight = dedicatedEl.offsetHeight || vh;
+          const approachHeight = getApproachHeight();
+          const dedicatedHeight = getDedicatedHeight();
           const scrollStart3 = approachHeight + dedicatedHeight;
           const scrollEnd3 = scrollStart3 + vh;
           
@@ -1363,10 +1426,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           // Image vertical parallax calculation
           const viewportHeight = window.innerHeight;
           const viewportCenter = viewportHeight / 2;
+          const cardHeight = 580;
+          const cardGap = 64;
           const cards = worksTrackRef.current.querySelectorAll('.work-grid-card');
-          cards.forEach((card) => {
-            const rect = card.getBoundingClientRect();
-            const cardCenter = rect.top + rect.height / 2;
+          cards.forEach((card, i) => {
+            const cardCenter = translateYVal + (viewportHeight * 0.12) + i * (cardHeight + cardGap) + cardHeight / 2;
             const offsetFromCenter = cardCenter - viewportCenter;
             const img = card.querySelector('.work-parallax-img');
             if (img) {
@@ -1687,8 +1751,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             workEl.style.pointerEvents = 'auto';
 
             // Restoring the Slanted Wipe & Parallax transition for Screen 5 (#work)
-            const rect = workEl.getBoundingClientRect();
-            const workTopDoc = window.scrollY + rect.top;
+            const workTopDoc = getWorkTopDoc();
             const easedRectTop = workTopDoc - currentScrollY;
             let workProgress = 1 - (easedRectTop / vh);
             const isMobile = window.innerWidth <= 1024;
@@ -1760,8 +1823,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           workEl.style.visibility = '';
           workEl.style.pointerEvents = '';
 
-          const rect = workEl.getBoundingClientRect();
-          const progress = Math.max(0, Math.min(1, 1 - (rect.top / vh)));
+          const rectTop = getWorkTopDoc() - currentScrollY;
+          const progress = Math.max(0, Math.min(1, 1 - (rectTop / vh)));
           const slantHeight = (1 - progress) * 120;
           workEl.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
 
@@ -1791,8 +1854,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             screen6El.style.display = '';
 
             // Mobile dynamic clip-path transition (slanted edge that flattens out)
-            const rect6 = screen6El.getBoundingClientRect();
-            const progress6 = Math.max(0, Math.min(1, 1 - (rect6.top / vh)));
+            const rectTop6 = getScreen6TopDoc() - currentScrollY;
+            const progress6 = Math.max(0, Math.min(1, 1 - (rectTop6 / vh)));
             if (progress6 >= 0.99) {
               screen6El.style.clipPath = 'none';
               const divider6 = screen6El.querySelector('.tech-glow-divider-6');
@@ -1834,8 +1897,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
             const contactSec = screen7El.querySelector('.contact-section');
             if (contactSec) {
-              const rect7 = contactSec.getBoundingClientRect();
-              const progress7 = Math.max(0, Math.min(1, 1 - (rect7.top / vh)));
+              const rectTop7 = getContactSecTopDoc() - currentScrollY;
+              const progress7 = Math.max(0, Math.min(1, 1 - (rectTop7 / vh)));
 
               if (progress7 >= 0.99) {
                 contactSec.style.clipPath = 'none';
