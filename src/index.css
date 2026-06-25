@@ -149,13 +149,13 @@ ul, ol {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 .preloader-logo-wrap {
   position: relative;
-  width: 90px;   /* 72px × 1.25 */
-  height: 60px;  /* 48px × 1.25 */
+  width: 160px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,7 +198,7 @@ ul, ol {
 }
 
 .preloader-brand img {
-  height: 17.5px;  /* 14px × 1.25 */
+  height: 20px;  /* scaled up to match larger arrows */
   width: auto;
   filter: brightness(0) invert(1);  /* force pure white */
 }
@@ -7321,3 +7321,207 @@ ul, ol {
     will-change: transform, filter !important;
   }
 }
+
+/* ---------------------------------------------------- */
+/* Mega-Grid Dropdown Menu (Variant 1)                  */
+/* ---------------------------------------------------- */
+
+.mega-dropdown {
+  position: fixed;
+  top: 80px; /* Aligns with desktop navbar bottom */
+  left: 0;
+  width: 100%;
+  background: rgba(8, 8, 10, 0.78);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+  z-index: 990;
+  padding: 4rem 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(0, -15px, 0);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mega-dropdown.active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+/* Desktop navbar heights adjustments when active */
+.navbar-sticky.menu-active {
+  border-bottom-color: transparent;
+}
+
+.mega-grid-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 1.05fr 1.15fr 1.6fr;
+  gap: 3rem;
+  align-items: stretch;
+}
+
+.mega-grid-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle separator borders between first three columns */
+.mega-grid-inner > :nth-child(-n+3) {
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  padding-right: 2.5rem;
+}
+
+.mega-col-title {
+  font-family: 'Geist Mono', 'Satoshi Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.mega-col-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mega-item-link {
+  font-size: 0.92rem;
+  font-weight: 400;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.45);
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0.25rem 0;
+}
+
+.mega-item-link:hover,
+.mega-item-link.hovered {
+  color: #ffffff;
+  transform: translate3d(6px, 0, 0);
+}
+
+.mega-item-link:active {
+  transform: translate3d(6px, 0, 0) scale(0.98);
+}
+
+.mega-item-bullet {
+  font-family: monospace;
+  margin-right: 0.6rem;
+  opacity: 0;
+  color: var(--accent-color);
+  transform: translate3d(-8px, 0, 0);
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mega-item-link:hover .mega-item-bullet,
+.mega-item-link.hovered .mega-item-bullet {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* 4th Column: Preview panel card */
+.mega-preview-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.mega-preview-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.35), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 2.2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 260px;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.mega-preview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 60%);
+  pointer-events: none;
+}
+
+.preview-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.preview-desc {
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+}
+
+.preview-meta {
+  display: flex;
+  gap: 3rem;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 1.4rem;
+  margin-bottom: 1.6rem;
+}
+
+.preview-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.preview-meta-item .meta-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Geist Mono', 'Satoshi Mono', monospace;
+}
+
+.preview-meta-item .meta-value {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.preview-meta-item:first-child .meta-value {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* Active states for dropdown headers */
+.nav-link.active-dropdown {
+  color: var(--accent-color) !important;
+}
+
+/* Scrollbar adjustment inside mobile drawer service scroll */
+.mobile-services-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.mobile-services-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+.mobile-services-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+

@@ -5,6 +5,12 @@ import Preloader from './components/Preloader';
 import Home from './pages/Home';
 import Works from './pages/Works';
 import WorkDetail from './pages/WorkDetail';
+import ServiceDetail from './pages/ServiceDetail';
+import About from './pages/About';
+import Contacts from './pages/Contacts';
+import Reviews from './pages/Reviews';
+import Partners from './pages/Partners';
+import Blog from './pages/Blog';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -40,6 +46,12 @@ function MainLayout() {
             <Route path="/" element={<Home isVideoOpen={isVideoOpen} setIsVideoOpen={setIsVideoOpen} />} />
             <Route path="/works" element={<Works />} />
             <Route path="/work/:id" element={<WorkDetail />} />
+            <Route path="/service/:serviceId" element={<ServiceDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contacts" element={<Contacts />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/blog" element={<Blog />} />
           </Routes>
         </main>
       </div>

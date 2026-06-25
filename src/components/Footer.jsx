@@ -179,11 +179,11 @@ export default function Footer() {
               <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>ДИЗАЙН</a>
               <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>ПРОДВИЖЕНИЕ</a>
               <a href="#approach" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#approach')}>ПОДДЕРЖКА</a>
-              <a href="#whyus" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#whyus')}>О НАС</a>
-              <a href="#screen7" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#screen7')}>КОНТАКТЫ</a>
-              <a href="#screen6" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#screen6')}>ОТЗЫВЫ</a>
-              <a href="#whyus" className="footer-tag-pill" onClick={(e) => handleNavClick(e, '#whyus')}>ПАРТНЕРЫ</a>
-              <Link to="/works" className="footer-tag-pill">БЛОГ</Link>
+              <Link to="/about" className="footer-tag-pill">О НАС</Link>
+              <Link to="/contacts" className="footer-tag-pill">КОНТАКТЫ</Link>
+              <Link to="/reviews" className="footer-tag-pill">ОТЗЫВЫ</Link>
+              <Link to="/partners" className="footer-tag-pill">ПАРТНЕРЫ</Link>
+              <Link to="/blog" className="footer-tag-pill">БЛОГ</Link>
             </div>
 
             <div className="footer-contact-row">
