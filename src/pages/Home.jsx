@@ -418,6 +418,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const [isReviewExpanded, setIsReviewExpanded] = useState(false);
   const [isTestimonialsInteracted, setIsTestimonialsInteracted] = useState(false);
   const [isAllReviewsModalOpen, setIsAllReviewsModalOpen] = useState(false);
+  const [activeAccordionIdx, setActiveAccordionIdx] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -512,45 +513,53 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   };
 
   const getWorkTopDoc = () => {
-    if (workTopDocRef.current > 0) return workTopDocRef.current;
+    const isMobileLayout = window.innerWidth <= 1024;
+    if (!isMobileLayout && workTopDocRef.current > 0) return workTopDocRef.current;
     const el = document.getElementById('work');
     if (el) {
       const rect = el.getBoundingClientRect();
-      workTopDocRef.current = window.scrollY + rect.top;
-      return workTopDocRef.current;
+      const val = window.scrollY + rect.top;
+      if (!isMobileLayout) workTopDocRef.current = val;
+      return val;
     }
     return window.innerHeight * 8.2;
   };
 
   const getScreen6TopDoc = () => {
-    if (screen6TopDocRef.current > 0) return screen6TopDocRef.current;
+    const isMobileLayout = window.innerWidth <= 1024;
+    if (!isMobileLayout && screen6TopDocRef.current > 0) return screen6TopDocRef.current;
     const el = document.getElementById('screen6');
     if (el) {
       const rect = el.getBoundingClientRect();
-      screen6TopDocRef.current = window.scrollY + rect.top;
-      return screen6TopDocRef.current;
+      const val = window.scrollY + rect.top;
+      if (!isMobileLayout) screen6TopDocRef.current = val;
+      return val;
     }
     return window.innerHeight * 11.2;
   };
 
   const getBlogTopDoc = () => {
-    if (blogTopDocRef.current > 0) return blogTopDocRef.current;
+    const isMobileLayout = window.innerWidth <= 1024;
+    if (!isMobileLayout && blogTopDocRef.current > 0) return blogTopDocRef.current;
     const el = document.getElementById('blog-preview');
     if (el) {
       const rect = el.getBoundingClientRect();
-      blogTopDocRef.current = window.scrollY + rect.top;
-      return blogTopDocRef.current;
+      const val = window.scrollY + rect.top;
+      if (!isMobileLayout) blogTopDocRef.current = val;
+      return val;
     }
     return window.innerHeight * 13.5;
   };
 
   const getContactSecTopDoc = () => {
-    if (contactSecTopDocRef.current > 0) return contactSecTopDocRef.current;
+    const isMobileLayout = window.innerWidth <= 1024;
+    if (!isMobileLayout && contactSecTopDocRef.current > 0) return contactSecTopDocRef.current;
     const el = document.querySelector('.contact-section');
     if (el) {
       const rect = el.getBoundingClientRect();
-      contactSecTopDocRef.current = window.scrollY + rect.top;
-      return contactSecTopDocRef.current;
+      const val = window.scrollY + rect.top;
+      if (!isMobileLayout) contactSecTopDocRef.current = val;
+      return val;
     }
     return window.innerHeight * 16.2;
   };
@@ -1697,6 +1706,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 blogEl.style.pointerEvents = 'none';
                 blogEl.style.display = 'none';
                 blogEl.style.clipPath = '';
+                blogEl.style.webkitClipPath = '';
               }
             }
 
@@ -1909,6 +1919,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               blogEl.style.pointerEvents = 'none';
               blogEl.style.display = 'none';
               blogEl.style.clipPath = '';
+              blogEl.style.webkitClipPath = '';
             }
           }
         } else {
@@ -1991,6 +2002,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             const progressBlog = Math.max(0, Math.min(1, 1 - (rectTopBlog / vh)));
             if (progressBlog >= 0.99) {
               blogEl.style.clipPath = 'none';
+              blogEl.style.webkitClipPath = 'none';
               const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
               if (dividerBlog) {
                 dividerBlog.style.opacity = '0';
@@ -2002,6 +2014,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             } else {
               const slantHeightBlog = (1 - progressBlog) * 120;
               blogEl.style.clipPath = `polygon(0 ${slantHeightBlog}px, 100% 0, 100% 100%, 0 100%)`;
+              blogEl.style.webkitClipPath = `polygon(0 ${slantHeightBlog}px, 100% 0, 100% 100%, 0 100%)`;
 
               const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
               if (dividerBlog) {
@@ -2979,139 +2992,238 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             </h2>
           </div>
 
-          {/* Testimonials Carousel Track with Infinite Circular Layout */}
-          <div 
-            ref={carouselContainerRef} 
-            className="testimonials-carousel-container" 
-            onScroll={handleCarouselScroll}
-            onMouseEnter={() => setIsTestimonialsInteracted(true)}
-            onMouseLeave={() => setIsTestimonialsInteracted(false)}
-            onTouchStart={() => setIsTestimonialsInteracted(true)}
-            onTouchEnd={() => setIsTestimonialsInteracted(false)}
-          >
-            <div className="testimonials-track">
+          {isMobile ? (
+            <div className="testimonials-accordion">
               {testimonialsData.map((item, idx) => {
-                const isActive = idx === activeTestimonialIdx;
-                const offset = getCardOffset(idx, activeTestimonialIdx, testimonialsData.length);
-                const prevOffset = getCardOffset(idx, prevActiveTestimonialIdxRef.current, testimonialsData.length);
-                const isSide = Math.abs(offset) === 1;
-                const isWrapping = Math.abs(offset - prevOffset) > 1;
-                
+                const isOpen = idx === activeAccordionIdx;
                 return (
                   <div 
                     key={item.id} 
-                    className={`testimonial-card ${isActive ? 'active' : 'inactive'}`}
-                    style={isMobile ? {
-                      position: 'relative',
-                      left: 'auto',
-                      transform: 'none',
-                      opacity: 1,
-                      pointerEvents: 'auto',
-                      display: 'grid',
-                      '--brand-glow-color': item.glowColor
-                    } : {
-                      transform: `translateX(calc(-50% + ${offset * 764}px)) scale(${isActive ? 1 : 0.9})`,
-                      left: '50%',
-                      position: 'absolute',
-                      zIndex: isActive ? 10 : 5,
-                      opacity: isActive ? 1 : (isSide ? 0.65 : 0),
-                      pointerEvents: isActive ? 'auto' : (isSide ? 'auto' : 'none'),
-                      transition: isWrapping ? 'none' : undefined,
+                    className={`accordion-item ${isOpen ? 'open' : ''}`}
+                    style={{
                       '--brand-glow-color': item.glowColor
                     }}
-                    onClick={() => {
-                      if (!isActive) {
-                        setIsReviewExpanded(false);
-                        setActiveTestimonialIdx(idx);
-                      }
-                    }}
-                    onMouseMove={isActive ? handleTestimonialMouseMove : undefined}
-                    onMouseLeave={isActive ? handleTestimonialMouseLeave : undefined}
                   >
-                    <div className="testimonial-card-inner">
-                      {/* Left Column - Glassmorphic details */}
-                      <div className="testimonial-left">
-                        {/* Author Info */}
-                        <div className="testimonial-author">
-                          <div className="testimonial-avatar">
-                            <span className="avatar-ring"></span>
-                            <img 
-                              src={item.avatar} 
-                              alt={item.authorName} 
-                              className="avatar-img" 
-                            />
-                          </div>
-                          <div className="testimonial-author-meta">
-                            <span className="author-name">{item.authorName}</span>
-                            <span className="author-role">{item.authorRole}</span>
-                          </div>
-                        </div>
-
-                        {/* Brand Logo only below the photo */}
-                        <div className="testimonial-brand-logo-container">
-                          <img 
-                            src={item.logoPath} 
-                            alt={`${item.projectTitle} logo`} 
-                            className="testimonial-brand-logo" 
-                          />
-                        </div>
+                    <button 
+                      className="accordion-header"
+                      onClick={() => {
+                        setIsReviewExpanded(false);
+                        setActiveAccordionIdx(isOpen ? -1 : idx);
+                      }}
+                    >
+                      <div className="accordion-brand-info">
+                        <img src={item.logoPath} alt={item.projectTitle} className="accordion-brand-logo" />
                       </div>
+                      <span className="accordion-arrow">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </span>
+                    </button>
+                    
+                    <div className="accordion-content">
+                      <div className="accordion-content-inner">
+                        {/* Top Row: Avatar, Name & Role, Brand Logo */}
+                        <div className="accordion-top-meta">
+                          <div className="accordion-author-info">
+                            <div className="accordion-avatar-wrap">
+                              <span className="avatar-ring" style={{ borderColor: item.glowColor }}></span>
+                              <img src={item.avatar} alt={item.authorName} className="accordion-avatar-img" />
+                            </div>
+                            <div className="accordion-author-text">
+                              <span className="accordion-author-name">{item.authorName}</span>
+                              <span className="accordion-author-role">{item.authorRole}</span>
+                            </div>
+                          </div>
+                          <div className="accordion-brand-logo-wrap">
+                            <img src={item.logoPath} alt={item.projectTitle} className="accordion-brand-logo-img" />
+                          </div>
+                        </div>
 
-                      {/* Right Column - Review Content */}
-                      <div className="testimonial-right">
-                        {/* 5 Stars */}
-                        <div className="testimonial-rating">
+                        {/* Rating Stars */}
+                        <div className="accordion-rating">
                           {Array.from({ length: item.rating }).map((_, i) => (
-                            <svg key={i} className="star-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <svg key={i} className="star-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                             </svg>
                           ))}
                         </div>
 
-                        {/* Quotation Marks */}
-                        <span className="testimonial-quote-mark">“</span>
-
-                        {/* Review Text */}
-                        <div className="testimonial-text-container">
-                          <p className={`testimonial-text ${isActive && isReviewExpanded ? 'expanded' : ''}`}>
+                        {/* Review Text with Quote Mark */}
+                        <div className="accordion-text-wrap">
+                          <span className="accordion-quote-icon">“</span>
+                          <p className={`accordion-text ${isOpen && isReviewExpanded ? 'expanded' : ''}`}>
                             {item.reviewText}
                           </p>
+                        </div>
+
+                        {/* Footer Actions: Read More & PDF Icon */}
+                        <div className="accordion-footer-row">
                           <button 
-                            className="testimonial-toggle-btn"
-                            onClick={(e) => {
-                              if (!isActive) return;
-                              e.stopPropagation();
+                            className="accordion-toggle-btn"
+                            onClick={() => {
                               setIsReviewExpanded(!isReviewExpanded);
                             }}
                           >
-                            {isActive && isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
+                            {isOpen && isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
                           </button>
+                          
+                          <a 
+                            href={item.pdf} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="accordion-pdf-icon-btn"
+                            title="Скачать PDF отзыв"
+                          >
+                            <svg className="pdf-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
+                              <path d="M14 2V8H20" />
+                              <path d="M16 13H8" />
+                              <path d="M16 17H8" />
+                              <path d="M10 9H8" />
+                            </svg>
+                          </a>
                         </div>
-
-                        {/* PDF Action Button in bottom right corner */}
-                        <a 
-                          href={item.pdf} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="testimonial-pdf-btn"
-                          onClick={(e) => e.stopPropagation()}
-                          title="Открыть полный отзыв в формате PDF с печатью"
-                        >
-                          <svg className="pdf-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
-                            <path d="M14 2V8H20" />
-                            <path d="M16 13H8" />
-                            <path d="M16 17H8" />
-                            <path d="M10 9H8" />
-                          </svg>
-                        </a>
                       </div>
                     </div>
                   </div>
                 );
               })}
             </div>
-          </div>
+          ) : (
+            <div 
+              ref={carouselContainerRef} 
+              className="testimonials-carousel-container" 
+              onScroll={handleCarouselScroll}
+              onMouseEnter={() => setIsTestimonialsInteracted(true)}
+              onMouseLeave={() => setIsTestimonialsInteracted(false)}
+              onTouchStart={() => setIsTestimonialsInteracted(true)}
+              onTouchEnd={() => setIsTestimonialsInteracted(false)}
+            >
+              <div className="testimonials-track">
+                {testimonialsData.map((item, idx) => {
+                  const isActive = idx === activeTestimonialIdx;
+                  const offset = getCardOffset(idx, activeTestimonialIdx, testimonialsData.length);
+                  const prevOffset = getCardOffset(idx, prevActiveTestimonialIdxRef.current, testimonialsData.length);
+                  const isSide = Math.abs(offset) === 1;
+                  const isWrapping = Math.abs(offset - prevOffset) > 1;
+                  
+                  return (
+                    <div 
+                      key={item.id} 
+                      className={`testimonial-card ${isActive ? 'active' : 'inactive'}`}
+                      style={isMobile ? {
+                        position: 'relative',
+                        left: 'auto',
+                        transform: 'none',
+                        opacity: 1,
+                        pointerEvents: 'auto',
+                        display: 'grid',
+                        '--brand-glow-color': item.glowColor
+                      } : {
+                        transform: `translateX(calc(-50% + ${offset * 764}px)) scale(${isActive ? 1 : 0.9})`,
+                        left: '50%',
+                        position: 'absolute',
+                        zIndex: isActive ? 10 : 5,
+                        opacity: isActive ? 1 : (isSide ? 0.65 : 0),
+                        pointerEvents: isActive ? 'auto' : (isSide ? 'auto' : 'none'),
+                        transition: isWrapping ? 'none' : undefined,
+                        '--brand-glow-color': item.glowColor
+                      }}
+                      onClick={() => {
+                        if (!isActive) {
+                          setIsReviewExpanded(false);
+                          setActiveTestimonialIdx(idx);
+                        }
+                      }}
+                      onMouseMove={isActive ? handleTestimonialMouseMove : undefined}
+                      onMouseLeave={isActive ? handleTestimonialMouseLeave : undefined}
+                    >
+                      <div className="testimonial-card-inner">
+                        {/* Left Column - Glassmorphic details */}
+                        <div className="testimonial-left">
+                          {/* Author Info */}
+                          <div className="testimonial-author">
+                            <div className="testimonial-avatar">
+                              <span className="avatar-ring"></span>
+                              <img 
+                                src={item.avatar} 
+                                alt={item.authorName} 
+                                className="avatar-img" 
+                              />
+                            </div>
+                            <div className="testimonial-author-meta">
+                              <span className="author-name">{item.authorName}</span>
+                              <span className="author-role">{item.authorRole}</span>
+                            </div>
+                          </div>
+
+                          {/* Brand Logo only below the photo */}
+                          <div className="testimonial-brand-logo-container">
+                            <img 
+                              src={item.logoPath} 
+                              alt={`${item.projectTitle} logo`} 
+                              className="testimonial-brand-logo" 
+                            />
+                          </div>
+                        </div>
+
+                        {/* Right Column - Review Content */}
+                        <div className="testimonial-right">
+                          {/* 5 Stars */}
+                          <div className="testimonial-rating">
+                            {Array.from({ length: item.rating }).map((_, i) => (
+                              <svg key={i} className="star-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                            ))}
+                          </div>
+
+                          {/* Quotation Marks */}
+                          <span className="testimonial-quote-mark">“</span>
+
+                          {/* Review Text */}
+                          <div className="testimonial-text-container">
+                            <p className={`testimonial-text ${isActive && isReviewExpanded ? 'expanded' : ''}`}>
+                              {item.reviewText}
+                            </p>
+                            <button 
+                              className="testimonial-toggle-btn"
+                              onClick={(e) => {
+                                if (!isActive) return;
+                                e.stopPropagation();
+                                setIsReviewExpanded(!isReviewExpanded);
+                              }}
+                            >
+                              {isActive && isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
+                            </button>
+                          </div>
+
+                          {/* PDF Action Button in bottom right corner */}
+                          <a 
+                            href={item.pdf} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="testimonial-pdf-btn"
+                            onClick={(e) => e.stopPropagation()}
+                            title="Открыть полный отзыв в формате PDF с печатью"
+                          >
+                            <svg className="pdf-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
+                              <path d="M14 2V8H20" />
+                              <path d="M16 13H8" />
+                              <path d="M16 17H8" />
+                              <path d="M10 9H8" />
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Brand Tabs Navigation (Desktop only) */}
           <div className="testimonials-brand-tabs">
@@ -3181,10 +3293,10 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             <div className="blog-preview-title-block">
               <span className="cyber-section-label">// 06 . НАШ ЭКСПЕРТНЫЙ БЛОГ</span>
               <h2 className="blog-preview-title">
-                <TextReveal text="Делимся опытом и экспертизой" glitch={true} />
+                <TextReveal text={isMobile ? "Делимся опытом\nи экспертностью" : "Делимся опытом и экспертизой"} glitch={true} />
               </h2>
             </div>
-            <Button to="/blog" text="Перейти в блог" variant="light" className="blog-link-btn" />
+            {!isMobile && <Button to="/blog" text="Перейти в блог" variant="light" className="blog-link-btn" />}
           </div>
 
           <div className="blog-preview-grid">
@@ -3233,6 +3345,11 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               </Link>
             </div>
           </div>
+          {isMobile && (
+            <div className="blog-mobile-footer-btn" style={{ display: 'flex', justifyContent: 'center', marginTop: '2.5rem' }}>
+              <Button to="/blog" text="Перейти в блог" variant="light" className="blog-link-btn" />
+            </div>
+          )}
         </div>
       </section>
 
