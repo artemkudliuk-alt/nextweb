@@ -209,6 +209,13 @@ export default function Navbar({ onPlayClick }) {
               
               {mobileServicesOpen && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingLeft: '1rem', marginTop: '1rem', maxHeight: '35dvh', overflowY: 'auto' }} className="mobile-services-scroll">
+                  <Link 
+                    to="/services" 
+                    onClick={() => { setMenuOpen(false); setMobileServicesOpen(false); }}
+                    style={{ fontSize: '1.1rem', color: 'var(--accent-color)', textDecoration: 'none', padding: '0.4rem 0', fontWeight: 'bold', display: 'block', borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+                  >
+                    → Все услуги
+                  </Link>
                   {serviceGroups.map((group, idx) => (
                     <div key={idx} style={{ marginBottom: '0.8rem' }}>
                       <div 
@@ -274,15 +281,15 @@ export default function Navbar({ onPlayClick }) {
             {/* Left Nav links */}
             <div className="navbar-left">
               <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`} onClick={() => setDropdownOpen(false)}>О нас</Link>
-              <a 
-                href="#approach" 
+              <Link 
+                to="/services" 
                 className={`nav-link ${dropdownOpen ? 'active-dropdown' : ''}`} 
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onClick={(e) => handleNavClick(e, '#approach')}
+                onClick={() => setDropdownOpen(false)}
               >
                 Услуги
-              </a>
+              </Link>
               <Link to="/works" className={`nav-link ${location.pathname === '/works' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>Портфолио</Link>
               <Link to="/contacts" className={`nav-link ${location.pathname === '/contacts' ? 'active' : ''}`} onClick={() => setDropdownOpen(false)}>Контакты</Link>
             </div>
@@ -342,15 +349,15 @@ export default function Navbar({ onPlayClick }) {
             {/* Center: Menu links */}
             <div className="navbar-center">
               <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`} onClick={() => setDropdownOpen(false)}>О нас</Link>
-              <a 
-                href="#approach" 
+              <Link 
+                to="/services" 
                 className={`nav-link ${dropdownOpen ? 'active-dropdown' : ''}`} 
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onClick={(e) => handleNavClick(e, '#approach')}
+                onClick={() => setDropdownOpen(false)}
               >
                 Услуги
-              </a>
+              </Link>
               <Link to="/works" className={`nav-link ${location.pathname === '/works' ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>Портфолио</Link>
               <Link to="/contacts" className={`nav-link ${location.pathname === '/contacts' ? 'active' : ''}`} onClick={() => setDropdownOpen(false)}>Контакты</Link>
             </div>

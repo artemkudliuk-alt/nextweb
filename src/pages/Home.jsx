@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import Grid from '../components/Grid';
 import Button from '../components/Button';
 import TextReveal from '../components/TextReveal';
@@ -487,6 +488,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const dedicatedHeightRef = useRef(0);
   const workTopDocRef = useRef(0);
   const screen6TopDocRef = useRef(0);
+  const blogTopDocRef = useRef(0);
   const contactSecTopDocRef = useRef(0);
 
   const getApproachHeight = () => {
@@ -528,7 +530,18 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       screen6TopDocRef.current = window.scrollY + rect.top;
       return screen6TopDocRef.current;
     }
-    return window.innerHeight * 9.2;
+    return window.innerHeight * 11.2;
+  };
+
+  const getBlogTopDoc = () => {
+    if (blogTopDocRef.current > 0) return blogTopDocRef.current;
+    const el = document.getElementById('blog-preview');
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      blogTopDocRef.current = window.scrollY + rect.top;
+      return blogTopDocRef.current;
+    }
+    return window.innerHeight * 13.5;
   };
 
   const getContactSecTopDoc = () => {
@@ -539,7 +552,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       contactSecTopDocRef.current = window.scrollY + rect.top;
       return contactSecTopDocRef.current;
     }
-    return window.innerHeight * 11.0;
+    return window.innerHeight * 16.2;
   };
 
   useEffect(() => {
@@ -549,6 +562,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       dedicatedHeightRef.current = 0;
       workTopDocRef.current = 0;
       screen6TopDocRef.current = 0;
+      blogTopDocRef.current = 0;
       contactSecTopDocRef.current = 0;
     };
     handleResize();
@@ -558,14 +572,14 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
   // Autoplay testimonials every 8 seconds
   useEffect(() => {
-    if (isReviewExpanded || isTestimonialsInteracted || isAllReviewsModalOpen) return;
+    if (isMobile || isReviewExpanded || isTestimonialsInteracted || isAllReviewsModalOpen) return;
 
     const timer = setInterval(() => {
       setActiveTestimonialIdx((prev) => (prev + 1) % testimonialsData.length);
     }, 8000);
 
     return () => clearInterval(timer);
-  }, [activeTestimonialIdx, isReviewExpanded, isTestimonialsInteracted, isAllReviewsModalOpen]);
+  }, [activeTestimonialIdx, isReviewExpanded, isTestimonialsInteracted, isAllReviewsModalOpen, isMobile]);
 
   const handleCarouselScroll = (e) => {
     if (!isMobile) return;
@@ -939,6 +953,33 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     const card = e.currentTarget;
     card.style.transform = '';
     card.style.setProperty('--sheen-opacity', '0');
+  };
+
+  const handleTestimonialMouseMove = (e) => {
+    const inner = e.currentTarget.querySelector('.testimonial-card-inner');
+    if (!inner) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const px = (x / rect.width) - 0.5;
+    const py = (y / rect.height) - 0.5;
+    const rY = px * 10;
+    const rX = -py * 10;
+    inner.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+    const sheenX = (x / rect.width) * 100;
+    const sheenY = (y / rect.height) * 100;
+    inner.style.setProperty('--sheen-x', `${sheenX}%`);
+    inner.style.setProperty('--sheen-y', `${sheenY}%`);
+    inner.style.setProperty('--sheen-opacity', '1');
+  };
+
+  const handleTestimonialMouseLeave = (e) => {
+    const inner = e.currentTarget.querySelector('.testimonial-card-inner');
+    if (inner) {
+      inner.style.transform = '';
+      inner.style.setProperty('--sheen-opacity', '0');
+    }
   };
 
   const handleCategoryClick = (category, cardRef) => {
@@ -1454,8 +1495,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         if (window.innerWidth > 1024) {
           const isCurrentlyVisible = whyUsEl && whyUsEl.style.visibility !== 'hidden';
           const shouldBeVisible = isCurrentlyVisible 
-            ? (currentScrollY >= vh * 5.2 && currentScrollY < vh * 9.0)
-            : (currentScrollY >= vh * 5.2 && currentScrollY < vh * 8.9);
+            ? (currentScrollY >= vh * 5.2 && currentScrollY < vh * 10.2)
+            : (currentScrollY >= vh * 5.2 && currentScrollY < vh * 10.1);
 
           if (shouldBeVisible) {
             if (whyUsEl) {
@@ -1471,84 +1512,54 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
 
             if (whyUsEl) {
+              const divider3 = whyUsEl.querySelector('.tech-glow-divider-3');
               if (wipeProgress >= 0.99) {
                 whyUsEl.style.clipPath = 'none';
+                if (divider3) {
+                  divider3.style.opacity = '0';
+                  const lines = divider3.querySelectorAll('line');
+                  lines.forEach(line => {
+                    line.setAttribute('y1', '0');
+                  });
+                }
               } else {
                 const slantHeight = (1 - wipeProgress) * 120;
                 whyUsEl.style.clipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
-              }
-
-              const glowDivider3 = whyUsEl.querySelector('.tech-glow-divider-3');
-              if (glowDivider3) {
-                glowDivider3.style.opacity = Math.max(0, 1 - wipeProgress).toString();
-                const line3 = glowDivider3.querySelector('#tech-glow-line-3');
-                if (line3 && wipeProgress < 0.99) {
-                  line3.setAttribute('y1', ((1 - wipeProgress) * 120).toString());
+                if (divider3) {
+                  divider3.style.opacity = Math.max(0, 1 - wipeProgress).toString();
+                  const lines = divider3.querySelectorAll('line');
+                  lines.forEach(line => {
+                    line.setAttribute('y1', slantHeight.toString());
+                  });
                 }
               }
             }
-            if (islandEl) {
-              const islandY = (1 - wipeProgress) * 60;
-              islandEl.style.transform = `translateY(${islandY}px)`;
-            }
           } else {
-            // Completely hide and deactivate when outside its active range
             if (whyUsEl) {
               whyUsEl.style.visibility = 'hidden';
               whyUsEl.style.pointerEvents = 'none';
-            }
-            if (islandEl) {
-              islandEl.style.transform = 'none';
-            }
-
-            // Kill frame updates and force correct boundaries depending on scroll direction
-            if (currentScrollY >= vh * 8.7) {
-              if (activeStageRef.current !== 4) {
-                setActiveStage(4);
-                activeStageRef.current = 4;
-              }
-              currentFrameRef.current = 300;
-              targetFrameRef.current = 300;
-              if (animationFrameIdRef.current) {
-                cancelAnimationFrame(animationFrameIdRef.current);
-                animationFrameIdRef.current = null;
-              }
-              if (dividerBarRef.current) {
-                dividerBarRef.current.style.height = '100%';
-              }
-            } else if (currentScrollY < vh * 5.2) {
-              if (activeStageRef.current !== 0) {
-                setActiveStage(0);
-                activeStageRef.current = 0;
-              }
-              currentFrameRef.current = 1;
-              targetFrameRef.current = 1;
-              if (animationFrameIdRef.current) {
-                cancelAnimationFrame(animationFrameIdRef.current);
-                animationFrameIdRef.current = null;
-              }
-              if (dividerBarRef.current) {
-                dividerBarRef.current.style.height = '0%';
+              const divider3 = whyUsEl.querySelector('.tech-glow-divider-3');
+              if (divider3) {
+                divider3.style.opacity = '0';
+                const lines = divider3.querySelectorAll('line');
+                lines.forEach(line => {
+                  line.setAttribute('y1', '0');
+                });
               }
             }
           }
-        } else {
-          if (whyUsEl) {
-            whyUsEl.style.visibility = '';
-            whyUsEl.style.pointerEvents = '';
-          }
-          if (islandEl) islandEl.style.transform = 'none';
         }
       }
 
       // Slanted Wipe & Parallax transition for Screen 5 (#work)
       const workEl = document.getElementById('work');
       const screen6El = document.getElementById('screen6');
+      const blogEl = document.getElementById('blog-preview');
       if (workEl) {
         if (window.innerWidth > 1024) {
           if (currentScrollY >= vh * 9.2) {
             // Set default hidden styles for workEl when we are past testimonials entry
-            if (currentScrollY >= vh * 10.2) {
+            if (currentScrollY >= vh * 11.2) {
               workEl.style.removeProperty('position');
               workEl.style.removeProperty('top');
               workEl.style.removeProperty('left');
@@ -1559,7 +1570,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               workEl.style.visibility = 'hidden';
               workEl.style.pointerEvents = 'none';
             } else {
-              // 9.2 <= scroll < 10.2: workEl is fixed underneath testimonials sliding in
+              // 9.2 <= scroll < 11.2: workEl is fixed
               workEl.style.setProperty('position', 'fixed', 'important');
               workEl.style.setProperty('top', '0', 'important');
               workEl.style.setProperty('left', '0', 'important');
@@ -1573,7 +1584,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
             // --- Screen 6 (Testimonials) Fixed Positioning Logic ---
             if (screen6El) {
-              if (currentScrollY < vh * 14.2) {
+              if (currentScrollY >= vh * 10.2 && currentScrollY < vh * 13.2) {
                 // Active range for Screen 6
                 screen6El.style.setProperty('position', 'fixed', 'important');
                 screen6El.style.setProperty('top', '0', 'important');
@@ -1584,9 +1595,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 screen6El.style.pointerEvents = 'auto';
                 screen6El.style.display = 'flex';
 
-                if (currentScrollY < vh * 10.2) {
+                if (currentScrollY < vh * 11.2) {
                   // Sliding in horizontally
-                  const progress5 = Math.max(0, Math.min((currentScrollY - vh * 9.2) / vh, 1));
+                  const progress5 = Math.max(0, Math.min((currentScrollY - vh * 10.2) / vh, 1));
                   const translateXScreen6 = (-1 + progress5) * 100;
                   screen6El.style.transform = `translateX(${translateXScreen6}vw)`;
                   screen6El.style.clipPath = 'none';
@@ -1618,7 +1629,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                   }
                 }
               } else {
-                // Past Screen 6 active range
+                // Hidden outside active range
                 screen6El.style.removeProperty('position');
                 screen6El.style.removeProperty('top');
                 screen6El.style.removeProperty('left');
@@ -1632,11 +1643,68 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               }
             }
 
+            // --- New Screen: Blog Preview Fixed Positioning Logic ---
+            if (blogEl) {
+              if (currentScrollY >= vh * 12.2 && currentScrollY < vh * 15.2) {
+                // Active range for Blog
+                blogEl.style.setProperty('position', 'fixed', 'important');
+                blogEl.style.setProperty('top', '0', 'important');
+                blogEl.style.setProperty('left', '0', 'important');
+                blogEl.style.setProperty('width', '100%', 'important');
+                blogEl.style.setProperty('height', '100vh', 'important');
+                blogEl.style.visibility = 'visible';
+                blogEl.style.pointerEvents = 'auto';
+                blogEl.style.display = 'flex';
+
+                if (currentScrollY < vh * 13.2) {
+                  // Sliding up from 100vh (smooth viewport entry)
+                  const progressBlog = Math.max(0, Math.min((currentScrollY - vh * 12.2) / vh, 1));
+                  const translateYBlog = (1 - progressBlog) * 100; // slide up from 100vh
+                  blogEl.style.transform = `translateY(${translateYBlog}vh)`;
+                  
+                  // Slanted wipe animation
+                  const slantHeightBlog = (1 - progressBlog) * 120;
+                  blogEl.style.clipPath = `polygon(0 ${slantHeightBlog}px, 100% 0, 100% 100%, 0 100%)`;
+
+                  // Animate Blog sweep divider y1 and opacity (matches Hero -> Approach)
+                  const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
+                  if (dividerBlog) {
+                    dividerBlog.style.opacity = Math.max(0.6, 1 - progressBlog * 0.4).toString();
+                    const lines = dividerBlog.querySelectorAll('line');
+                    lines.forEach(line => {
+                      line.setAttribute('y1', slantHeightBlog.toString());
+                    });
+                  }
+                } else {
+                  // Resting visible
+                  blogEl.style.transform = 'none';
+                  blogEl.style.clipPath = 'none';
+
+                  const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
+                  if (dividerBlog) {
+                    dividerBlog.style.opacity = '0';
+                  }
+                }
+              } else {
+                // Hidden outside active range
+                blogEl.style.removeProperty('position');
+                blogEl.style.removeProperty('top');
+                blogEl.style.removeProperty('left');
+                blogEl.style.removeProperty('width');
+                blogEl.style.removeProperty('height');
+                blogEl.style.transform = 'translateY(100vh)';
+                blogEl.style.visibility = 'hidden';
+                blogEl.style.pointerEvents = 'none';
+                blogEl.style.display = 'none';
+                blogEl.style.clipPath = '';
+              }
+            }
+
             // --- Screen 7 (Contact Form) Position & Transition Logic ---
             const screen7El = document.getElementById('screen7-container');
             if (screen7El) {
               const contactContainer = screen7El.querySelector('.contact-container');
-              if (currentScrollY >= vh * 12.2 && currentScrollY < vh * 15.2) {
+              if (currentScrollY >= vh * 14.2 && currentScrollY < vh * 17.2) {
                 screen7El.style.setProperty('position', 'fixed', 'important');
                 screen7El.style.setProperty('top', '0', 'important');
                 screen7El.style.setProperty('left', '0', 'important');
@@ -1649,9 +1717,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 const glowDivider7 = screen7El.querySelector('.tech-glow-divider-7');
                 const line7 = screen7El.querySelector('#tech-glow-line-7');
 
-                if (currentScrollY < vh * 13.2) {
+                if (currentScrollY < vh * 15.2) {
                   // Sliding up
-                  const contactProgress = Math.max(0, Math.min((currentScrollY - vh * 12.2) / vh, 1));
+                  const contactProgress = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
                   const translateYVal = (1 - contactProgress) * vh;
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
@@ -1674,9 +1742,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                     contactContainer.style.transform = '';
                     contactContainer.style.opacity = '';
                   }
-                } else if (currentScrollY >= vh * 14.2) {
-                  // Sliding up and out (Screen 8 / Footer entry)
-                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
+                } else if (currentScrollY >= vh * 16.2) {
+                  // Sliding up and out (Footer entry)
+                  const progressF = Math.max(0, Math.min((currentScrollY - vh * 16.2) / vh, 1));
                   const translateYVal = -progressF * vh;
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
@@ -1735,8 +1803,6 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                 }
               }
             }
-
-            // --- Footer logic moved to run globally on scroll ---
 
           } else {
             // --- Default state before currentScrollY reaches vh * 9.2 ---
@@ -1816,6 +1882,34 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
               screen7El.style.display = 'none';
               screen7El.style.clipPath = '';
             }
+
+            const partnersEl = document.getElementById('partners-preview');
+            if (partnersEl) {
+              partnersEl.style.removeProperty('position');
+              partnersEl.style.removeProperty('top');
+              partnersEl.style.removeProperty('left');
+              partnersEl.style.removeProperty('width');
+              partnersEl.style.removeProperty('height');
+              partnersEl.style.transform = 'translateY(100vh)';
+              partnersEl.style.visibility = 'hidden';
+              partnersEl.style.pointerEvents = 'none';
+              partnersEl.style.display = 'none';
+              partnersEl.style.clipPath = '';
+            }
+
+            const blogEl = document.getElementById('blog-preview');
+            if (blogEl) {
+              blogEl.style.removeProperty('position');
+              blogEl.style.removeProperty('top');
+              blogEl.style.removeProperty('left');
+              blogEl.style.removeProperty('width');
+              blogEl.style.removeProperty('height');
+              blogEl.style.transform = 'translateY(100vh)';
+              blogEl.style.visibility = 'hidden';
+              blogEl.style.pointerEvents = 'none';
+              blogEl.style.display = 'none';
+              blogEl.style.clipPath = '';
+            }
           }
         } else {
           // Mobile reset & slant flattening animation
@@ -1881,6 +1975,45 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             }
           }
 
+          if (blogEl) {
+            blogEl.style.transform = '';
+            blogEl.style.visibility = '';
+            blogEl.style.pointerEvents = '';
+            blogEl.style.removeProperty('position');
+            blogEl.style.removeProperty('top');
+            blogEl.style.removeProperty('left');
+            blogEl.style.removeProperty('width');
+            blogEl.style.removeProperty('height');
+            blogEl.style.display = '';
+
+            // Mobile dynamic clip-path transition (slanted edge that flattens out)
+            const rectTopBlog = getBlogTopDoc() - currentScrollY;
+            const progressBlog = Math.max(0, Math.min(1, 1 - (rectTopBlog / vh)));
+            if (progressBlog >= 0.99) {
+              blogEl.style.clipPath = 'none';
+              const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
+              if (dividerBlog) {
+                dividerBlog.style.opacity = '0';
+                const lines = dividerBlog.querySelectorAll('line');
+                lines.forEach(line => {
+                  line.setAttribute('y1', '0');
+                });
+              }
+            } else {
+              const slantHeightBlog = (1 - progressBlog) * 120;
+              blogEl.style.clipPath = `polygon(0 ${slantHeightBlog}px, 100% 0, 100% 100%, 0 100%)`;
+
+              const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
+              if (dividerBlog) {
+                dividerBlog.style.opacity = Math.max(0.6, 1 - progressBlog * 0.4).toString();
+                const lines = dividerBlog.querySelectorAll('line');
+                lines.forEach(line => {
+                  line.setAttribute('y1', slantHeightBlog.toString());
+                });
+              }
+            }
+          }
+
           const screen7El = document.getElementById('screen7-container');
           if (screen7El) {
             screen7El.style.transform = '';
@@ -1939,7 +2072,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       const footerEl = document.querySelector('.main-footer');
       if (footerEl) {
         if (window.innerWidth > 1024) {
-          if (currentScrollY >= vh * 14.2) {
+          if (currentScrollY >= vh * 16.2) {
             footerEl.style.setProperty('position', 'fixed', 'important');
             footerEl.style.setProperty('top', '0', 'important');
             footerEl.style.setProperty('left', '0', 'important');
@@ -1949,7 +2082,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             footerEl.style.pointerEvents = 'auto';
             footerEl.style.display = 'flex';
 
-            const progressF = Math.max(0, Math.min((currentScrollY - vh * 14.2) / vh, 1));
+            const progressF = Math.max(0, Math.min((currentScrollY - vh * 16.2) / vh, 1));
             const glowDividerF = footerEl.querySelector('.tech-glow-divider');
             const lineF = footerEl.querySelector('#tech-glow-line-footer');
 
@@ -2799,6 +2932,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         </div>
       </section>
 
+
       {/* ----------------- SCREEN 6: TESTIMONIALS SLIDER ----------------- */}
       <section id="screen6" className="testimonials-section">
         {/* Divider 6: Dynamic Glowing Line at the top of #screen6 */}
@@ -2872,20 +3006,18 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       left: 'auto',
                       transform: 'none',
                       opacity: 1,
-                      filter: 'none',
                       pointerEvents: 'auto',
                       display: 'grid',
-                      '--brand-glow': item.glowColor
+                      '--brand-glow-color': item.glowColor
                     } : {
                       transform: `translateX(calc(-50% + ${offset * 764}px)) scale(${isActive ? 1 : 0.9})`,
                       left: '50%',
                       position: 'absolute',
                       zIndex: isActive ? 10 : 5,
-                      opacity: isActive ? 1 : (isSide ? 0.45 : 0),
-                      filter: isActive ? 'blur(0)' : (isSide ? 'blur(6px) grayscale(0.3)' : 'blur(12px)'),
+                      opacity: isActive ? 1 : (isSide ? 0.65 : 0),
                       pointerEvents: isActive ? 'auto' : (isSide ? 'auto' : 'none'),
                       transition: isWrapping ? 'none' : undefined,
-                      '--brand-glow': item.glowColor
+                      '--brand-glow-color': item.glowColor
                     }}
                     onClick={() => {
                       if (!isActive) {
@@ -2893,83 +3025,87 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                         setActiveTestimonialIdx(idx);
                       }
                     }}
+                    onMouseMove={isActive ? handleTestimonialMouseMove : undefined}
+                    onMouseLeave={isActive ? handleTestimonialMouseLeave : undefined}
                   >
-                    {/* Left Column - Glassmorphic details */}
-                    <div className="testimonial-left">
-                      {/* Author Info */}
-                      <div className="testimonial-author">
-                        <div className="testimonial-avatar">
-                          <span className="avatar-ring"></span>
+                    <div className="testimonial-card-inner">
+                      {/* Left Column - Glassmorphic details */}
+                      <div className="testimonial-left">
+                        {/* Author Info */}
+                        <div className="testimonial-author">
+                          <div className="testimonial-avatar">
+                            <span className="avatar-ring"></span>
+                            <img 
+                              src={item.avatar} 
+                              alt={item.authorName} 
+                              className="avatar-img" 
+                            />
+                          </div>
+                          <div className="testimonial-author-meta">
+                            <span className="author-name">{item.authorName}</span>
+                            <span className="author-role">{item.authorRole}</span>
+                          </div>
+                        </div>
+
+                        {/* Brand Logo only below the photo */}
+                        <div className="testimonial-brand-logo-container">
                           <img 
-                            src={item.avatar} 
-                            alt={item.authorName} 
-                            className="avatar-img" 
+                            src={item.logoPath} 
+                            alt={`${item.projectTitle} logo`} 
+                            className="testimonial-brand-logo" 
                           />
                         </div>
-                        <div className="testimonial-author-meta">
-                          <span className="author-name">{item.authorName}</span>
-                          <span className="author-role">{item.authorRole}</span>
+                      </div>
+
+                      {/* Right Column - Review Content */}
+                      <div className="testimonial-right">
+                        {/* 5 Stars */}
+                        <div className="testimonial-rating">
+                          {Array.from({ length: item.rating }).map((_, i) => (
+                            <svg key={i} className="star-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                            </svg>
+                          ))}
                         </div>
-                      </div>
 
-                      {/* Brand Logo only below the photo */}
-                      <div className="testimonial-brand-logo-container">
-                        <img 
-                          src={item.logoPath} 
-                          alt={`${item.projectTitle} logo`} 
-                          className="testimonial-brand-logo" 
-                        />
-                      </div>
-                    </div>
+                        {/* Quotation Marks */}
+                        <span className="testimonial-quote-mark">“</span>
 
-                    {/* Right Column - Review Content */}
-                    <div className="testimonial-right">
-                      {/* 5 Stars */}
-                      <div className="testimonial-rating">
-                        {Array.from({ length: item.rating }).map((_, i) => (
-                          <svg key={i} className="star-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                          </svg>
-                        ))}
-                      </div>
+                        {/* Review Text */}
+                        <div className="testimonial-text-container">
+                          <p className={`testimonial-text ${isActive && isReviewExpanded ? 'expanded' : ''}`}>
+                            {item.reviewText}
+                          </p>
+                          <button 
+                            className="testimonial-toggle-btn"
+                            onClick={(e) => {
+                              if (!isActive) return;
+                              e.stopPropagation();
+                              setIsReviewExpanded(!isReviewExpanded);
+                            }}
+                          >
+                            {isActive && isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
+                          </button>
+                        </div>
 
-                      {/* Quotation Marks */}
-                      <span className="testimonial-quote-mark">“</span>
-
-                      {/* Review Text */}
-                      <div className="testimonial-text-container">
-                        <p className={`testimonial-text ${isActive && isReviewExpanded ? 'expanded' : ''}`}>
-                          {item.reviewText}
-                        </p>
-                        <button 
-                          className="testimonial-toggle-btn"
-                          onClick={(e) => {
-                            if (!isActive) return;
-                            e.stopPropagation();
-                            setIsReviewExpanded(!isReviewExpanded);
-                          }}
+                        {/* PDF Action Button in bottom right corner */}
+                        <a 
+                          href={item.pdf} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="testimonial-pdf-btn"
+                          onClick={(e) => e.stopPropagation()}
+                          title="Открыть полный отзыв в формате PDF с печатью"
                         >
-                          {isActive && isReviewExpanded ? 'Скрыть' : 'Читать полностью'}
-                        </button>
+                          <svg className="pdf-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
+                            <path d="M14 2V8H20" />
+                            <path d="M16 13H8" />
+                            <path d="M16 17H8" />
+                            <path d="M10 9H8" />
+                          </svg>
+                        </a>
                       </div>
-
-                      {/* PDF Action Button in bottom right corner */}
-                      <a 
-                        href={item.pdf} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="testimonial-pdf-btn"
-                        onClick={(e) => e.stopPropagation()}
-                        title="Открыть полный отзыв в формате PDF с печатью"
-                      >
-                        <svg className="pdf-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" />
-                          <path d="M14 2V8H20" />
-                          <path d="M16 13H8" />
-                          <path d="M16 17H8" />
-                          <path d="M10 9H8" />
-                        </svg>
-                      </a>
                     </div>
                   </div>
                 );
@@ -3000,19 +3136,104 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
             })}
           </div>
 
+
+
           {/* View All Reviews Button */}
           <div className="testimonials-actions-footer">
-            <button 
+            <Link 
+              to="/reviews"
               className="view-all-reviews-btn"
-              onClick={() => setIsAllReviewsModalOpen(true)}
             >
               <span>Смотреть все отзывы</span>
               <svg className="view-all-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
-            </button>
+            </Link>
           </div>
+      </section>
+
+      {/* ----------------- SECTION: BLOG PREVIEW ----------------- */}
+      <section id="blog-preview" className="blog-preview-section">
+        {/* Glow Line Sweep Divider */}
+        <div className="tech-glow-divider tech-glow-divider-blog">
+          <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+            <defs>
+              <linearGradient id="tech-glow-grad-blog" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#00D9FF" />
+                <stop offset="50%" stopColor="#A020F0" />
+                <stop offset="100%" stopColor="#FF1493" />
+              </linearGradient>
+              <filter id="tech-glow-blur-blog" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="12" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <line id="tech-glow-line-blog" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-blog)" strokeWidth="6" filter="url(#tech-glow-blur-blog)" />
+          </svg>
+        </div>
+
+        <div className="grid-container">
+          <div className="blog-preview-header">
+            <div className="blog-preview-title-block">
+              <span className="cyber-section-label">// 06 . НАШ ЭКСПЕРТНЫЙ БЛОГ</span>
+              <h2 className="blog-preview-title">
+                <TextReveal text="Делимся опытом и экспертизой" glitch={true} />
+              </h2>
+            </div>
+            <Button to="/blog" text="Перейти в блог" variant="light" className="blog-link-btn" />
+          </div>
+
+          <div className="blog-preview-grid">
+            <div className="blog-preview-card">
+              <div className="blog-card-meta">
+                <span className="cyber-section-label">// ИНЖЕНЕРИЯ</span>
+                <span className="blog-card-date">23 июня 2026</span>
+              </div>
+              <h3 className="blog-card-title">Оптимизация производительности в экосистеме Antigravity 2.0</h3>
+              <p className="blog-card-summary">Как избежать перегрузки DOM-дерева и обеспечить FPS 60 на мобильных устройствах с помощью автоматических GPU-анимаций.</p>
+              <Link to="/blog" className="blog-card-link">
+                <span>ЧИТАТЬ СТАТЬЮ</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </div>
+
+            <div className="blog-preview-card">
+              <div className="blog-card-meta">
+                <span className="cyber-section-label">// ВЕБ-ДИЗАЙН</span>
+                <span className="blog-card-date">14 мая 2026</span>
+              </div>
+              <h3 className="blog-card-title">Использование цветового пространства OKLCH в Tailwind CSS v4</h3>
+              <p className="blog-card-summary">Почему традиционный RGB/HEX уступает новому стандарту OKLCH и как создавать идеальные темные темы с высокой контрастностью.</p>
+              <Link to="/blog" className="blog-card-link">
+                <span>ЧИТАТЬ СТАТЬЮ</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </div>
+
+            <div className="blog-preview-card">
+              <div className="blog-card-meta">
+                <span className="cyber-section-label">// DEVOPS</span>
+                <span className="blog-card-date">02 апреля 2026</span>
+              </div>
+              <h3 className="blog-card-title">Автоматизация проверок Core Web Vitals с Lighthouse CI</h3>
+              <p className="blog-card-summary">Пошаговое руководство по интеграции тестов производительности в ваш CI/CD пайплайн для блокировки медленного кода перед деплоем.</p>
+              <Link to="/blog" className="blog-card-link">
+                <span>ЧИТАТЬ СТАТЬЮ</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div id="screen7-container">
@@ -3196,7 +3417,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
 
       <Footer />
 
-      <div className="testimonials-spacer" style={{ height: isMobile ? '0px' : '950vh' }}></div>
+      <div className="testimonials-spacer" style={{ height: isMobile ? '0px' : '1150vh' }}></div>
       </div>
 
       {/* Keyframe drift animation inject */}

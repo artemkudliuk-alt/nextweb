@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Button({ text, to, href, variant = 'light', target, rel, onClick }) {
+export default function Button({ text, to, href, variant = 'light', target, rel, onClick, className = '' }) {
   const innerContent = (
     <>
       <div className="btn-inner" data-variant={variant}>
@@ -23,11 +23,11 @@ export default function Button({ text, to, href, variant = 'light', target, rel,
     </>
   );
 
-  const className = `btn-premium btn-${variant}`;
+  const combinedClassName = `btn-premium btn-${variant} ${className}`.trim();
 
   if (to) {
     return (
-      <Link to={to} className={className} onClick={onClick}>
+      <Link to={to} className={combinedClassName} onClick={onClick}>
         {innerContent}
       </Link>
     );
@@ -35,14 +35,14 @@ export default function Button({ text, to, href, variant = 'light', target, rel,
 
   if (href) {
     return (
-      <a href={href} className={className} target={target} rel={rel} onClick={onClick}>
+      <a href={href} className={combinedClassName} target={target} rel={rel} onClick={onClick}>
         {innerContent}
       </a>
     );
   }
 
   return (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={combinedClassName} onClick={onClick}>
       {innerContent}
     </button>
   );

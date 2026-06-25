@@ -34,7 +34,7 @@ export default function Blog() {
 
   return (
     <>
-      <div className="service-detail-page">
+      <div className="service-detail-page blog-page-container">
         {/* Breadcrumbs */}
         <div className="service-breadcrumbs">
           <div className="grid-container">
