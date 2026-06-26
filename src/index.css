@@ -1496,6 +1496,32 @@ ul, ol {
   .work-grid-arrow {
     display: none !important;
   }
+
+  #dedicated {
+    height: auto !important;
+    margin-top: 0 !important;
+    padding: 6rem 1.5rem !important;
+  }
+
+  .dedicated-sticky-container {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+    top: auto !important;
+  }
+
+  .dedicated-sticky-inner {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    height: auto !important;
+  }
+
+  #work {
+    height: auto !important;
+    margin-top: 0 !important;
+    padding: 6rem 1.5rem !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -3720,6 +3746,19 @@ ul, ol {
 }
 
 @media (max-width: 1024px) {
+  #whyus {
+    height: auto !important;
+    margin-top: 0 !important;
+    clip-path: none !important;
+  }
+
+  .sequence-sticky-container {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding-top: 4rem !important;
+  }
+
   .sequence-mobile-layout {
     display: none !important;
   }
@@ -6608,6 +6647,14 @@ ul, ol {
 @media (max-width: 1024px) {
   .tech-glow-divider-7-bottom {
     display: none !important;
+  }
+
+  #screen7-container {
+    display: block !important;
+    position: relative !important;
+    height: auto !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 }
 
@@ -16008,6 +16055,13 @@ button.swiper-pagination-bullet {
   }
 
   .blog-preview-section {
+    position: relative !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    transform: none !important;
     margin-top: -120px !important;
     z-index: 7 !important;
     padding: 220px 1.5rem 180px 1.5rem !important;
@@ -16036,46 +16090,48 @@ button.swiper-pagination-bullet {
   }
 }
 
-.partners-preview-section {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  min-height: 100vh !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  box-sizing: border-box !important;
-  padding-top: 100px !important;
-  padding-bottom: 40px !important;
-  z-index: 9 !important;
-  visibility: hidden;
-  pointer-events: none;
-  will-change: transform;
-  margin: 0 !important;
-}
+@media (min-width: 1025px) {
+  .partners-preview-section {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding-top: 100px !important;
+    padding-bottom: 40px !important;
+    z-index: 9 !important;
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform;
+    margin: 0 !important;
+  }
 
-.blog-preview-section {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  min-height: 100vh !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  box-sizing: border-box !important;
-  padding-top: 100px !important;
-  padding-bottom: 40px !important;
-  z-index: 9 !important;
-  visibility: hidden;
-  pointer-events: none;
-  will-change: transform;
-  margin: 0 !important;
+  .blog-preview-section {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding-top: 100px !important;
+    padding-bottom: 40px !important;
+    z-index: 9 !important;
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform;
+    margin: 0 !important;
+  }
 }
 
 /* Mobile Accordion for Testimonials */

@@ -99,14 +99,27 @@ export default function TextReveal({ text, className = '', delay = 0, glitch = f
           };
 
           const pageWrapper = document.querySelector('.page-wrapper');
-          if (pageWrapper && pageWrapper.classList.contains('loading')) {
-            const mutationObserver = new MutationObserver((mutations) => {
-              if (!pageWrapper.classList.contains('loading')) {
+          const sectionParent = ref.current?.closest('.page-constructor__section');
+
+          const checkConditions = () => {
+            const isPageLoaded = !pageWrapper || !pageWrapper.classList.contains('loading');
+            const isSectionActive = !sectionParent || sectionParent.classList.contains('is-active');
+            return isPageLoaded && isSectionActive;
+          };
+
+          if (!checkConditions()) {
+            const mutationObserver = new MutationObserver(() => {
+              if (checkConditions()) {
                 triggerReveal();
                 mutationObserver.disconnect();
               }
             });
-            mutationObserver.observe(pageWrapper, { attributes: true, attributeFilter: ['class'] });
+            if (pageWrapper) {
+              mutationObserver.observe(pageWrapper, { attributes: true, attributeFilter: ['class'] });
+            }
+            if (sectionParent) {
+              mutationObserver.observe(sectionParent, { attributes: true, attributeFilter: ['class'] });
+            }
           } else {
             triggerReveal();
           }
