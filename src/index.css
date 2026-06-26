@@ -15413,7 +15413,7 @@ button.swiper-pagination-bullet {
 .services__card .services__card-container::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: 0px !important;
   padding: 1px; /* border thickness */
   background: var(--card-glow-color, #00D9FF) !important;
