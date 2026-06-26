@@ -15526,30 +15526,30 @@ button.swiper-pagination-bullet {
   --card-glow-color: #A020F0 !important;
 }
 
-/* Specific overrides for Support & Operations Section (5 slides layout) */
+/* Specific overrides for Support & Operations Section (8 slides layout) */
 #services-support-operations .services__slide:nth-child(1) {
   --card-glow-color: #00D9FF !important;
 }
-#services-support-operations .services__slide:nth-child(2) .services__card:nth-child(1) {
+#services-support-operations .services__slide:nth-child(2) {
   --card-glow-color: #A020F0 !important;
-}
-#services-support-operations .services__slide:nth-child(2) .services__card:nth-child(2) {
-  --card-glow-color: #00D9FF !important;
 }
 #services-support-operations .services__slide:nth-child(3) {
   --card-glow-color: #FF1493 !important;
 }
-#services-support-operations .services__slide:nth-child(4) .services__card:nth-child(1) {
+#services-support-operations .services__slide:nth-child(4) {
   --card-glow-color: #00D9FF !important;
 }
-#services-support-operations .services__slide:nth-child(4) .services__card:nth-child(2) {
+#services-support-operations .services__slide:nth-child(5) {
   --card-glow-color: #A020F0 !important;
 }
-#services-support-operations .services__slide:nth-child(5) .services__card:nth-child(1) {
-  --card-glow-color: #A020F0 !important;
-}
-#services-support-operations .services__slide:nth-child(5) .services__card:nth-child(2) {
+#services-support-operations .services__slide:nth-child(6) {
   --card-glow-color: #FF1493 !important;
+}
+#services-support-operations .services__slide:nth-child(7) {
+  --card-glow-color: #00D9FF !important;
+}
+#services-support-operations .services__slide:nth-child(8) {
+  --card-glow-color: #A020F0 !important;
 }
 
 /* Small stacked card floating bottom-right corner graphics */
@@ -16457,8 +16457,8 @@ button.swiper-pagination-bullet {
   .services-body .page-constructor__section:nth-of-type(2),
   .services-body .page-constructor__section:nth-of-type(3) {
     position: sticky !important;
-    top: 0 !important; /* Stays fixed at the top of the viewport */
-    height: 100dvh !important; /* Force exact full-screen viewport height */
+    top: min(0px, calc(100dvh - 100%)) !important; /* Pins bottom edge if taller than viewport */
+    height: auto !important; /* Allow section to grow naturally if content is tall */
     min-height: 100dvh !important;
     background: rgba(0, 0, 0, 0.95) !important;
     backdrop-filter: blur(25px) !important;
@@ -16469,17 +16469,17 @@ button.swiper-pagination-bullet {
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
-    padding-top: min(50px, 5dvh) !important; /* Account for the website navigation header */
-    padding-bottom: min(30px, 3dvh) !important; /* Generous but compact bottom spacing */
+    padding-top: min(80px, 8dvh) !important; /* Generous, standard navigation padding */
+    padding-bottom: min(180px, 16dvh) !important; /* Spacious bottom padding for breathing room */
     margin-bottom: 0 !important;
     box-sizing: border-box !important;
     will-change: transform;
     overflow: hidden !important; /* Contain cards perfectly within the sticky container */
   }
 
-  /* Scale down text padding relative to viewport height to guarantee zero overflow */
+  /* Restore spacious text padding-bottom for comfortable breathing room */
   .services-body .services-unified .services__text {
-    padding-bottom: min(20px, 2dvh) !important;
+    padding-bottom: min(54px, 4.5dvh) !important;
   }
 
   .services-body .services__card .services__card-container-img {

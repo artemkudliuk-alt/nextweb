@@ -603,52 +603,53 @@ export default function Services() {
                       </div>
                     </div>
 
-                    {/* Slide 2: Технический аудит & UX/UI консалтинг (Stacked Text Cards with corner graphics) */}
+                    {/* Slide 2: Технический аудит */}
                     <div className="services__slide swiper-slide">
-                      <div className="services__card_stack">
-                        <div className="services__card">
-                          <div className="services__card-ccccc">
-                            <Link to="/service/audit" className="services__card-container services__card-container-text">
-                              <h3>Технический аудит</h3>
-                              <span className="services__card-price desctop">
-                                От $500
-                              </span>
-                              <p className="services__card-description services__card-description-animation">
-                                Глубокий анализ кода, скорости загрузки, серверной архитектуры, SEO-ошибок и уязвимостей.
-                              </p>
-                              <span className="services__card-price tablet-mobile">
-                                От $500
-                              </span>
-                              <div className="services__card-small-img-wr">
-                                <img src="/_sa/img/services/P59g84goAUdEc9h8xH9YpACf9T4jZqxQf5DxhESD.png" alt="" loading="lazy" />
-                              </div>
-                            </Link>
+                      <div className="services__card">
+                        <Link to="/service/audit" className="services__card-container services__card-container-img">
+                          <h3>Технический аудит</h3>
+                          <span className="services__card-price desctop">
+                            От $500
+                          </span>
+                          <p className="services__card-description services__card-description-animation">
+                            Глубокий анализ кода, скорости загрузки, серверной архитектуры, SEO-ошибок и уязвимостей.
+                          </p>
+                          <span className="services__card-price tablet-mobile">
+                            От $500
+                          </span>
+                          <div className="services__card-img-wr">
+                            <img src="/_sa/img/services/P59g84goAUdEc9h8xH9YpACf9T4jZqxQf5DxhESD.png" alt="#" loading="lazy" className="services__card-img services__card-img_desc" />
+                            <img src="/_sa/img/services/P59g84goAUdEc9h8xH9YpACf9T4jZqxQf5DxhESD.png" alt="#" loading="lazy" className="services__card-img services__card-img_tablet" />
+                            <img src="/_sa/img/services/P59g84goAUdEc9h8xH9YpACf9T4jZqxQf5DxhESD.png" alt="#" loading="lazy" className="services__card-img services__card-img_mobile" />
                           </div>
-                        </div>
-
-                        <div className="services__card" style={{ marginTop: '30px' }}>
-                          <div className="services__card-ccccc">
-                            <Link to="/service/ux-ui" className="services__card-container services__card-container-text">
-                              <h3>UX/UI консалтинг</h3>
-                              <span className="services__card-price desctop">
-                                От $600
-                              </span>
-                              <p className="services__card-description services__card-description-animation">
-                                Аудит юзабилити интерфейса сайта или приложения. Поиск причин низкой конверсии и брошенных корзин.
-                              </p>
-                              <span className="services__card-price tablet-mobile">
-                                От $600
-                              </span>
-                              <div className="services__card-small-img-wr">
-                                <img src="/_sa/img/services/FgvCOx6yCrzMr47skHUmU3hQBPT7MoebjqrJZi79.png" alt="" loading="lazy" />
-                              </div>
-                            </Link>
-                          </div>
-                        </div>
+                        </Link>
                       </div>
                     </div>
 
-                    {/* Slide 3: DevOps и облака (Large Image Card) */}
+                    {/* Slide 3: UX/UI консалтинг */}
+                    <div className="services__slide swiper-slide">
+                      <div className="services__card">
+                        <Link to="/service/ux-ui" className="services__card-container services__card-container-img">
+                          <h3>UX/UI консалтинг</h3>
+                          <span className="services__card-price desctop">
+                            От $600
+                          </span>
+                          <p className="services__card-description services__card-description-animation">
+                            Аудит юзабилити интерфейса сайта или приложения. Поиск причин низкой конверсии и брошенных корзин.
+                          </p>
+                          <span className="services__card-price tablet-mobile">
+                            От $600
+                          </span>
+                          <div className="services__card-img-wr">
+                            <img src="/_sa/img/services/FgvCOx6yCrzMr47skHUmU3hQBPT7MoebjqrJZi79.png" alt="#" loading="lazy" className="services__card-img services__card-img_desc" />
+                            <img src="/_sa/img/services/FgvCOx6yCrzMr47skHUmU3hQBPT7MoebjqrJZi79.png" alt="#" loading="lazy" className="services__card-img services__card-img_tablet" />
+                            <img src="/_sa/img/services/FgvCOx6yCrzMr47skHUmU3hQBPT7MoebjqrJZi79.png" alt="#" loading="lazy" className="services__card-img services__card-img_mobile" />
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Slide 4: DevOps и облака */}
                     <div className="services__slide swiper-slide">
                       <div className="services__card">
                         <Link to="/service/devops" className="services__card-container services__card-container-img">
@@ -671,93 +672,95 @@ export default function Services() {
                       </div>
                     </div>
 
-                    {/* Slide 4: Почасовая разработка & IT-консалтинг (Stacked Text Cards with corner graphics) */}
+                    {/* Slide 5: Почасовая разработка */}
                     <div className="services__slide swiper-slide">
-                      <div className="services__card_stack">
-                        <div className="services__card">
-                          <div className="services__card-ccccc">
-                            <Link to="/service/hourly" className="services__card-container services__card-container-text">
-                              <h3>Почасовая разработка</h3>
-                              <span className="services__card-price desctop">
-                                От $40 / час
-                              </span>
-                              <p className="services__card-description services__card-description-animation">
-                                Гибкий формат разработки с оплатой за фактически затраченное время (Time & Material).
-                              </p>
-                              <span className="services__card-price tablet-mobile">
-                                От $40 / час
-                              </span>
-                              <div className="services__card-small-img-wr">
-                                <img src="/_sa/img/services/3LuWbO4vFz5rXLmfBA6fFedCstiyjjs4V7axiN9R.png" alt="" loading="lazy" />
-                              </div>
-                            </Link>
+                      <div className="services__card">
+                        <Link to="/service/hourly" className="services__card-container services__card-container-img">
+                          <h3>Почасовая разработка</h3>
+                          <span className="services__card-price desctop">
+                            От $40 / час
+                          </span>
+                          <p className="services__card-description services__card-description-animation">
+                            Гибкий формат разработки с оплатой за фактически затраченное время (Time & Material).
+                          </p>
+                          <span className="services__card-price tablet-mobile">
+                            От $40 / час
+                          </span>
+                          <div className="services__card-img-wr">
+                            <img src="/_sa/img/services/3LuWbO4vFz5rXLmfBA6fFedCstiyjjs4V7axiN9R.png" alt="#" loading="lazy" className="services__card-img services__card-img_desc" />
+                            <img src="/_sa/img/services/3LuWbO4vFz5rXLmfBA6fFedCstiyjjs4V7axiN9R.png" alt="#" loading="lazy" className="services__card-img services__card-img_tablet" />
+                            <img src="/_sa/img/services/3LuWbO4vFz5rXLmfBA6fFedCstiyjjs4V7axiN9R.png" alt="#" loading="lazy" className="services__card-img services__card-img_mobile" />
                           </div>
-                        </div>
-
-                        <div className="services__card" style={{ marginTop: '30px' }}>
-                          <div className="services__card-ccccc">
-                            <Link to="/service/consulting" className="services__card-container services__card-container-text">
-                              <h3>IT-консалтинг</h3>
-                              <span className="services__card-price desctop">
-                                От $100 / час
-                              </span>
-                              <p className="services__card-description services__card-description-animation">
-                                Экспертный консалтинг: выбор стека, аудит кода, проектирование System Design и ИТ-архитектуры.
-                              </p>
-                              <span className="services__card-price tablet-mobile">
-                                От $100 / час
-                              </span>
-                              <div className="services__card-small-img-wr">
-                                <img src="/_sa/img/services/uJEVTMswdwntPfDGMjc9NshSj1zzC5KoEZslI9PS.png" alt="" loading="lazy" />
-                              </div>
-                            </Link>
-                          </div>
-                        </div>
+                        </Link>
                       </div>
                     </div>
 
-                    {/* Slide 5: Копирайтинг и контент & Веб-аналитика (Stacked Text Cards with corner graphics) */}
+                    {/* Slide 6: IT-консалтинг */}
                     <div className="services__slide swiper-slide">
-                      <div className="services__card_stack">
-                        <div className="services__card">
-                          <div className="services__card-ccccc">
-                            <Link to="/service/copywriting" className="services__card-container services__card-container-text">
-                              <h3>Копирайтинг и контент</h3>
-                              <span className="services__card-price desctop">
-                                От $15 / 1000 зн.
-                              </span>
-                              <p className="services__card-description services__card-description-animation">
-                                Написание экспертных статей, SEO-оптимизированных текстов, продающего контента для лендингов.
-                              </p>
-                              <span className="services__card-price tablet-mobile">
-                                От $15 / 1000 зн.
-                              </span>
-                              <div className="services__card-small-img-wr">
-                                <img src="/_sa/img/services/5lXRPRmqGnKTGgJGa3g7Y3iPejliMrVuKDx8bpXp.png" alt="" loading="lazy" />
-                              </div>
-                            </Link>
+                      <div className="services__card">
+                        <Link to="/service/consulting" className="services__card-container services__card-container-img">
+                          <h3>IT-консалтинг</h3>
+                          <span className="services__card-price desctop">
+                            От $100 / час
+                          </span>
+                          <p className="services__card-description services__card-description-animation">
+                            Экспертный консалтинг: выбор стека, аудит кода, проектирование System Design и ИТ-архитектуры.
+                          </p>
+                          <span className="services__card-price tablet-mobile">
+                            От $100 / час
+                          </span>
+                          <div className="services__card-img-wr">
+                            <img src="/_sa/img/services/uJEVTMswdwntPfDGMjc9NshSj1zzC5KoEZslI9PS.png" alt="#" loading="lazy" className="services__card-img services__card-img_desc" />
+                            <img src="/_sa/img/services/uJEVTMswdwntPfDGMjc9NshSj1zzC5KoEZslI9PS.png" alt="#" loading="lazy" className="services__card-img services__card-img_tablet" />
+                            <img src="/_sa/img/services/uJEVTMswdwntPfDGMjc9NshSj1zzC5KoEZslI9PS.png" alt="#" loading="lazy" className="services__card-img services__card-img_mobile" />
                           </div>
-                        </div>
+                        </Link>
+                      </div>
+                    </div>
 
-                        <div className="services__card" style={{ marginTop: '30px' }}>
-                          <div className="services__card-ccccc">
-                            <Link to="/service/analytics" className="services__card-container services__card-container-text">
-                              <h3>Веб-аналитика</h3>
-                              <span className="services__card-price desctop">
-                                От $300
-                              </span>
-                              <p className="services__card-description services__card-description-animation">
-                                Настройка веб-аналитики (GA4, Яндекс.Метрика), отслеживание целей, построение отчетов и дашбордов.
-                              </p>
-                              <span className="services__card-price tablet-mobile">
-                                От $300
-                              </span>
-                              <div className="services__card-small-img-wr">
-                                <img src="/_sa/img/services/rYECvJ4lQtng1wTQVTvbeh2YVQnD2eTBWs5iDdFd.png" alt="" loading="lazy" />
-                              </div>
-                            </Link>
+                    {/* Slide 7: Копирайтинг и контент */}
+                    <div className="services__slide swiper-slide">
+                      <div className="services__card">
+                        <Link to="/service/copywriting" className="services__card-container services__card-container-img">
+                          <h3>Копирайтинг и контент</h3>
+                          <span className="services__card-price desctop">
+                            От $15 / 1000 зн.
+                          </span>
+                          <p className="services__card-description services__card-description-animation">
+                            Написание экспертных статей, SEO-оптимизированных текстов, продающего контента для лендингов.
+                          </p>
+                          <span className="services__card-price tablet-mobile">
+                            От $15 / 1000 зн.
+                          </span>
+                          <div className="services__card-img-wr">
+                            <img src="/_sa/img/services/5lXRPRmqGnKTGgJGa3g7Y3iPejliMrVuKDx8bpXp.png" alt="#" loading="lazy" className="services__card-img services__card-img_desc" />
+                            <img src="/_sa/img/services/5lXRPRmqGnKTGgJGa3g7Y3iPejliMrVuKDx8bpXp.png" alt="#" loading="lazy" className="services__card-img services__card-img_tablet" />
+                            <img src="/_sa/img/services/5lXRPRmqGnKTGgJGa3g7Y3iPejliMrVuKDx8bpXp.png" alt="#" loading="lazy" className="services__card-img services__card-img_mobile" />
                           </div>
-                        </div>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Slide 8: Веб-аналитика */}
+                    <div className="services__slide swiper-slide">
+                      <div className="services__card">
+                        <Link to="/service/analytics" className="services__card-container services__card-container-img">
+                          <h3>Веб-аналитика</h3>
+                          <span className="services__card-price desctop">
+                            От $300
+                          </span>
+                          <p className="services__card-description services__card-description-animation">
+                            Настройка веб-аналитики (GA4, Яндекс.Метрика), отслеживание целей, построение отчетов и дашбордов.
+                          </p>
+                          <span className="services__card-price tablet-mobile">
+                            От $300
+                          </span>
+                          <div className="services__card-img-wr">
+                            <img src="/_sa/img/services/rYECvJ4lQtng1wTQVTvbeh2YVQnD2eTBWs5iDdFd.png" alt="#" loading="lazy" className="services__card-img services__card-img_desc" />
+                            <img src="/_sa/img/services/rYECvJ4lQtng1wTQVTvbeh2YVQnD2eTBWs5iDdFd.png" alt="#" loading="lazy" className="services__card-img services__card-img_tablet" />
+                            <img src="/_sa/img/services/rYECvJ4lQtng1wTQVTvbeh2YVQnD2eTBWs5iDdFd.png" alt="#" loading="lazy" className="services__card-img services__card-img_mobile" />
+                          </div>
+                        </Link>
                       </div>
                     </div>
                   </div>
