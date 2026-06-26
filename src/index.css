@@ -15377,7 +15377,7 @@ button.swiper-pagination-bullet {
 #gradient-canvas {
   filter: blur(120px) !important;
   -webkit-filter: blur(120px) !important;
-  opacity: 0.3 !important;
+  opacity: 0.5 !important;
   pointer-events: none;
   transform: translate3d(0, 0, 0); /* Force GPU acceleration */
   will-change: transform;
@@ -16460,7 +16460,7 @@ button.swiper-pagination-bullet {
     top: min(0px, calc(100dvh - 100%)) !important; /* Pins bottom edge if taller than viewport */
     height: auto !important; /* Allow section to grow naturally if content is tall */
     min-height: 100dvh !important;
-    background: rgba(0, 0, 0, 0.95) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
     backdrop-filter: blur(25px) !important;
     -webkit-backdrop-filter: blur(25px) !important;
     box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.95);
