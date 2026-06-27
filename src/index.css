@@ -1519,8 +1519,9 @@ ul, ol {
 
   #work {
     height: auto !important;
-    margin-top: 0 !important;
-    padding: 6rem 1.5rem !important;
+    margin-top: -120px !important;
+    padding: 11rem 1.5rem 11rem 1.5rem !important;
+    z-index: 5 !important;
   }
 }
 
@@ -3749,14 +3750,13 @@ ul, ol {
   #whyus {
     height: auto !important;
     margin-top: 0 !important;
-    clip-path: none !important;
   }
 
   .sequence-sticky-container {
     position: relative !important;
     height: auto !important;
     overflow: visible !important;
-    padding-top: 4rem !important;
+    padding: 10rem 1.5rem !important;
   }
 
   .sequence-mobile-layout {
@@ -5812,7 +5812,7 @@ ul, ol {
     height: auto !important;
     min-height: 100vh;
     clip-path: polygon(0 120px, 100% 0, 100% 100%, 0 100%);
-    padding: 9rem 1.5rem 10rem 1.5rem !important;
+    padding: 11rem 1.5rem 10rem 1.5rem !important;
     margin-top: -120px !important;
     z-index: 6 !important;
   }
@@ -6655,6 +6655,13 @@ ul, ol {
     height: auto !important;
     visibility: visible !important;
     pointer-events: auto !important;
+  }
+
+  .contact-section {
+    padding: 11rem 1.5rem 8rem 1.5rem !important;
+    height: auto !important;
+    margin-top: -120px !important;
+    z-index: 8 !important;
   }
 }
 
@@ -16906,3 +16913,68 @@ button.swiper-pagination-bullet {
     margin-right: 15px !important;
   }
 }
+
+/* --- Homepage Mobile Layout Adaptation (Bottom overrides to win specificity/order battles) --- */
+@media (max-width: 1024px) {
+  #dedicated {
+    height: auto !important;
+    margin-top: -120px !important; /* Overlap approach to prevent black gaps */
+    padding: 11rem 1.5rem 6rem 1.5rem !important; /* Generous top padding to protect header */
+    z-index: 3 !important;
+  }
+
+  #whyus {
+    height: auto !important;
+    margin-top: -120px !important; /* Overlap dedicated to prevent black gaps */
+    z-index: 4 !important;
+  }
+
+  #work {
+    position: relative !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin-top: -120px !important; /* Proper slant transition overlap */
+    padding: 11rem 1.5rem 11rem 1.5rem !important; /* Generous top/bottom padding */
+    z-index: 5 !important;
+    overflow: visible !important;
+  }
+
+  .tech-mobile-layout {
+    padding-bottom: 3.5rem !important; /* Visual gap after technology icons */
+  }
+
+  /* --- Testimonials Accordion Mobile Overrides --- */
+  .testimonials-accordion .accordion-item {
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    background: rgba(11, 11, 12, 0.8) !important;
+    transition: border-color 0.3s ease, background 0.3s ease !important;
+  }
+
+  .testimonials-accordion .accordion-item.open {
+    border-color: var(--brand-glow-color) !important;
+    background: rgba(11, 11, 12, 0.95) !important;
+  }
+
+  .testimonials-accordion .accordion-arrow {
+    color: #a1a1aa !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .testimonials-accordion .accordion-item.open .accordion-arrow {
+    color: var(--brand-glow-color) !important;
+  }
+
+  .testimonials-accordion .accordion-content {
+    display: block !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .testimonials-accordion .accordion-item.open .accordion-content {
+    max-height: 800px !important;
+  }
+}
+

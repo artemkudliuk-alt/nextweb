@@ -512,6 +512,28 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     return window.innerHeight;
   };
 
+  const getDedicatedTopDoc = () => {
+    const isMobileLayout = window.innerWidth <= 1024;
+    if (!isMobileLayout) return window.innerHeight * 2;
+    const el = dedicatedRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      return window.scrollY + rect.top;
+    }
+    return window.innerHeight * 2;
+  };
+
+  const getWhyUsTopDoc = () => {
+    const isMobileLayout = window.innerWidth <= 1024;
+    if (!isMobileLayout) return window.innerHeight * 3.2;
+    const el = whyUsRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      return window.scrollY + rect.top;
+    }
+    return window.innerHeight * 3.2;
+  };
+
   const getWorkTopDoc = () => {
     const isMobileLayout = window.innerWidth <= 1024;
     if (!isMobileLayout && workTopDocRef.current > 0) return workTopDocRef.current;
@@ -1174,9 +1196,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         const approachEl = document.getElementById('approach');
         const dedicatedEl = dedicatedRef.current;
         if (approachEl && dedicatedEl) {
-          const approachHeight = getApproachHeight();
-          const scrollStart = vh + approachHeight - vh;
-          const scrollEnd = vh + approachHeight;
+          const dedicatedTopDoc = getDedicatedTopDoc();
+          const scrollStart = dedicatedTopDoc - vh;
+          const scrollEnd = dedicatedTopDoc;
           
           if (currentScrollY >= scrollStart && currentScrollY < scrollEnd) {
             const progress = Math.max(0, Math.min((currentScrollY - scrollStart) / vh, 1));
@@ -1250,10 +1272,9 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
         const dedicatedEl = dedicatedRef.current;
         const whyUsEl = whyUsRef.current;
         if (dedicatedEl && whyUsEl) {
-          const approachHeight = getApproachHeight();
-          const dedicatedHeight = getDedicatedHeight();
-          const scrollStart3 = approachHeight + dedicatedHeight;
-          const scrollEnd3 = scrollStart3 + vh;
+          const whyUsTopDoc = getWhyUsTopDoc();
+          const scrollStart3 = whyUsTopDoc;
+          const scrollEnd3 = whyUsTopDoc + vh;
           
           if (currentScrollY >= scrollStart3 && currentScrollY < scrollEnd3) {
             const progress = Math.max(0, Math.min((currentScrollY - scrollStart3) / vh, 1));
