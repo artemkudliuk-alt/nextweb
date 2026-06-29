@@ -1206,10 +1206,15 @@ export default function Home() {
         }
       }
 
+      const approachEl = document.getElementById('approach');
+      if (approachEl) {
+        approachEl.style.opacity = '';
+        approachEl.style.visibility = '';
+      }
+
       // Mobile-specific Screen 2 -> Screen 3 Slide-over transition
       const isMobile = window.innerWidth <= 1024;
       if (isMobile) {
-        const approachEl = document.getElementById('approach');
         const dedicatedEl = dedicatedRef.current;
         if (approachEl && dedicatedEl) {
           const dedicatedTopDoc = getDedicatedTopDoc();
@@ -1374,7 +1379,6 @@ export default function Home() {
       }
 
       // Add visible class to #approach when scrolled into view (visible after 20% height)
-      const approachEl = document.getElementById('approach');
       if (approachEl) {
         if (progress > 0.2) {
           approachEl.classList.add('visible');
@@ -1557,6 +1561,16 @@ export default function Home() {
               wipeProgress = 1;
             }
 
+            const dedicatedEl = dedicatedRef.current;
+            if (dedicatedEl) {
+              dedicatedEl.style.opacity = (1 - wipeProgress).toString();
+              if (wipeProgress >= 0.99) {
+                dedicatedEl.style.visibility = 'hidden';
+              } else {
+                dedicatedEl.style.visibility = 'visible';
+              }
+            }
+
             if (whyUsEl) {
               const divider3 = whyUsEl.querySelector('.tech-glow-divider-3');
               if (wipeProgress >= 0.99) {
@@ -1593,6 +1607,13 @@ export default function Home() {
                 });
               }
             }
+            if (currentScrollY < vh * 5.2) {
+              const dedicatedEl = dedicatedRef.current;
+              if (dedicatedEl) {
+                dedicatedEl.style.opacity = '1';
+                dedicatedEl.style.visibility = 'visible';
+              }
+            }
           }
         }
       }
@@ -1604,6 +1625,10 @@ export default function Home() {
       if (workEl) {
         if (window.innerWidth > 1024) {
           if (currentScrollY >= vh * 9.2) {
+            if (whyUsEl) {
+              whyUsEl.style.opacity = '0';
+              whyUsEl.style.visibility = 'hidden';
+            }
             // Set default hidden styles for workEl when we are past testimonials entry
             if (currentScrollY >= vh * 11.2) {
               workEl.style.removeProperty('position');
@@ -1648,6 +1673,15 @@ export default function Home() {
                   screen6El.style.transform = `translateX(${translateXScreen6}vw)`;
                   screen6El.style.clipPath = 'none';
                   
+                  if (workEl) {
+                    workEl.style.opacity = (1 - progress5).toString();
+                    if (progress5 >= 0.99) {
+                      workEl.style.visibility = 'hidden';
+                    } else {
+                      workEl.style.visibility = 'visible';
+                    }
+                  }
+
                   const divider2 = divider2Ref.current;
                   if (divider2) {
                     divider2.style.transform = `translateX(${translateXScreen6 + 100}vw)`;
@@ -1663,6 +1697,11 @@ export default function Home() {
                   screen6El.style.transform = 'none';
                   screen6El.style.clipPath = 'none';
                   
+                  if (workEl) {
+                    workEl.style.opacity = '0';
+                    workEl.style.visibility = 'hidden';
+                  }
+
                   const divider2 = divider2Ref.current;
                   if (divider2) {
                     divider2.style.transform = 'none';
@@ -1686,6 +1725,13 @@ export default function Home() {
                 screen6El.style.pointerEvents = 'none';
                 screen6El.style.display = 'none';
                 screen6El.style.clipPath = '';
+
+                if (currentScrollY < vh * 10.2) {
+                  if (workEl) {
+                    workEl.style.opacity = '1';
+                    workEl.style.visibility = 'visible';
+                  }
+                }
               }
             }
 
@@ -1708,6 +1754,15 @@ export default function Home() {
                   const translateYBlog = (1 - progressBlog) * 100; // slide up from 100vh
                   blogEl.style.transform = `translateY(${translateYBlog}vh)`;
                   
+                  if (screen6El) {
+                    screen6El.style.opacity = (1 - progressBlog).toString();
+                    if (progressBlog >= 0.99) {
+                      screen6El.style.visibility = 'hidden';
+                    } else {
+                      screen6El.style.visibility = 'visible';
+                    }
+                  }
+
                   // Slanted wipe animation
                   const slantHeightBlog = (1 - progressBlog) * 120;
                   blogEl.style.clipPath = `polygon(0 ${slantHeightBlog}px, 100% 0, 100% 100%, 0 100%)`;
@@ -1725,6 +1780,11 @@ export default function Home() {
                   // Resting visible
                   blogEl.style.transform = 'none';
                   blogEl.style.clipPath = 'none';
+
+                  if (screen6El) {
+                    screen6El.style.opacity = '0';
+                    screen6El.style.visibility = 'hidden';
+                  }
 
                   const dividerBlog = blogEl.querySelector('.tech-glow-divider-blog');
                   if (dividerBlog) {
@@ -1744,6 +1804,13 @@ export default function Home() {
                 blogEl.style.display = 'none';
                 blogEl.style.clipPath = '';
                 blogEl.style.webkitClipPath = '';
+
+                if (currentScrollY < vh * 12.2) {
+                  if (screen6El) {
+                    screen6El.style.opacity = '1';
+                    screen6El.style.visibility = 'visible';
+                  }
+                }
               }
             }
 
@@ -1771,6 +1838,25 @@ export default function Home() {
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
 
+                  const homeCanvas = document.getElementById("home-gradient-canvas");
+                  const homeOverlay = document.getElementById("home-gradient-overlay");
+                  if (homeCanvas && homeOverlay) {
+                    homeCanvas.style.transition = 'none';
+                    homeOverlay.style.transition = 'none';
+                    homeCanvas.style.opacity = '0.5';
+                    homeOverlay.style.opacity = '1';
+                  }
+
+                  if (blogEl) {
+                    blogEl.style.filter = `blur(${contactProgress * 12}px) brightness(${1 - contactProgress * 0.65})`;
+                    blogEl.style.opacity = (1 - contactProgress).toString();
+                    if (contactProgress >= 0.99) {
+                      blogEl.style.visibility = 'hidden';
+                    } else {
+                      blogEl.style.visibility = 'visible';
+                    }
+                  }
+
                   const slantHeight = (1 - contactProgress) * 120;
                   screen7El.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
 
@@ -1796,6 +1882,22 @@ export default function Home() {
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
                   screen7El.style.clipPath = 'none';
+
+                  const homeCanvas = document.getElementById("home-gradient-canvas");
+                  const homeOverlay = document.getElementById("home-gradient-overlay");
+                  if (homeCanvas && homeOverlay) {
+                    homeCanvas.style.transition = "";
+                    homeOverlay.style.transition = "";
+                    homeCanvas.style.opacity = "";
+                    homeOverlay.style.opacity = "";
+                  }
+
+                  if (blogEl) {
+                    blogEl.style.filter = '';
+                    blogEl.style.opacity = '0';
+                    blogEl.style.visibility = 'hidden';
+                  }
+
                   if (glowDivider7) {
                     glowDivider7.style.opacity = '0';
                   }
@@ -1818,6 +1920,22 @@ export default function Home() {
                   screen7El.style.transform = 'none';
                   screen7El.style.opacity = '1';
                   screen7El.style.clipPath = 'none';
+
+                  const homeCanvas = document.getElementById("home-gradient-canvas");
+                  const homeOverlay = document.getElementById("home-gradient-overlay");
+                  if (homeCanvas && homeOverlay) {
+                    homeCanvas.style.transition = "";
+                    homeOverlay.style.transition = "";
+                    homeCanvas.style.opacity = "";
+                    homeOverlay.style.opacity = "";
+                  }
+
+                  if (blogEl) {
+                    blogEl.style.filter = '';
+                    blogEl.style.opacity = '0';
+                    blogEl.style.visibility = 'hidden';
+                  }
+
                   if (glowDivider7) {
                     glowDivider7.style.opacity = '0';
                   }
@@ -1844,9 +1962,26 @@ export default function Home() {
                 screen7El.style.display = 'none';
                 screen7El.style.clipPath = '';
 
+                const homeCanvas = document.getElementById("home-gradient-canvas");
+                const homeOverlay = document.getElementById("home-gradient-overlay");
+                if (homeCanvas && homeOverlay) {
+                  homeCanvas.style.transition = "";
+                  homeOverlay.style.transition = "";
+                  homeCanvas.style.opacity = "";
+                  homeOverlay.style.opacity = "";
+                }
+
                 if (contactContainer) {
                   contactContainer.style.transform = '';
                   contactContainer.style.opacity = '';
+                }
+
+                if (currentScrollY < vh * 14.2) {
+                  if (blogEl) {
+                    blogEl.style.filter = '';
+                    blogEl.style.opacity = '1';
+                    blogEl.style.visibility = 'visible';
+                  }
                 }
               }
             }
@@ -1864,14 +1999,63 @@ export default function Home() {
             workEl.style.pointerEvents = 'auto';
 
             // Restoring the Slanted Wipe & Parallax transition for Screen 5 (#work)
-            const workTopDoc = getWorkTopDoc();
-            const easedRectTop = workTopDoc - currentScrollY;
-            let workProgress = 1 - (easedRectTop / vh);
-            const isMobile = window.innerWidth <= 1024;
-            if (!isMobile && (window.scrollY >= vh * 9.2 || currentScrollY >= vh * 8.79)) {
-              workProgress = 1;
-            } else {
-              workProgress = Math.max(0, Math.min(1, workProgress));
+            const workProgress = Math.max(0, Math.min(1, (currentScrollY - vh * 8.2) / vh));
+
+            if (whyUsEl) {
+              if (currentScrollY >= vh * 8.2 && currentScrollY < vh * 9.2) {
+                if (workProgress < 0.20) {
+                  whyUsEl.style.filter = '';
+                  whyUsEl.style.opacity = (1 - workProgress).toString();
+                  whyUsEl.style.visibility = 'visible';
+                } else if (workProgress >= 0.80) {
+                  whyUsEl.style.filter = 'blur(8px) brightness(0.35)';
+                  whyUsEl.style.opacity = '0';
+                  whyUsEl.style.visibility = 'hidden';
+                } else {
+                  const p = (workProgress - 0.20) / 0.60;
+                  const blurVal = p * 8;
+                  const brightnessVal = 1 - p * 0.65;
+                  whyUsEl.style.filter = `blur(${blurVal}px) brightness(${brightnessVal})`;
+                  whyUsEl.style.opacity = (1 - workProgress).toString();
+                  whyUsEl.style.visibility = 'visible';
+                }
+              } else {
+                whyUsEl.style.filter = '';
+                if (currentScrollY >= vh * 9.2) {
+                  whyUsEl.style.opacity = '0';
+                  whyUsEl.style.visibility = 'hidden';
+                } else {
+                  whyUsEl.style.opacity = '1';
+                  whyUsEl.style.visibility = 'visible';
+                }
+              }
+            }
+
+            // Animate canvas and overlay opacity programmatically during the slide transition
+            const homeCanvas = document.getElementById("home-gradient-canvas");
+            const homeOverlay = document.getElementById("home-gradient-overlay");
+            if (homeCanvas && homeOverlay) {
+              if (currentScrollY >= vh * 8.2 && currentScrollY < vh * 9.2) {
+                homeCanvas.style.transition = 'none';
+                homeOverlay.style.transition = 'none';
+                if (workProgress <= 0.05) {
+                  homeCanvas.style.opacity = '0';
+                  homeOverlay.style.opacity = '0';
+                } else if (workProgress >= 0.20) {
+                  homeCanvas.style.opacity = '0.5';
+                  homeOverlay.style.opacity = '1';
+                } else {
+                  // Scale smoothly between 5% and 20%
+                  const p = (workProgress - 0.05) / 0.15;
+                  homeCanvas.style.opacity = (p * 0.5).toString();
+                  homeOverlay.style.opacity = p.toString();
+                }
+              } else {
+                homeCanvas.style.transition = "";
+                homeOverlay.style.transition = "";
+                homeCanvas.style.opacity = "";
+                homeOverlay.style.opacity = "";
+              }
             }
 
             if (workProgress >= 0.99) {
@@ -2244,6 +2428,114 @@ export default function Home() {
     initUnicorn();
   }, []);
 
+  // Dynamic canvas background animation for homepage dark sections - Shared Lava Lamp Effect
+  useEffect(() => {
+    const canvas = document.getElementById("home-gradient-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let animationFrameId;
+
+    // NextWeb brand RGB colors: Cyber-cyan, Magenta, and Purple
+    const blobs = [
+      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 350, baseR: 350, vx: 0.45, vy: 0.32, color: 'rgba(0, 217, 255, 0.85)', phase: Math.random() * 100 }, // Cyber-cyan
+      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 400, baseR: 400, vx: -0.32, vy: 0.38, color: 'rgba(255, 20, 147, 0.8)', phase: Math.random() * 100 },  // Magenta
+      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 380, baseR: 380, vx: 0.28, vy: -0.35, color: 'rgba(160, 32, 240, 0.8)', phase: Math.random() * 100 },  // Purple
+      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 280, baseR: 280, vx: -0.38, vy: -0.28, color: 'rgba(0, 217, 255, 0.85)', phase: Math.random() * 100 }, // Cyber-cyan small
+      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 320, baseR: 320, vx: 0.32, vy: 0.32, color: 'rgba(255, 20, 147, 0.8)', phase: Math.random() * 100 },   // Magenta small
+      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 420, baseR: 420, vx: -0.25, vy: -0.32, color: 'rgba(160, 32, 240, 0.8)', phase: Math.random() * 100 }  // Purple large
+    ];
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width || window.innerWidth;
+      canvas.height = rect.height || window.innerHeight;
+    };
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    let time = 0;
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      time += 0.003;
+
+      blobs.forEach(b => {
+        b.x += b.vx + Math.sin(time + b.phase) * 0.15;
+        b.y += b.vy + Math.cos(time + b.phase) * 0.15;
+        b.r = b.baseR + Math.sin(time * 1.2 + b.phase) * 35;
+
+        if (b.x < -b.r / 2 || b.x > canvas.width + b.r / 2) b.vx *= -1;
+        if (b.y < -b.r / 2 || b.y > canvas.height + b.r / 2) b.vy *= -1;
+
+        const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        grad.addColorStop(0, b.color);
+        grad.addColorStop(0.5, b.color);
+        grad.addColorStop(1, "transparent");
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+    render();
+
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  // IntersectionObserver to show/hide the homepage lava lamp canvas and overlay
+  useEffect(() => {
+    const canvas = document.getElementById("home-gradient-canvas");
+    const overlay = document.getElementById("home-gradient-overlay");
+    if (!canvas) return;
+
+    const activeTargets = new Set();
+    const callback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          activeTargets.add(entry.target.id);
+        } else {
+          activeTargets.delete(entry.target.id);
+        }
+      });
+
+      const hasDarkSection = activeTargets.has("dedicated") || 
+                             activeTargets.has("work") || 
+                             activeTargets.has("blog-preview") || 
+                             activeTargets.has("screen7");
+
+      if (hasDarkSection) {
+        canvas.classList.add("visible");
+        if (overlay) overlay.classList.add("visible");
+      } else {
+        canvas.classList.remove("visible");
+        if (overlay) overlay.classList.remove("visible");
+      }
+    };
+
+    const observer = new IntersectionObserver(callback, {
+      root: null,
+      rootMargin: "-10% 0px -10% 0px",
+      threshold: 0.05
+    });
+
+    const targets = ["dedicated", "work", "blog-preview", "screen7"].map(id => document.getElementById(id));
+    targets.forEach(target => {
+      if (target) observer.observe(target);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const handleLearnApproach = (e) => {
     e.preventDefault();
     const el = document.querySelector('#approach');
@@ -2252,6 +2544,8 @@ export default function Home() {
 
   return (
     <div className="home-page">
+      <canvas id="home-gradient-canvas" className="home-gradient-canvas" />
+      <div id="home-gradient-overlay" className="home-gradient-overlay" />
       {/* Divider 2: Sliding Vertical Glowing Line at the left edge of #approach (slides with it) */}
       <div ref={divider2Ref} className="tech-glow-divider-2-fixed">
         <svg viewBox="0 0 100 1080" width="100%" height="100%" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'visible' }}>

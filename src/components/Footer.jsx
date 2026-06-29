@@ -76,11 +76,13 @@ export default function Footer() {
   }, []);
 
   const isServicesPage = location.pathname === "/services";
+  const isHomepage = location.pathname === "/";
+  const isSharedCanvasPage = isServicesPage || isHomepage;
 
   // Dynamic canvas background animation inside Footer - Lava Lamp Effect
   useEffect(() => {
-    // Prevent double rendering on services page where page-wide fixed canvas is active
-    if (isServicesPage) return;
+    // Prevent double rendering on pages where page-wide fixed canvas is active
+    if (isSharedCanvasPage) return;
 
     const canvas = document.getElementById("footer-gradient-canvas");
     if (!canvas) return;
@@ -140,7 +142,7 @@ export default function Footer() {
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isServicesPage]);
+  }, [isSharedCanvasPage]);
 
   const handleNavClick = (e, hash) => {
     e.preventDefault();
@@ -159,7 +161,7 @@ export default function Footer() {
   return (
     <footer ref={ref} className="main-footer" style={{ padding: 0 }}>
       {/* Glow Line Sweep Divider */}
-      {!isServicesPage && (
+      {!isSharedCanvasPage && (
         <div className="tech-glow-divider" style={{ top: "-60px" }}>
           <svg
             viewBox="0 0 1440 120"
@@ -195,7 +197,7 @@ export default function Footer() {
         </div>
       )}
 
-      {isServicesPage && (
+      {isSharedCanvasPage && (
         <div
           className="services-footer-divider"
           style={{
@@ -220,7 +222,7 @@ export default function Footer() {
       )}
 
       {/* Glass Card Container: Stretched to cover the entire footer area */}
-      {!isServicesPage && (
+      {!isSharedCanvasPage && (
         <canvas id="footer-gradient-canvas" className="footer-gradient-canvas" />
       )}
       <div
