@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 export default function AsciiArrows({ isHovered = false }) {
   const canvasRef = useRef(null);
@@ -14,7 +14,7 @@ export default function AsciiArrows({ isHovered = false }) {
   useEffect(() => {
     if (!containerRef.current) return;
     const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         const { width, height } = entry.contentRect;
         setDimensions({
           width: width || 550,
@@ -29,7 +29,7 @@ export default function AsciiArrows({ isHovered = false }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animationFrameId;
@@ -65,7 +65,7 @@ export default function AsciiArrows({ isHovered = false }) {
       const dy = y2 - y1;
       const lenSq = dx * dx + dy * dy;
       if (lenSq === 0) return Math.hypot(px - x1, py - y1);
-      
+
       let t = ((px - x1) * dx + (py - y1) * dy) / lenSq;
       t = Math.max(0, Math.min(1, t));
       return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
@@ -76,7 +76,7 @@ export default function AsciiArrows({ isHovered = false }) {
       return Math.min(
         distanceToLineSegment(px, py, ax, ay, bx, by),
         distanceToLineSegment(px, py, bx, by, cx, cy),
-        distanceToLineSegment(px, py, cx, cy, ax, ay)
+        distanceToLineSegment(px, py, cx, cy, ax, ay),
       );
     };
 
@@ -87,12 +87,12 @@ export default function AsciiArrows({ isHovered = false }) {
     // Triangle shapes coordinates (Normalized 0 to 1, scaled up with safe margins for parallax translation)
     // Front Arrow (larger, right - made 15% wider by shifting right tip to x: 0.97)
     const fA = { x: 0.16, y: 0.13 };
-    const fB = { x: 0.97, y: 0.50 };
+    const fB = { x: 0.97, y: 0.5 };
     const fC = { x: 0.16, y: 0.87 };
 
     // Back Arrow (smaller, left - shifted left to preserve offset and avoid overlap)
     const bA = { x: 0.04, y: 0.18 };
-    const bB = { x: 0.62, y: 0.50 };
+    const bB = { x: 0.62, y: 0.5 };
     const bC = { x: 0.04, y: 0.82 };
 
     // Initialize cells grid
@@ -105,9 +105,9 @@ export default function AsciiArrows({ isHovered = false }) {
         const isInsideFront = isPointInTriangle(px, py, fA.x, fA.y, fB.x, fB.y, fC.x, fC.y);
         const isInsideBack = isPointInTriangle(px, py, bA.x, bA.y, bB.x, bB.y, bC.x, bC.y);
 
-        let isActive = isInsideFront || isInsideBack;
+        const isActive = isInsideFront || isInsideBack;
         let dist = 1.0;
-        let isFront = isInsideFront;
+        const isFront = isInsideFront;
 
         if (isInsideFront) {
           dist = distanceToTriangleBoundary(px, py, fA.x, fA.y, fB.x, fB.y, fC.x, fC.y);
@@ -123,18 +123,18 @@ export default function AsciiArrows({ isHovered = false }) {
           isActive,
           isFront,
           distToBorder: dist,
-          char: '-',
+          char: "-",
           glitchTimer: Math.random() * 10,
         });
       }
     }
 
-    const symbolSet = ['%', '*', '#', '+', ':'];
+    const symbolSet = ["%", "*", "#", "+", ":"];
 
     const getSymbolForCell = (cell, tick) => {
       // Background cell character
       if (!cell.isActive) {
-        return '-';
+        return "-";
       }
 
       // Border cells (close to edge)
@@ -144,7 +144,7 @@ export default function AsciiArrows({ isHovered = false }) {
       }
 
       // Inner cells (fills)
-      return '%';
+      return "%";
     };
 
     // Render loop
@@ -154,7 +154,7 @@ export default function AsciiArrows({ isHovered = false }) {
       const mouse = mouseRef.current;
       const cellW = width / cols;
       const cellH = height / rows;
-      
+
       // Clear canvas
       ctx.clearRect(0, 0, width, height);
 
@@ -162,9 +162,7 @@ export default function AsciiArrows({ isHovered = false }) {
 
       // Interpolate shape hover morph progress (slower and smoother transition)
       // On mobile, the arrow shape breathes between 0.70 and 0.86 to feel dynamic without hover
-      const targetProgress = isHovered 
-        ? 1 
-        : (isMobile ? (0.78 + Math.sin(tick * 0.001) * 0.08) : 0);
+      const targetProgress = isHovered ? 1 : isMobile ? 0.78 + Math.sin(tick * 0.001) * 0.08 : 0;
       shapeProgress += (targetProgress - shapeProgress) * 0.035;
 
       // Smooth mouse-following parallax offset or automatic organic floating
@@ -185,14 +183,14 @@ export default function AsciiArrows({ isHovered = false }) {
 
       // Create horizontal gradient for active symbols
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
-      gradient.addColorStop(0, '#FF1493');  // Magenta
-      gradient.addColorStop(0.5, '#A020F0'); // Violet
-      gradient.addColorStop(1, '#00D9FF');   // Cyan
+      gradient.addColorStop(0, "#FF1493"); // Magenta
+      gradient.addColorStop(0.5, "#A020F0"); // Violet
+      gradient.addColorStop(1, "#00D9FF"); // Cyan
 
       const fontSize = Math.max(5, Math.round(cellW * 0.95));
       ctx.font = `${fontSize}px "Geist Mono", monospace`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
 
       // Periodic scanline glitch (lasts 150ms every 3.5 seconds) on hover or automatically on mobile
       let isGlitching = false;
@@ -215,12 +213,12 @@ export default function AsciiArrows({ isHovered = false }) {
         let drawX = baseX;
         let drawY = baseY;
         let opacity = 0; // Default background character opacity is 0 (fully transparent)
-        let char = '-';
+        let char = "-";
         let isGradientColor = false;
 
         // 1. Mouse Interaction (Warp, light up, and local shape reveal)
         let mouseDist = 999;
-        let spotlightFactor = 0;
+        let _spotlightFactor = 0;
         const revealRadius = 90; // Spotlight reveal radius (approx 80-90px)
 
         if (mouse.active) {
@@ -233,7 +231,7 @@ export default function AsciiArrows({ isHovered = false }) {
           // Warp coordinates away from mouse (maxDist 90px)
           const maxDist = 90;
           if (mouseDist < maxDist) {
-            const pushFactor = (1 - mouseDist / maxDist);
+            const pushFactor = 1 - mouseDist / maxDist;
             const angle = Math.atan2(dy, dx);
             drawX += Math.cos(angle) * pushFactor * 8;
             drawY += Math.sin(angle) * pushFactor * 8;
@@ -250,7 +248,7 @@ export default function AsciiArrows({ isHovered = false }) {
           // Compute spotlight factor for active shape cells
           if (mouseDist < revealRadius) {
             // Smooth cosine falloff
-            spotlightFactor = Math.cos((mouseDist / revealRadius) * Math.PI / 2);
+            _spotlightFactor = Math.cos(((mouseDist / revealRadius) * Math.PI) / 2);
           }
         }
 
@@ -290,7 +288,7 @@ export default function AsciiArrows({ isHovered = false }) {
             }
           } else {
             // Outside spotlight: renders as standard background cell (faint white dash)
-            char = '-';
+            char = "-";
             opacity = 0;
             // Also light up background dash slightly if mouse is near
             if (mouseDist < 90) {
@@ -300,9 +298,7 @@ export default function AsciiArrows({ isHovered = false }) {
         }
 
         // Draw character
-        ctx.fillStyle = isGradientColor
-          ? gradient
-          : `rgba(255, 255, 255, ${opacity})`;
+        ctx.fillStyle = isGradientColor ? gradient : `rgba(255, 255, 255, ${opacity})`;
 
         if (isGradientColor) {
           ctx.globalAlpha = opacity;
@@ -348,9 +344,9 @@ export default function AsciiArrows({ isHovered = false }) {
     <div
       ref={containerRef}
       style={{
-        width: '100%',
-        height: '100%',
-        position: 'relative',
+        width: "100%",
+        height: "100%",
+        position: "relative",
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -360,10 +356,10 @@ export default function AsciiArrows({ isHovered = false }) {
         width={dimensions.width}
         height={dimensions.height}
         style={{
-          display: 'block',
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
+          display: "block",
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
         }}
       />
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 export default function Preloader({ onComplete }) {
   const [hidden, setHidden] = useState(false);
@@ -6,8 +6,8 @@ export default function Preloader({ onComplete }) {
   const counterRef = useRef(null);
 
   useEffect(() => {
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
 
     // Animate counter 0 → 100 over 1800ms
     const duration = 1800;
@@ -25,22 +25,21 @@ export default function Preloader({ onComplete }) {
 
     const timer = setTimeout(() => {
       setHidden(true);
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
       if (onComplete) onComplete();
     }, 2200);
 
     return () => {
       clearTimeout(timer);
       cancelAnimationFrame(raf);
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
     };
   }, [onComplete]);
 
   return (
-    <div className={`preloader ${hidden ? 'hidden' : ''}`}>
-
+    <div className={`preloader ${hidden ? "hidden" : ""}`}>
       {/* Center: arrows + logo stacked tight */}
       <div className="preloader-center">
         <div className="preloader-logo-wrap">
@@ -55,18 +54,14 @@ export default function Preloader({ onComplete }) {
       {/* Bottom row: counter only */}
       <div className="preloader-bottom">
         <span ref={counterRef} className="preloader-counter">
-          {String(count).padStart(2, '0')}
+          {String(count).padStart(2, "0")}
         </span>
       </div>
 
       {/* Thin progress line */}
       <div className="preloader-progress">
-        <div
-          className="preloader-progress-bar"
-          style={{ width: `${count}%` }}
-        />
+        <div className="preloader-progress-bar" style={{ width: `${count}%` }} />
       </div>
-
     </div>
   );
 }

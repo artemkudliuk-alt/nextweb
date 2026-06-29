@@ -1,50 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Preloader from './components/Preloader';
-import Home from './pages/Home';
-import Works from './pages/Works';
-import WorkDetail from './pages/WorkDetail';
-import ServiceDetail from './pages/ServiceDetail';
-import Services from './pages/Services';
-import About from './pages/About';
-import Contacts from './pages/Contacts';
-import Reviews from './pages/Reviews';
-import Partners from './pages/Partners';
-import Blog from './pages/Blog';
+import { useEffect } from "react";
+import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Preloader from "./components/Preloader";
+import About from "./pages/About";
+import Blog from "./pages/Blog";
+import Contacts from "./pages/Contacts";
+import Home from "./pages/Home";
+import Partners from "./pages/Partners";
+import Reviews from "./pages/Reviews";
+import ServiceDetail from "./pages/ServiceDetail";
+import Services from "./pages/Services";
+import WorkDetail from "./pages/WorkDetail";
+import Works from "./pages/Works";
+import { useUIStore } from "./store/useUIStore";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, []);
   return null;
 }
 
 function MainLayout() {
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const location = useLocation();
-  const [transitioning, setTransitioning] = useState(false);
+  const preloaderComplete = useUIStore((state) => state.preloaderComplete);
+  const setPreloaderComplete = useUIStore((state) => state.setPreloaderComplete);
+  const transitioning = useUIStore((state) => state.transitioning);
+  const setTransitioning = useUIStore((state) => state.setTransitioning);
+
+  const _location = useLocation();
 
   useEffect(() => {
     // Only animate transitions if initial load is finished
-    if (!initialLoading) {
+    if (preloaderComplete) {
       setTransitioning(true);
       const timer = setTimeout(() => setTransitioning(false), 400);
       return () => clearTimeout(timer);
     }
-  }, [location.pathname, initialLoading]);
+  }, [preloaderComplete, setTransitioning]);
 
   return (
     <>
-      <Preloader onComplete={() => setInitialLoading(false)} />
-      
-      <div className={`page-wrapper ${initialLoading ? 'loading' : ''} ${transitioning ? 'loading' : ''}`}>
-        <Navbar onPlayClick={() => setIsVideoOpen(true)} />
+      <Preloader onComplete={() => setPreloaderComplete(true)} />
+
+      <div
+        className={`page-wrapper ${!preloaderComplete ? "loading" : ""} ${transitioning ? "loading" : ""}`}
+      >
+        <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<Home isVideoOpen={isVideoOpen} setIsVideoOpen={setIsVideoOpen} />} />
+            <Route path="/" element={<Home />} />
             <Route path="/works" element={<Works />} />
             <Route path="/work/:id" element={<WorkDetail />} />
             <Route path="/services" element={<Services />} />

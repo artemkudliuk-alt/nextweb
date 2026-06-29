@@ -7,6 +7,18 @@ import TeamPills from '../components/TeamPills';
 import DraggableMarquee from '../components/DraggableMarquee';
 import AsciiArrows from '../components/AsciiArrows';
 import Footer from '../components/Footer';
+import { useUIStore } from '../store/useUIStore';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+
+const contactFormSchema = z.object({
+  name: z.string().min(2, { message: 'Имя должно содержать минимум 2 символа' }),
+  phone: z.string().min(6, { message: 'Введите корректный номер телефона' }),
+  interest: z.string(),
+  message: z.string().min(5, { message: 'Сообщение должно содержать минимум 5 символов' }),
+});
 
 
 
@@ -411,7 +423,12 @@ const getCardOffset = (idx, activeIdx, total) => {
   return diff;
 };
 
-export default function Home({ isVideoOpen, setIsVideoOpen }) {
+export default function Home() {
+  const isVideoOpen = useUIStore((state) => state.isVideoOpen);
+  const setIsVideoOpen = useUIStore((state) => state.setIsVideoOpen);
+
+  const [accordionParent] = useAutoAnimate();
+
   const [isMobile, setIsMobile] = useState(false);
   const [isArrowsHovered, setIsArrowsHovered] = useState(false);
   const [activeTestimonialIdx, setActiveTestimonialIdx] = useState(0);
@@ -419,12 +436,17 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
   const [isTestimonialsInteracted, setIsTestimonialsInteracted] = useState(false);
   const [isAllReviewsModalOpen, setIsAllReviewsModalOpen] = useState(false);
   const [activeAccordionIdx, setActiveAccordionIdx] = useState(0);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    interest: 'Создание сайта',
-    message: 'Привет, очень хочу новый сайт. Жду ответа :)'
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      interest: 'Создание сайта',
+      message: 'Привет, очень хочу новый сайт. Жду ответа :)'
+    }
   });
+
   const [formStatus, setFormStatus] = useState('idle');
   const [currentTime, setCurrentTime] = useState('');
   const formCardRef = useRef(null);
@@ -472,13 +494,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
     formCardRef.current.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
+  const onFormSubmit = (data) => {
     setFormStatus('sending');
     setTimeout(() => {
       setFormStatus('success');
@@ -2695,7 +2711,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
       </section>
 
       {/* ----------------- WHY US SECTION ----------------- */}
-      <section id="whyus" ref={whyUsRef} style={{ height: '300vh', background: '#ffffff', borderTop: 'none' }}>
+      <section id="whyus" ref={whyUsRef} style={{ height: isMobile ? 'auto' : '300vh', background: '#ffffff', borderTop: 'none' }}>
         {/* Divider 3: Dynamic Glowing Line at the top of #whyus */}
         <div className="tech-glow-divider tech-glow-divider-3">
           <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
@@ -3014,7 +3030,7 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
           </div>
 
           {isMobile ? (
-            <div className="testimonials-accordion">
+            <div ref={accordionParent} className="testimonials-accordion">
               {testimonialsData.map((item, idx) => {
                 const isOpen = idx === activeAccordionIdx;
                 return (
@@ -3454,34 +3470,30 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                     <p className="success-message">
                       Спасибо за обращение. Мы свяжемся с вами в ближайшее время.
                     </p>
-                    <button className="contact-reset-btn" onClick={() => setFormStatus('idle')}>
+                    <button className="contact-reset-btn" onClick={() => { setFormStatus('idle'); reset(); }}>
                       Отправить еще раз
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleFormSubmit} className="contact-form">
+                  <form onSubmit={handleSubmit(onFormSubmit)} className="contact-form">
                     <div className="form-row">
-                      <div className="input-group">
+                      <div className={`input-group ${errors.name ? 'error' : ''}`}>
                         <input 
                           type="text" 
-                          name="name" 
-                          required 
                           placeholder="Ваше имя" 
-                          value={formData.name} 
-                          onChange={handleInputChange} 
                           className="contact-input" 
+                          {...register('name')}
                         />
+                        {errors.name && <span className="field-error">{errors.name.message}</span>}
                       </div>
-                      <div className="input-group">
+                      <div className={`input-group ${errors.phone ? 'error' : ''}`}>
                         <input 
                           type="text" 
-                          name="phone" 
-                          required 
                           placeholder="Номер телефона" 
-                          value={formData.phone} 
-                          onChange={handleInputChange} 
                           className="contact-input" 
+                          {...register('phone')}
                         />
+                        {errors.phone && <span className="field-error">{errors.phone.message}</span>}
                       </div>
                     </div>
 
@@ -3489,10 +3501,8 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       <label className="select-label">Что вас интересует?</label>
                       <div className="custom-select-wrapper">
                         <select 
-                          name="interest" 
-                          value={formData.interest} 
-                          onChange={handleInputChange} 
                           className="contact-select"
+                          {...register('interest')}
                         >
                           <option value="Создание сайта">Создание сайта</option>
                           <option value="Брендинг">Брендинг</option>
@@ -3508,22 +3518,20 @@ export default function Home({ isVideoOpen, setIsVideoOpen }) {
                       </div>
                     </div>
 
-                    <div className="input-group">
+                    <div className={`input-group ${errors.message ? 'error' : ''}`}>
                       <label className="textarea-label">Ваше сообщение</label>
                       <textarea 
-                        name="message" 
                         rows="3" 
-                        required 
-                        value={formData.message} 
-                        onChange={handleInputChange} 
                         className="contact-textarea" 
+                        {...register('message')}
                       />
+                      {errors.message && <span className="field-error">{errors.message.message}</span>}
                     </div>
 
                     <button 
                       type="submit" 
                       disabled={formStatus === 'sending'} 
-                      className="contact-submit-btn-premium"
+                      className={`contact-submit-btn-premium ${formStatus === 'sending' ? 'loading' : ''}`}
                     >
                       <span>{formStatus === 'sending' ? 'Отправка...' : 'Отправить заявку'}</span>
                     </button>

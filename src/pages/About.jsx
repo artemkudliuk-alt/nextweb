@@ -1,11 +1,49 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { Canvas } from '@react-three/fiber';
+import { Sphere, MeshDistortMaterial } from '@react-three/drei';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+function AnimatedSphere() {
+  return (
+    <Sphere args={[1, 100, 200]} scale={1.6}>
+      <MeshDistortMaterial
+        color="#a020f0"
+        attach="material"
+        distort={0.45}
+        speed={1.5}
+        roughness={0.1}
+        metalness={0.8}
+      />
+    </Sphere>
+  );
+}
 
 export default function About() {
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = "О студии NEXTWEB | Премиум веб-разработка";
+
+    // GSAP Timeline Scroll Animations
+    gsap.fromTo('.timeline-item', 
+      { opacity: 0, y: 50 }, 
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.25,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.about-timeline',
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
   }, []);
 
   return (
@@ -38,30 +76,16 @@ export default function About() {
                 </p>
               </div>
 
-              <div className="service-visual-block">
-                <div className="visual-placeholder-card">
-                  <div className="visual-card-glow"></div>
-                  <div className="visual-card-header-bar">
-                    <div className="system-dots">
-                      <span className="system-dot red"></span>
-                      <span className="system-dot yellow"></span>
-                      <span className="system-dot green"></span>
-                    </div>
-                  </div>
-                  <div className="visual-card-body-content" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                    <div style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--accent-color)' }}>17+ ЛЕТ</div>
-                    <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginTop: '0.5rem', letterSpacing: '0.05em' }}>БЕЗУПРЕЧНОЙ РЕПУТАЦИИ НА IT-РЫНКЕ</div>
-                    <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-                      <div style={{ flex: 1, padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: '700' }}>300+</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Кейсов</div>
-                      </div>
-                      <div style={{ flex: 1, padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: '700' }}>98%</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>LTV</div>
-                      </div>
-                    </div>
-                  </div>
+              <div className="service-visual-block" style={{ minHeight: '350px', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+                <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
+                  <ambientLight intensity={0.6} />
+                  <directionalLight position={[3, 5, 2]} intensity={1.8} />
+                  <pointLight position={[-10, -10, -10]} intensity={0.5} />
+                  <AnimatedSphere />
+                </Canvas>
+                <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', zIndex: 10 }}>
+                  <div style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--accent-color)', lineHeight: 1 }}>17+ ЛЕТ</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', letterSpacing: '0.05em' }}>БЕЗУПРЕЧНОЙ РЕПУТАЦИИ НА IT-РЫНКЕ</div>
                 </div>
               </div>
             </div>
@@ -74,6 +98,44 @@ export default function About() {
               <p className="service-characteristics">
                 С 2009 года мы помогаем бизнесу находить общий язык с клиентами в цифровой среде. Мы глубоко погружаемся в бизнес-процессы каждого клиента, собираем требования по стандарту C4, строим надежные архитектурные решения и пишем чистый, поддерживаемый код, который летает на мобильных устройствах.
               </p>
+            </div>
+          </section>
+
+          {/* Timeline Section */}
+          <section className="about-timeline-section" style={{ margin: '6rem 0' }}>
+            <div className="section-header" style={{ marginBottom: '3rem' }}>
+              <span className="cyber-section-label">// ИСТОРИЯ СТУДИИ</span>
+              <h2>Путь от стартапа до лидера рынка</h2>
+            </div>
+            <div className="about-timeline" style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div className="timeline-item" style={{ display: 'flex', gap: '2rem', borderLeft: '2px solid var(--accent-color)', paddingLeft: '2rem', position: 'relative' }}>
+                <div className="timeline-year" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-color)', minWidth: '70px' }}>2009</div>
+                <div className="timeline-content-box">
+                  <h4 style={{ color: '#fff', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Основание NEXTWEB</h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6' }}>Начали как небольшая команда из 3 человек. Первый офис в Одессе и первый запуск коммерческого проекта.</p>
+                </div>
+              </div>
+              <div className="timeline-item" style={{ display: 'flex', gap: '2rem', borderLeft: '2px solid rgba(255,255,255,0.1)', paddingLeft: '2rem', position: 'relative' }}>
+                <div className="timeline-year" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-secondary)', minWidth: '70px' }}>2014</div>
+                <div className="timeline-content-box">
+                  <h4 style={{ color: '#fff', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Выход на международный рынок</h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6' }}>Разработали первые крупные проекты для клиентов из Европы и США, внедрили Agile и расширили команду до 15 разработчиков.</p>
+                </div>
+              </div>
+              <div className="timeline-item" style={{ display: 'flex', gap: '2rem', borderLeft: '2px solid rgba(255,255,255,0.1)', paddingLeft: '2rem', position: 'relative' }}>
+                <div className="timeline-year" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-secondary)', minWidth: '70px' }}>2019</div>
+                <div className="timeline-content-box">
+                  <h4 style={{ color: '#fff', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>AI & Data Science экспертиза</h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6' }}>Запустили направление предиктивной веб-аналитики и машинного обучения, став надежным технологическим партнером enterprise-брендов.</p>
+                </div>
+              </div>
+              <div className="timeline-item" style={{ display: 'flex', gap: '2rem', borderLeft: '2px solid rgba(255,255,255,0.1)', paddingLeft: '2rem', position: 'relative' }}>
+                <div className="timeline-year" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-secondary)', minWidth: '70px' }}>2026</div>
+                <div className="timeline-content-box">
+                  <h4 style={{ color: '#fff', fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Лидерство в premium digital</h4>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: '1.6' }}>Более 300 успешно запущенных проектов. Уникальный стек на стыке WebGL, GPU-анимаций и реактивного управления данными.</p>
+                </div>
+              </div>
             </div>
           </section>
 

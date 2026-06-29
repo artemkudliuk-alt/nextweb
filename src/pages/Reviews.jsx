@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const reviewsData = [
   {
@@ -8,36 +9,46 @@ const reviewsData = [
     company: "Mal AI",
     position: "CEO & Co-founder",
     text: "Команда NextWeb проявила себя как надежный партнер в проектировании интерфейса нашей исламской финансовой платформы. Они смогли объединить сложные финансовые формулы в лаконичный и понятный пользователю дизайн.",
-    rating: "5.0"
+    rating: "5.0",
+    category: "branding"
   },
   {
     author: "Елена Чернова",
     company: "NR8 Global",
     position: "Product Manager",
     text: "Разработка нашего нового сайта была выполнена безупречно. Скорость загрузки страниц на мобильных увеличилась в 3 раза, что сразу отразилось на росте конверсий в подписку.",
-    rating: "5.0"
+    rating: "5.0",
+    category: "development"
   },
   {
     author: "Александр Белов",
     company: "Ringed",
     position: "CTO",
     text: "Сотрудничаем с NextWeb по модели почасовой разработки (T&M). Высокий профессионализм инженеров, прозрачная система Jira и быстрое закрытие спринтов. Крайне рекомендую.",
-    rating: "4.9"
+    rating: "4.9",
+    category: "development"
   },
   {
     author: "Ольга Морозова",
     company: "DrinkLust",
     position: "Marketing Director",
     text: "NextWeb создали для нас потрясающий e-commerce магазин с 3D-интеграцией. Визуальный стиль полностью соответствует премиальности бренда, а платежный шлюз работает без единого сбоя.",
-    rating: "5.0"
+    rating: "5.0",
+    category: "marketing"
   }
 ];
 
 export default function Reviews() {
+  const [activeCategory, setActiveCategory] = useState('all');
+
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = "Отзывы клиентов NEXTWEB | Мнения о нашей работе";
   }, []);
+
+  const filteredReviews = reviewsData.filter(
+    (review) => activeCategory === 'all' || review.category === activeCategory
+  );
 
   return (
     <>
@@ -76,27 +87,63 @@ export default function Reviews() {
             </div>
           </section>
 
-          {/* Reviews Grid */}
-          <section className="service-structure-section" style={{ marginTop: '2rem' }}>
-            <div className="structure-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-              {reviewsData.map((review, idx) => (
-                <div className="structure-card" key={idx} style={{ minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
-                      <span className="cyber-section-label">// {review.company.toUpperCase()}</span>
-                      <span style={{ fontSize: '0.9rem', color: 'var(--accent-color)', fontWeight: 'bold' }}>⭐ {review.rating}</span>
-                    </div>
-                    <p style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
-                      "{review.text}"
-                    </p>
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '1rem' }}>{review.author}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{review.position}</div>
-                  </div>
-                </div>
+          {/* Filter Navigation */}
+          <section className="reviews-filter-section" style={{ marginTop: '3rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {[
+                { id: 'all', label: 'Все отзывы' },
+                { id: 'development', label: 'Разработка' },
+                { id: 'branding', label: 'Брендинг' },
+                { id: 'marketing', label: 'Маркетинг' }
+              ].map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={activeCategory === cat.id ? 'btn-premium' : 'btn-secondary'}
+                  style={{ border: 'none', cursor: 'pointer', outline: 'none' }}
+                >
+                  <span>{cat.label}</span>
+                </button>
               ))}
             </div>
+          </section>
+
+          {/* Reviews Grid */}
+          <section className="service-structure-section" style={{ marginTop: '1rem' }}>
+            <motion.div 
+              layout
+              className="structure-grid" 
+              style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredReviews.map((review, idx) => (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.25 }}
+                    className="structure-card"
+                    key={`${review.company}-${idx}`}
+                    style={{ minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+                        <span className="cyber-section-label">// {review.company.toUpperCase()}</span>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--accent-color)', fontWeight: 'bold' }}>⭐ {review.rating}</span>
+                      </div>
+                      <p style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
+                        "{review.text}"
+                      </p>
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 'bold', color: '#fff', fontSize: '1rem' }}>{review.author}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{review.position}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           </section>
 
           {/* CTA */}

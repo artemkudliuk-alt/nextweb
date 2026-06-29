@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import { servicesData } from '../utils/servicesData';
+import { useUIStore } from '../store/useUIStore';
 
 const serviceGroups = [
   {
@@ -45,7 +46,7 @@ const serviceGroups = [
   }
 ];
 
-export default function Navbar({ onPlayClick }) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [stickyVisible, setStickyVisible] = useState(false);

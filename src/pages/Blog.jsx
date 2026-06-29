@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { motion } from 'framer-motion';
 
 const blogArticles = [
   {
@@ -25,6 +26,29 @@ const blogArticles = [
     summary: "Пошаговое руководство по интеграции тестов производительности в ваш CI/CD пайплайн для блокировки медленного кода перед деплоем."
   }
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
 
 export default function Blog() {
   useEffect(() => {
@@ -61,7 +85,7 @@ export default function Blog() {
               <div className="service-visual-block">
                 <div className="visual-placeholder-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div className="visual-card-glow"></div>
-                  <div style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--accent-color)' }}>ENGINEERING</div>
+                  <div style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--accent-color)', fontFamily: 'Satoshi, sans-serif' }}>ENGINEERING</div>
                   <div style={{ fontSize: '1rem', color: '#fff', fontWeight: 'bold', marginTop: '0.5rem' }}>ПРОДУКТОВЫЙ ХАБ</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>Статьи, гайды и кейсы инженеров</div>
                 </div>
@@ -71,9 +95,21 @@ export default function Blog() {
 
           {/* Articles list */}
           <section className="service-structure-section" style={{ marginTop: '2rem' }}>
-            <div className="structure-grid" style={{ gridTemplateColumns: '1fr' }}>
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="structure-grid" 
+              style={{ gridTemplateColumns: '1fr', gap: '2rem' }}
+            >
               {blogArticles.map((article, idx) => (
-                <div 
+                <motion.div 
+                  variants={itemVariants}
+                  whileHover={{ 
+                    scale: 1.01,
+                    borderColor: 'var(--accent-color)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.025)'
+                  }}
                   className="structure-card" 
                   key={idx} 
                   style={{ 
@@ -83,7 +119,9 @@ export default function Blog() {
                     padding: '2.5rem',
                     border: '1px solid rgba(255,255,255,0.04)',
                     background: 'rgba(255,255,255,0.01)',
-                    gap: '1rem'
+                    gap: '1rem',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.25s ease, background-color 0.25s ease'
                   }}
                 >
                   <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -97,9 +135,9 @@ export default function Blog() {
                   <a href={`/blog/${article.id}`} className="btn-secondary" style={{ marginTop: '1rem', display: 'inline-flex' }} onClick={(e) => e.preventDefault()}>
                     <span>ЧИТАТЬ СТАТЬЮ</span>
                   </a>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </section>
         </div>
       </div>

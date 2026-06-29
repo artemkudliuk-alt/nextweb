@@ -1,6 +1,7 @@
 // Читаю это как: Компонент интерактивного калькулятора стоимости с динамическим визуальным веб-мокапом, язык: премиальный, хай-тек, дизайн-система Wezom/Satoshi-styled, с автоматическим применением правил AGENTS.md.
 
 import { useState, useMemo } from 'react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const ADDONS = [
   { id: 'seo', name: 'Техническая SEO-подготовка', price: 150, desc: 'Настройка метатегов, семантического ядра и микроразметки Schema.org' },
@@ -12,6 +13,7 @@ const ADDONS = [
 
 export default function ServiceCalculator({ basePriceString, serviceTitle }) {
   const [selectedAddons, setSelectedAddons] = useState([]);
+  const [listParent] = useAutoAnimate();
 
   // Extract base price number, default to 800 if parsing fails
   const basePrice = useMemo(() => {
@@ -45,7 +47,7 @@ export default function ServiceCalculator({ basePriceString, serviceTitle }) {
 
       <div className="calculator-grid">
         {/* Addons Selection List */}
-        <div className="calculator-addons-list">
+        <div ref={listParent} className="calculator-addons-list">
           {ADDONS.map((addon, index) => {
             const isChecked = selectedAddons.includes(addon.id);
             return (

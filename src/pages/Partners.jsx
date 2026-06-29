@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { useTrail, animated } from 'react-spring';
 
 const partnersData = [
   {
@@ -31,6 +32,12 @@ export default function Partners() {
     document.title = "Партнеры NEXTWEB | Технологический стек";
   }, []);
 
+  const trail = useTrail(partnersData.length, {
+    from: { opacity: 0, transform: 'translate3d(0, 30px, 0)' },
+    to: { opacity: 1, transform: 'translate3d(0, 0px, 0)' },
+    config: { mass: 1, tension: 210, friction: 20 }
+  });
+
   return (
     <>
       <div className="service-detail-page">
@@ -60,7 +67,7 @@ export default function Partners() {
               <div className="service-visual-block">
                 <div className="visual-placeholder-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div className="visual-card-glow"></div>
-                  <div style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--accent-color)' }}>GLOBAL</div>
+                  <div style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--accent-color)', fontFamily: 'Satoshi, sans-serif' }}>GLOBAL</div>
                   <div style={{ fontSize: '1rem', color: '#fff', fontWeight: 'bold', marginTop: '0.5rem' }}>ТЕХНОЛОГИЧЕСКИЙ СТЕК</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>Интеграции с лидерами индустрии</div>
                 </div>
@@ -71,14 +78,17 @@ export default function Partners() {
           {/* Partners Grid */}
           <section className="service-structure-section" style={{ marginTop: '2rem' }}>
             <div className="structure-grid">
-              {partnersData.map((partner, idx) => (
-                <div className="structure-card" key={idx}>
-                  <div className="structure-card-number">{(idx + 1).toString().padStart(2, '0')}</div>
-                  <span className="cyber-section-label" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>// {partner.category.toUpperCase()}</span>
-                  <h4 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#fff', marginBottom: '0.5rem' }}>{partner.name}</h4>
-                  <p className="structure-card-text">{partner.description}</p>
-                </div>
-              ))}
+              {trail.map((style, idx) => {
+                const partner = partnersData[idx];
+                return (
+                  <animated.div style={style} className="structure-card" key={idx}>
+                    <div className="structure-card-number">{(idx + 1).toString().padStart(2, '0')}</div>
+                    <span className="cyber-section-label" style={{ marginBottom: '0.5rem', display: 'inline-block' }}>// {partner.category.toUpperCase()}</span>
+                    <h4 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#fff', marginBottom: '0.5rem' }}>{partner.name}</h4>
+                    <p className="structure-card-text">{partner.description}</p>
+                  </animated.div>
+                );
+              })}
             </div>
           </section>
 

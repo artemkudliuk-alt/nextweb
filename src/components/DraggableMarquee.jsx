@@ -1,19 +1,19 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 const logos = [
-  '/marquee/databerry.webp',
-  '/marquee/freu.webp',
-  '/marquee/limrun.webp',
-  '/marquee/rivermarkets.webp',
-  '/marquee/rixx.webp',
-  '/marquee/unabyss.webp',
-  '/marquee/yansu.webp'
+  "/marquee/databerry.webp",
+  "/marquee/freu.webp",
+  "/marquee/limrun.webp",
+  "/marquee/rivermarkets.webp",
+  "/marquee/rixx.webp",
+  "/marquee/unabyss.webp",
+  "/marquee/yansu.webp",
 ];
 
 export default function DraggableMarquee() {
   const containerRef = useRef(null);
   const listRef = useRef(null);
-  
+
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
@@ -35,7 +35,7 @@ export default function DraggableMarquee() {
 
     const update = () => {
       const time = performance.now();
-      const dt = time - lastFrameTime;
+      const _dt = time - lastFrameTime;
       lastFrameTime = time;
 
       if (!isDragging) {
@@ -82,22 +82,22 @@ export default function DraggableMarquee() {
 
   const handleMouseMove = (e) => {
     if (!isDragging) return;
-    
+
     const x = e.pageX;
     const time = performance.now();
     const dt = time - lastTime.current;
-    
+
     const dx = x - startX.current;
     currentX.current = scrollLeft.current + dx;
-    
+
     // Calculate velocity (pixels per millisecond -> scaled)
     if (dt > 0) {
       velocity.current = ((x - lastX.current) / dt) * 16.66; // Normalized to ~60fps frame time
     }
-    
+
     lastX.current = x;
     lastTime.current = time;
-    
+
     // Loop boundary check while dragging
     const list = listRef.current;
     if (list) {
@@ -120,7 +120,7 @@ export default function DraggableMarquee() {
   };
 
   return (
-    <div 
+    <div
       className="draggable-marquee"
       ref={containerRef}
       onMouseDown={handleMouseDown}
@@ -128,14 +128,14 @@ export default function DraggableMarquee() {
       onMouseUp={handleMouseUpOrLeave}
       onMouseLeave={handleMouseUpOrLeave}
     >
-      <div 
+      <div
         className="draggable-marquee-list"
         ref={listRef}
         style={{
-          display: 'flex',
-          gap: '4rem',
-          userSelect: 'none',
-          willChange: 'transform'
+          display: "flex",
+          gap: "4rem",
+          userSelect: "none",
+          willChange: "transform",
         }}
       >
         {items.map((logo, index) => (

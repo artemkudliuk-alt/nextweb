@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 export default function InteractiveVisualCard() {
-  const [activeTab, setActiveTab] = useState('wireframe');
+  const [activeTab, setActiveTab] = useState("wireframe");
   const [radialVal, setRadialVal] = useState(0);
 
   // Radial animation for the Performance tab when active
   useEffect(() => {
-    if (activeTab !== 'performance') {
+    if (activeTab !== "performance") {
       setRadialVal(0);
       return;
     }
@@ -19,7 +19,7 @@ export default function InteractiveVisualCard() {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
       // Ease out cubic
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const easeProgress = 1 - (1 - progress) ** 3;
       setRadialVal(Math.floor(easeProgress * targetVal));
 
       if (progress < 1) {
@@ -33,7 +33,7 @@ export default function InteractiveVisualCard() {
   return (
     <div className="visual-placeholder-card">
       <div className="visual-card-glow" />
-      
+
       {/* Header bar of our mockup browser/dashboard */}
       <div className="visual-card-header-bar">
         <div className="system-dots">
@@ -42,24 +42,24 @@ export default function InteractiveVisualCard() {
           <span className="system-dot green" />
         </div>
         <div className="visual-card-tabs">
-          <button 
+          <button
             type="button"
-            className={`tab-btn ${activeTab === 'wireframe' ? 'active' : ''}`}
-            onClick={() => setActiveTab('wireframe')}
+            className={`tab-btn ${activeTab === "wireframe" ? "active" : ""}`}
+            onClick={() => setActiveTab("wireframe")}
           >
             Structure
           </button>
-          <button 
+          <button
             type="button"
-            className={`tab-btn ${activeTab === 'metrics' ? 'active' : ''}`}
-            onClick={() => setActiveTab('metrics')}
+            className={`tab-btn ${activeTab === "metrics" ? "active" : ""}`}
+            onClick={() => setActiveTab("metrics")}
           >
             Metrics
           </button>
-          <button 
+          <button
             type="button"
-            className={`tab-btn ${activeTab === 'performance' ? 'active' : ''}`}
-            onClick={() => setActiveTab('performance')}
+            className={`tab-btn ${activeTab === "performance" ? "active" : ""}`}
+            onClick={() => setActiveTab("performance")}
           >
             Speed
           </button>
@@ -68,7 +68,7 @@ export default function InteractiveVisualCard() {
 
       {/* Body content based on active tab */}
       <div className="visual-card-body-content">
-        {activeTab === 'wireframe' && (
+        {activeTab === "wireframe" && (
           <div className="tab-panel grid-panel">
             <div className="wireframe-header">
               <span className="wireframe-line sm" />
@@ -96,16 +96,18 @@ export default function InteractiveVisualCard() {
           </div>
         )}
 
-        {activeTab === 'metrics' && (
+        {activeTab === "metrics" && (
           <div className="tab-panel chart-panel">
             <div className="chart-info-row">
               <div>
                 <span className="chart-legend">Daily Operations</span>
                 <div className="chart-metric">458,924</div>
               </div>
-              <span className="chart-legend" style={{ color: '#863bff' }}>+18.4%</span>
+              <span className="chart-legend" style={{ color: "#863bff" }}>
+                +18.4%
+              </span>
             </div>
-            
+
             <div className="chart-svg-container">
               <svg className="chart-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
                 <defs>
@@ -115,27 +117,27 @@ export default function InteractiveVisualCard() {
                   </linearGradient>
                 </defs>
                 {/* Area under chart path */}
-                <path 
-                  d="M 0 160 L 0 120 Q 80 80 160 110 T 320 40 L 400 20 L 400 160 Z" 
+                <path
+                  d="M 0 160 L 0 120 Q 80 80 160 110 T 320 40 L 400 20 L 400 160 Z"
                   fill="url(#chartGlow)"
                 />
                 {/* Stroke line path */}
-                <path 
+                <path
                   className="chart-path-anim"
-                  d="M 0 120 Q 80 80 160 110 T 320 40 L 400 20" 
-                  fill="none" 
-                  stroke="#863bff" 
+                  d="M 0 120 Q 80 80 160 110 T 320 40 L 400 20"
+                  fill="none"
+                  stroke="#863bff"
                   strokeWidth="3"
                   strokeLinecap="round"
                 />
                 {/* Pulse point at the end */}
-                <circle 
+                <circle
                   className="chart-pulse"
-                  cx="400" 
-                  cy="20" 
-                  r="6" 
-                  fill="#ffffff" 
-                  stroke="#863bff" 
+                  cx="400"
+                  cy="20"
+                  r="6"
+                  fill="#ffffff"
+                  stroke="#863bff"
                   strokeWidth="2"
                 />
               </svg>
@@ -143,31 +145,31 @@ export default function InteractiveVisualCard() {
           </div>
         )}
 
-        {activeTab === 'performance' && (
+        {activeTab === "performance" && (
           <div className="tab-panel speed-panel">
             <div className="radial-progress-container">
               <svg className="radial-svg" viewBox="0 0 100 100">
                 {/* Track */}
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="42" 
-                  fill="transparent" 
-                  stroke="rgba(255,255,255,0.03)" 
-                  strokeWidth="6" 
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="transparent"
+                  stroke="rgba(255,255,255,0.03)"
+                  strokeWidth="6"
                 />
                 {/* Dash value circle */}
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="42" 
-                  fill="transparent" 
-                  stroke="#863bff" 
-                  strokeWidth="6" 
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="transparent"
+                  stroke="#863bff"
+                  strokeWidth="6"
                   strokeDasharray={2 * Math.PI * 42}
                   strokeDashoffset={2 * Math.PI * 42 * (1 - radialVal / 100)}
                   strokeLinecap="round"
-                  style={{ transition: 'stroke-dashoffset 0.1s ease-out' }}
+                  style={{ transition: "stroke-dashoffset 0.1s ease-out" }}
                 />
               </svg>
               <div className="radial-value-wrap">
