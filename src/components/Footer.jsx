@@ -136,8 +136,7 @@ export default function Footer() {
             x2="1440"
             y2="60"
             stroke="url(#tech-glow-grad-footer)"
-            strokeWidth="8"
-            filter="url(#tech-glow-blur-footer)"
+            strokeWidth="4"
           />
         </svg>
       </div>

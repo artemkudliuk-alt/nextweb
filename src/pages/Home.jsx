@@ -2269,7 +2269,7 @@ export default function Home() {
               </feMerge>
             </filter>
           </defs>
-          <rect x="47" y="0" width="6" height="1080" fill="url(#tech-glow-grad-2)" filter="url(#tech-glow-blur-2)" />
+          <rect x="48" y="0" width="4" height="1080" fill="url(#tech-glow-grad-2)" />
         </svg>
       </div>
 
@@ -2502,7 +2502,6 @@ export default function Home() {
               </filter>
             </defs>
             <line className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-1)" strokeWidth="4" />
-            <line className="tech-glow-line-sheen" x1="0" y1="120" x2="1440" y2="0" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1445" strokeDashoffset="1445" filter="url(#tech-glow-sheen-blur)" />
           </svg>
         </div>
 
@@ -2629,7 +2628,6 @@ export default function Home() {
               </filter>
             </defs>
             <line className="tech-glow-line-main" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-1-5)" strokeWidth="4" />
-            <line className="tech-glow-line-sheen" x1="0" y1="0" x2="1440" y2="120" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1440" strokeDashoffset="1440" filter="url(#tech-glow-sheen-blur-1-5)" />
           </svg>
         </div>
         <div className="dedicated-sticky-container">
@@ -2729,7 +2727,7 @@ export default function Home() {
                 </feMerge>
               </filter>
             </defs>
-            <line id="tech-glow-line-3" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-3)" strokeWidth="8" filter="url(#tech-glow-blur-3)" />
+            <line id="tech-glow-line-3" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-3)" strokeWidth="4" />
           </svg>
         </div>
 
@@ -2876,7 +2874,6 @@ export default function Home() {
               </filter>
             </defs>
             <line className="tech-glow-line-main" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-work)" strokeWidth="4" />
-            <line className="tech-glow-line-sheen" x1="0" y1="0" x2="1440" y2="120" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1440" strokeDashoffset="1440" filter="url(#tech-glow-sheen-blur-work)" />
           </svg>
         </div>
 
@@ -3010,7 +3007,6 @@ export default function Home() {
               </filter>
             </defs>
             <line className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-6)" strokeWidth="4" />
-            <line className="tech-glow-line-sheen" x1="0" y1="120" x2="1440" y2="0" stroke="#ffffff" strokeWidth="4" strokeDasharray="200 1445" strokeDashoffset="1445" filter="url(#tech-glow-sheen-blur-6)" />
           </svg>
         </div>
 
@@ -3321,7 +3317,7 @@ export default function Home() {
                 </feMerge>
               </filter>
             </defs>
-            <line id="tech-glow-line-blog" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-blog)" strokeWidth="6" filter="url(#tech-glow-blur-blog)" />
+            <line id="tech-glow-line-blog" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-blog)" strokeWidth="4" />
           </svg>
         </div>
 
@@ -3413,7 +3409,7 @@ export default function Home() {
                   </feMerge>
                 </filter>
               </defs>
-              <line id="tech-glow-line-7" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-7)" strokeWidth="8" filter="url(#tech-glow-blur-7)" />
+              <line id="tech-glow-line-7" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-7)" strokeWidth="4" />
             </svg>
           </div>
 
@@ -3553,7 +3549,6 @@ export default function Home() {
             height: '4px', 
             background: 'linear-gradient(90deg, #00D9FF 0%, #A020F0 50%, #FF1493 100%)', 
             zIndex: 100, 
-            boxShadow: '0 0 10px #00D9FF, 0 0 20px #A020F0, 0 0 30px #FF1493',
             pointerEvents: 'none',
             transition: 'opacity 0.05s ease-out',
             opacity: isMobile ? 1 : 0
