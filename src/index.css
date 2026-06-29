@@ -16079,7 +16079,7 @@ button.swiper-pagination-bullet {
 .services-body .clients-wrapper,
 .services-body .clients-new-section,
 .services-body .home-awards-block,
-.services-body .footer-modern {
+.services-body .main-footer {
   position: relative;
 
   z-index: 1;
@@ -17366,10 +17366,9 @@ button.swiper-pagination-bullet {
   }
 
   /* Footer modern overlays Section 3 sticky background and transitions naturally */
-  .services-body .footer-modern {
+  .services-body .main-footer {
     position: relative;
     z-index: 5;
-    background: #000000;
     border-top: none;
   }
 
