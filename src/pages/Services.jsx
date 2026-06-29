@@ -17,9 +17,9 @@ export default function Services() {
   };
 
   const [scrollStates, setScrollStates] = useState({
-    development: { isStart: true, isEnd: false },
-    brandingMarketing: { isStart: true, isEnd: false },
-    supportOperations: { isStart: true, isEnd: false }
+    development: { isStart: true, isEnd: false, hasOverflow: false },
+    brandingMarketing: { isStart: true, isEnd: false, hasOverflow: false },
+    supportOperations: { isStart: true, isEnd: false, hasOverflow: false }
   });
 
   useEffect(() => {
@@ -116,18 +116,28 @@ export default function Services() {
     if (el) {
       const isStart = el.scrollLeft <= 15;
       const isEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 15;
+      const hasOverflow = el.scrollWidth > el.clientWidth;
       setScrollStates(prev => ({
         ...prev,
-        [id]: { isStart, isEnd }
+        [id]: { isStart, isEnd, hasOverflow }
       }));
     }
   };
 
-  // Trigger initial checks for all sliders
+  // Trigger initial checks and window resize checks for all sliders
   useEffect(() => {
-    Object.keys(trackRefs).forEach(id => {
-      handleScroll(id);
-    });
+    const checkAll = () => {
+      Object.keys(trackRefs).forEach(id => {
+        handleScroll(id);
+      });
+    };
+    // Short delay to allow DOM render and fonts loading
+    const timer = setTimeout(checkAll, 100);
+    window.addEventListener('resize', checkAll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkAll);
+    };
   }, []);
 
   // IntersectionObserver to detect active section stacking and trigger animations
@@ -153,6 +163,77 @@ export default function Services() {
     return () => observer.disconnect();
   }, []);
 
+  const section2Ref = useRef(null);
+  const section3Ref = useRef(null);
+  const divider2Ref = useRef(null);
+  const divider3Ref = useRef(null);
+  const line2MainRef = useRef(null);
+  const line3MainRef = useRef(null);
+
+  // Dynamic slant-flattening transition scroll listener
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      const viewportHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+
+      const updateSectionTransition = (sectionEl, dividerEl, lineMainEl, direction) => {
+        if (!sectionEl) return;
+        const rect = sectionEl.getBoundingClientRect();
+        
+        // Progress goes from 0 (when top of section enters viewport bottom) 
+        // to 1 (when top of section reaches viewport top)
+        let progress = 1 - (rect.top / viewportHeight);
+        progress = Math.max(0, Math.min(1, progress));
+
+        const slantHeight = (1 - progress) * 120;
+
+        if (progress < 1) {
+          if (direction === 'left') {
+            sectionEl.style.clipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
+            sectionEl.style.webkitClipPath = `polygon(0 ${slantHeight}px, 100% 0, 100% 100%, 0 100%)`;
+          } else {
+            sectionEl.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
+            sectionEl.style.webkitClipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
+          }
+          if (dividerEl) {
+            dividerEl.style.opacity = (1 - progress).toString();
+          }
+        } else {
+          sectionEl.style.clipPath = 'none';
+          sectionEl.style.webkitClipPath = 'none';
+          if (dividerEl) {
+            dividerEl.style.opacity = '0';
+          }
+        }
+
+        if (lineMainEl) {
+          if (direction === 'left') {
+            lineMainEl.setAttribute('y1', slantHeight.toString());
+            lineMainEl.setAttribute('y2', '0');
+          } else {
+            lineMainEl.setAttribute('y1', '0');
+            lineMainEl.setAttribute('y2', slantHeight.toString());
+          }
+        }
+      };
+
+      requestAnimationFrame(() => {
+        updateSectionTransition(section2Ref.current, divider2Ref.current, line2MainRef.current, 'left');
+        updateSectionTransition(section3Ref.current, divider3Ref.current, line3MainRef.current, 'right');
+      });
+    };
+
+    window.addEventListener('scroll', handleWindowScroll);
+    window.addEventListener('resize', handleWindowScroll);
+    // Initial call
+    handleWindowScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll);
+      window.removeEventListener('resize', handleWindowScroll);
+    };
+  }, []);
+
   return (
     <>
       <div className="services-root">
@@ -163,18 +244,42 @@ export default function Services() {
           </div>
 
           {/* 1. DEVELOPMENT SECTION */}
-          <section className="page-constructor__section">
+          <section className="page-constructor__section page-constructor__section--dev">
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '117px' }}></div>
               <div className="block-padding block-padding_tablet" style={{ paddingTop: '146px' }}></div>
               <div className="block-padding block-padding_mobile" style={{ paddingTop: '57px' }}></div>
               
               <section id="services-development" className="services-section">
-                <div className="services__text">
-                  <h2 className="services__title"><TextReveal text="Разработка" glitch={true} /></h2>
-                  <p className="services__description">
-                    Создаем современные, быстрые и масштабируемые веб-ресурсы. От простых посадочных страниц до высоконагруженных веб-приложений и уникальных интерфейсов.
-                  </p>
+                <div className="services__header-row">
+                  <div className="services__text">
+                    <h2 className="services__title"><TextReveal text="Разработка" glitch={true} /></h2>
+                    <p className="services__description">
+                      Создаем современные, быстрые и масштабируемые веб-ресурсы. От простых посадочных страниц до высоконагруженных веб-приложений и уникальных интерфейсов.
+                    </p>
+                  </div>
+                  {scrollStates.development.hasOverflow && (
+                    <div className="services__slider-nav">
+                      <button 
+                        className={`slider-nav-btn prev ${scrollStates.development.isStart ? 'disabled' : ''}`}
+                        onClick={() => scrollTrack('development', 'left')}
+                        aria-label="Previous slide"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                      <button 
+                        className={`slider-nav-btn next ${scrollStates.development.isEnd ? 'disabled' : ''}`}
+                        onClick={() => scrollTrack('development', 'right')}
+                        aria-label="Next slide"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="services__context-slider swiper-container">
@@ -368,46 +473,61 @@ export default function Services() {
                     </div>
                   </div>
 
-                  {/* Slider controls */}
-                  <div>
-                    <button 
-                      className={`swiper-button-next ${scrollStates.development.isEnd ? 'swiper-button-disabled' : ''}`}
-                      onClick={() => scrollTrack('development', 'right')}
-                      aria-label="Next slide"
-                    >
-                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.39844 0.900391L10.5908 10.0928L1.39844 19.2852" stroke="white" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </button>
-                    <button 
-                      className={`swiper-button-prev ${scrollStates.development.isStart ? 'swiper-button-disabled' : ''}`}
-                      onClick={() => scrollTrack('development', 'left')}
-                      style={{ transform: 'rotate(180deg)' }}
-                      aria-label="Previous slide"
-                    >
-                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.39844 0.900391L10.5908 10.0928L1.39844 19.2852" stroke="white" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </button>
-                  </div>
+                  {/* Slider controls removed */}
                 </div>
               </section>
             </div>
           </section>
 
           {/* 2. BRANDING & MARKETING SECTION */}
-          <section className="page-constructor__section">
+          <section ref={section2Ref} className="page-constructor__section page-constructor__section--brand">
+            <div ref={divider2Ref} className="tech-glow-divider tech-glow-divider-services-2" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '120px', zIndex: 10, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+                <defs>
+                  <linearGradient id="tech-glow-grad-services-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#00D9FF" stopOpacity="1" />
+                    <stop offset="50%" stopColor="#A020F0" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#FF1493" stopOpacity="1" />
+                  </linearGradient>
+                </defs>
+                <line ref={line2MainRef} className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-services-2)" strokeWidth="4" />
+              </svg>
+            </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '222px' }}></div>
               <div className="block-padding block-padding_tablet" style={{ paddingTop: '171px' }}></div>
               <div className="block-padding block-padding_mobile" style={{ paddingTop: '100px' }}></div>
 
               <section id="services-branding-marketing" className="services-section">
-                <div className="services__text">
-                  <h2 className="services__title"><TextReveal text="Брендинг и маркетинг" glitch={true} /></h2>
-                  <p className="services__description">
-                    Формируем сильный визуальный образ бренда и привлекаем клиентов через комплексные маркетинговые каналы: от создания фирменного стиля до SEO, контекста и SMM.
-                  </p>
+                <div className="services__header-row">
+                  <div className="services__text">
+                    <h2 className="services__title"><TextReveal text="Брендинг и маркетинг" glitch={true} /></h2>
+                    <p className="services__description">
+                      Формируем сильный визуальный образ бренда и привлекаем клиентов через комплексные маркетинговые каналы: от создания фирменного стиля до SEO, контекста и SMM.
+                    </p>
+                  </div>
+                  {scrollStates.brandingMarketing.hasOverflow && (
+                    <div className="services__slider-nav">
+                      <button 
+                        className={`slider-nav-btn prev ${scrollStates.brandingMarketing.isStart ? 'disabled' : ''}`}
+                        onClick={() => scrollTrack('brandingMarketing', 'left')}
+                        aria-label="Previous slide"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                      <button 
+                        className={`slider-nav-btn next ${scrollStates.brandingMarketing.isEnd ? 'disabled' : ''}`}
+                        onClick={() => scrollTrack('brandingMarketing', 'right')}
+                        aria-label="Next slide"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="services__context-slider swiper-container">
@@ -532,46 +652,61 @@ export default function Services() {
                     </div>
                   </div>
 
-                  {/* Slider controls */}
-                  <div>
-                    <button 
-                      className={`swiper-button-next ${scrollStates.brandingMarketing.isEnd ? 'swiper-button-disabled' : ''}`}
-                      onClick={() => scrollTrack('brandingMarketing', 'right')}
-                      aria-label="Next slide"
-                    >
-                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.39844 0.900391L10.5908 10.0928L1.39844 19.2852" stroke="white" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </button>
-                    <button 
-                      className={`swiper-button-prev ${scrollStates.brandingMarketing.isStart ? 'swiper-button-disabled' : ''}`}
-                      onClick={() => scrollTrack('brandingMarketing', 'left')}
-                      style={{ transform: 'rotate(180deg)' }}
-                      aria-label="Previous slide"
-                    >
-                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.39844 0.900391L10.5908 10.0928L1.39844 19.2852" stroke="white" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </button>
-                  </div>
+                  {/* Slider controls removed */}
                 </div>
               </section>
             </div>
           </section>
 
           {/* 3. SUPPORT & OPERATIONS SECTION */}
-          <section className="page-constructor__section">
+          <section ref={section3Ref} className="page-constructor__section page-constructor__section--support">
+            <div ref={divider3Ref} className="tech-glow-divider tech-glow-divider-services-3" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '120px', zIndex: 10, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+                <defs>
+                  <linearGradient id="tech-glow-grad-services-3" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#00D9FF" stopOpacity="1" />
+                    <stop offset="50%" stopColor="#A020F0" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#FF1493" stopOpacity="1" />
+                  </linearGradient>
+                </defs>
+                <line ref={line3MainRef} className="tech-glow-line-main" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-services-3)" strokeWidth="4" />
+              </svg>
+            </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '90px' }}></div>
               <div className="block-padding block-padding_tablet" style={{ paddingTop: '68px' }}></div>
               <div className="block-padding block-padding_mobile" style={{ paddingTop: '48px' }}></div>
 
               <section id="services-support-operations" className="services-section">
-                <div className="services__text">
-                  <h2 className="services__title"><TextReveal text="Поддержка и операции" glitch={true} /></h2>
-                  <p className="services__description">
-                    Обеспечиваем стабильную работу ваших веб-ресурсов. Оказываем услуги технической поддержки, DevOps-инжиниринга, IT-консалтинга, аудита безопасности, юзабилити и оптимизации.
-                  </p>
+                <div className="services__header-row">
+                  <div className="services__text">
+                    <h2 className="services__title"><TextReveal text="Поддержка и операции" glitch={true} /></h2>
+                    <p className="services__description">
+                      Обеспечиваем стабильную работу ваших веб-ресурсов. Оказываем услуги технической поддержки, DevOps-инжиниринга, IT-консалтинга, аудита безопасности, юзабилити и оптимизации.
+                    </p>
+                  </div>
+                  {scrollStates.supportOperations.hasOverflow && (
+                    <div className="services__slider-nav">
+                      <button 
+                        className={`slider-nav-btn prev ${scrollStates.supportOperations.isStart ? 'disabled' : ''}`}
+                        onClick={() => scrollTrack('supportOperations', 'left')}
+                        aria-label="Previous slide"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                      <button 
+                        className={`slider-nav-btn next ${scrollStates.supportOperations.isEnd ? 'disabled' : ''}`}
+                        onClick={() => scrollTrack('supportOperations', 'right')}
+                        aria-label="Next slide"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="services__context-slider swiper-container">
@@ -765,28 +900,7 @@ export default function Services() {
                     </div>
                   </div>
 
-                  {/* Slider controls */}
-                  <div>
-                    <button 
-                      className={`swiper-button-next ${scrollStates.supportOperations.isEnd ? 'swiper-button-disabled' : ''}`}
-                      onClick={() => scrollTrack('supportOperations', 'right')}
-                      aria-label="Next slide"
-                    >
-                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.39844 0.900391L10.5908 10.0928L1.39844 19.2852" stroke="white" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </button>
-                    <button 
-                      className={`swiper-button-prev ${scrollStates.supportOperations.isStart ? 'swiper-button-disabled' : ''}`}
-                      onClick={() => scrollTrack('supportOperations', 'left')}
-                      style={{ transform: 'rotate(180deg)' }}
-                      aria-label="Previous slide"
-                    >
-                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.39844 0.900391L10.5908 10.0928L1.39844 19.2852" stroke="white" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </button>
-                  </div>
+                  {/* Slider controls removed */}
                 </div>
               </section>
             </div>

@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { servicesData } from '../utils/servicesData';
 import Footer from '../components/Footer';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTrail, animated } from 'react-spring';
+import ServiceCalculator from '../components/ServiceCalculator';
 
 function LogoIcon({ className }) {
   return (
@@ -56,105 +59,128 @@ function InteractiveVisualCard() {
         </div>
       </div>
       
-      <div className="visual-card-body-content">
-        {activeTab === 'grid' && (
-          <div className="tab-panel grid-panel">
-            <div className="wireframe-header">
-              <LogoIcon className="wireframe-logo" />
-              <div className="wireframe-nav-lines">
-                <span className="wireframe-line sm"></span>
-                <span className="wireframe-line sm"></span>
-                <span className="wireframe-line sm"></span>
+      <div className="visual-card-body-content" style={{ overflow: 'hidden', position: 'relative', height: '240px' }}>
+        <AnimatePresence mode="wait">
+          {activeTab === 'grid' && (
+            <motion.div 
+              key="grid"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="tab-panel grid-panel"
+            >
+              <div className="wireframe-header">
+                <LogoIcon className="wireframe-logo" />
+                <div className="wireframe-nav-lines">
+                  <span className="wireframe-line sm"></span>
+                  <span className="wireframe-line sm"></span>
+                  <span className="wireframe-line sm"></span>
+                </div>
               </div>
-            </div>
-            <div className="wireframe-hero">
-              <div className="wireframe-hero-text">
-                <span className="wireframe-line lg"></span>
-                <span className="wireframe-line md"></span>
-                <span className="wireframe-line md"></span>
+              <div className="wireframe-hero">
+                <div className="wireframe-hero-text">
+                  <span className="wireframe-line lg"></span>
+                  <span className="wireframe-line md"></span>
+                  <span className="wireframe-line md"></span>
+                </div>
+                <div className="wireframe-hero-block">
+                  <span className="wireframe-block-inner"></span>
+                </div>
               </div>
-              <div className="wireframe-hero-block">
-                <span className="wireframe-block-inner"></span>
+              <div className="wireframe-grid">
+                <div className="wireframe-grid-item"></div>
+                <div className="wireframe-grid-item"></div>
+                <div className="wireframe-grid-item"></div>
               </div>
-            </div>
-            <div className="wireframe-grid">
-              <div className="wireframe-grid-item"></div>
-              <div className="wireframe-grid-item"></div>
-              <div className="wireframe-grid-item"></div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
 
-        {activeTab === 'chart' && (
-          <div className="tab-panel chart-panel">
-            <div className="chart-info-row">
-              <span className="chart-metric">CR +14.2%</span>
-              <span className="chart-legend">Конверсия в лид</span>
-            </div>
-            <div className="chart-svg-container">
-              <svg className="chart-svg" viewBox="0 0 200 100" fill="none">
-                <path 
-                  d="M10 80 Q 40 70 70 45 T 130 55 T 190 20" 
-                  stroke="var(--accent-color)" 
-                  strokeWidth="3" 
-                  strokeLinecap="round"
-                  className="chart-path-anim"
-                />
-                <path 
-                  d="M10 80 Q 40 70 70 45 T 130 55 T 190 20 L 190 100 L 10 100 Z" 
-                  fill="url(#chart-gradient)"
-                  opacity="0.1"
-                />
-                <circle cx="190" cy="20" r="5" fill="var(--accent-color)" className="chart-pulse" />
-                <defs>
-                  <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--accent-color)" />
-                    <stop offset="100%" stopColor="transparent" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'speed' && (
-          <div className="tab-panel speed-panel">
-            <div className="radial-progress-container">
-              <svg className="radial-svg" viewBox="0 0 100 100">
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="40" 
-                  stroke="rgba(255,255,255,0.03)" 
-                  strokeWidth="8" 
-                  fill="none" 
-                />
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="40" 
-                  stroke="url(#speed-gradient)" 
-                  strokeWidth="8" 
-                  fill="none" 
-                  strokeDasharray="251.2"
-                  strokeDashoffset={251.2 - (251.2 * speedProgress) / 100}
-                  strokeLinecap="round"
-                  style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1)' }}
-                />
-                <defs>
-                  <linearGradient id="speed-gradient" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#00d9ff" />
-                    <stop offset="100%" stopColor="var(--accent-color)" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="radial-value-wrap">
-                <span className="radial-value">{speedProgress}</span>
-                <span className="radial-label">Performance</span>
+          {activeTab === 'chart' && (
+            <motion.div 
+              key="chart"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="tab-panel chart-panel"
+            >
+              <div className="chart-info-row">
+                <span className="chart-metric">CR +14.2%</span>
+                <span className="chart-legend">Конверсия в лид</span>
               </div>
-            </div>
-          </div>
-        )}
+              <div className="chart-svg-container">
+                <svg className="chart-svg" viewBox="0 0 200 100" fill="none">
+                  <path 
+                    d="M10 80 Q 40 70 70 45 T 130 55 T 190 20" 
+                    stroke="var(--accent-color)" 
+                    strokeWidth="3" 
+                    strokeLinecap="round"
+                    className="chart-path-anim"
+                  />
+                  <path 
+                    d="M10 80 Q 40 70 70 45 T 130 55 T 190 20 L 190 100 L 10 100 Z" 
+                    fill="url(#chart-gradient)"
+                    opacity="0.1"
+                  />
+                  <circle cx="190" cy="20" r="5" fill="var(--accent-color)" className="chart-pulse" />
+                  <defs>
+                    <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--accent-color)" />
+                      <stop offset="100%" stopColor="transparent" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'speed' && (
+            <motion.div 
+              key="speed"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="tab-panel speed-panel"
+            >
+              <div className="radial-progress-container">
+                <svg className="radial-svg" viewBox="0 0 100 100">
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="40" 
+                    stroke="rgba(255,255,255,0.03)" 
+                    strokeWidth="8" 
+                    fill="none" 
+                  />
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="40" 
+                    stroke="url(#speed-gradient)" 
+                    strokeWidth="8" 
+                    fill="none" 
+                    strokeDasharray="251.2"
+                    strokeDashoffset={251.2 - (251.2 * speedProgress) / 100}
+                    strokeLinecap="round"
+                    style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1)' }}
+                  />
+                  <defs>
+                    <linearGradient id="speed-gradient" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#00d9ff" />
+                      <stop offset="100%" stopColor="var(--accent-color)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="radial-value-wrap">
+                  <span className="radial-value">{speedProgress}</span>
+                  <span className="radial-label">Performance</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -164,8 +190,37 @@ export default function ServiceDetail() {
   const { serviceId } = useParams();
   const service = servicesData[serviceId];
 
+  const [inView, setInView] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    return () => observer.disconnect();
+  }, [serviceId]);
+
+  const trail = useTrail(service?.structureItems ? service.structureItems.length : 0, {
+    from: { opacity: 0, transform: 'translate3d(0, 30px, 0)' },
+    to: { 
+      opacity: inView ? 1 : 0, 
+      transform: inView ? 'translate3d(0, 0, 0)' : 'translate3d(0, 30px, 0)' 
+    },
+    config: { mass: 1, tension: 210, friction: 20 },
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    setInView(false);
   }, [serviceId]);
 
   if (!service) {
@@ -246,7 +301,7 @@ export default function ServiceDetail() {
 
           {/* Structure explorer section */}
           {service.structureItems && (
-            <section className="service-structure-section">
+            <section ref={sectionRef} className="service-structure-section">
               <div className="section-header">
                 <span className="cyber-section-label">// СТРУКТУРА РЕШЕНИЯ</span>
                 <h2>{service.structureTitle}</h2>
@@ -254,11 +309,11 @@ export default function ServiceDetail() {
               </div>
               
               <div className="structure-grid">
-                {service.structureItems.map((item, index) => (
-                  <div className="structure-card" key={index}>
+                {trail.map((style, index) => (
+                  <animated.div style={style} className="structure-card" key={index}>
                     <div className="structure-card-number">{ (index + 1).toString().padStart(2, '0') }</div>
-                    <p className="structure-card-text">{item}</p>
-                  </div>
+                    <p className="structure-card-text">{service.structureItems[index]}</p>
+                  </animated.div>
                 ))}
               </div>
             </section>
@@ -291,6 +346,11 @@ export default function ServiceDetail() {
                 </div>
               )}
             </div>
+          </section>
+
+          {/* Interactive Project Calculator */}
+          <section className="service-calculator-section" style={{ marginTop: '8rem', marginBottom: '8rem' }}>
+            <ServiceCalculator basePriceString={service.price} serviceTitle={service.title} />
           </section>
 
           {/* Premium Call to Action */}
