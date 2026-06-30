@@ -158,7 +158,7 @@ export default function Navbar() {
           <div className="grid-container">
             <div className="navbar-inner-sticky">
               {/* Left: Logo */}
-              <Link to="/" className="nav-logo-link" aria-label="Home" onClick={() => { setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+              <Link to="/" className="nav-logo-link" aria-label="Home" onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.location.href = '/'; }}>
                 <span className="nav-logo-stack">
                   <img src="/Nextweb_logo.svg" alt="NEXTWEB" className="nav-logo-text" />
                   <img src="/NEXTWEB_background_mark.png" alt="NEXTWEB Mark" className="nav-logo-hover-icon" />
@@ -306,7 +306,7 @@ export default function Navbar() {
             </button>
  
             {/* Center Logo */}
-            <Link to="/" className="nav-logo-link" aria-label="Home" onClick={() => { setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+            <Link to="/" className="nav-logo-link" aria-label="Home" onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.location.href = '/'; }}>
               <span className="nav-logo-stack">
                 <img src="/Nextweb_logo.svg" alt="NEXTWEB" className="nav-logo-text" />
                 <img src="/NEXTWEB_background_mark.png" alt="NEXTWEB Mark" className="nav-logo-hover-icon" />
@@ -340,7 +340,7 @@ export default function Navbar() {
         <div className="grid-container">
           <div className="navbar-inner-sticky">
             {/* Left: Logo */}
-            <Link to="/" className="nav-logo-link" aria-label="Home" onClick={() => { setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+            <Link to="/" className="nav-logo-link" aria-label="Home" onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.location.href = '/'; }}>
               <span className="nav-logo-stack">
                 <img src="/Nextweb_logo.svg" alt="NEXTWEB" className="nav-logo-text" />
                 <img src="/NEXTWEB_background_mark.png" alt="NEXTWEB Mark" className="nav-logo-hover-icon" />
