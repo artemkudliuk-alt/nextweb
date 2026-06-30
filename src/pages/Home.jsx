@@ -436,6 +436,12 @@ export default function Home() {
   const [isTestimonialsInteracted, setIsTestimonialsInteracted] = useState(false);
   const [isAllReviewsModalOpen, setIsAllReviewsModalOpen] = useState(false);
   const [activeAccordionIdx, setActiveAccordionIdx] = useState(0);
+  const [blogScrollState, setBlogScrollState] = useState({
+    isStart: true,
+    isEnd: false,
+    hasOverflow: false
+  });
+  const blogTrackRef = useRef(null);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(contactFormSchema),
@@ -656,6 +662,34 @@ export default function Home() {
       setIsReviewExpanded(false);
     }
   };
+
+  const handleBlogScroll = () => {
+    const el = blogTrackRef.current;
+    if (el) {
+      const isStart = el.scrollLeft <= 15;
+      const isEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 15;
+      const hasOverflow = el.scrollWidth > el.clientWidth;
+      setBlogScrollState({ isStart, isEnd, hasOverflow });
+    }
+  };
+
+  const scrollBlogTrack = (direction) => {
+    const el = blogTrackRef.current;
+    if (el) {
+      const cardWidth = 544; // card width (520px) + margin-right (24px)
+      const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
+      el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(handleBlogScroll, 200);
+    window.addEventListener('resize', handleBlogScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleBlogScroll);
+    };
+  }, []);
 
   
   const heroRef = useRef(null);
@@ -1124,6 +1158,22 @@ export default function Home() {
       const progress = Math.min(currentScrollY / vh, 1);
       const divider2 = divider2Ref.current;
 
+      const applyAdaptiveScroll = (elementId, containerSelector, startScroll, endScroll) => {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const container = el.querySelector(containerSelector);
+        if (!container) return;
+
+        const scrollProgress = Math.max(0, Math.min((currentScrollY - startScroll) / (endScroll - startScroll), 1));
+        const containerHeight = container.scrollHeight;
+        const viewportHeight = window.innerHeight;
+        const maxScroll = Math.max(0, containerHeight - viewportHeight + 120);
+        const translateYVal = -scrollProgress * maxScroll;
+
+        container.style.transform = `translateY(${translateYVal}px)`;
+        container.style.transition = 'none';
+      };
+
 
 
       
@@ -1406,17 +1456,30 @@ export default function Home() {
             const translateX = progress3 * 100; // slides horizontally to the right
             approachEl.style.transform = `translate(${translateX}vw, 0vh)`;
 
+            applyAdaptiveScroll('approach', '.approach-container-clean', vh * 1.0, vh * 1.3);
+
             // Show Divider 2 (sliding vertical line at the left edge) during slide-out and fade it out as it leaves
             if (divider2) {
               divider2.style.transform = `translate(${translateX}vw, 0vh)`;
               divider2.style.opacity = Math.max(0, 1 - progress3).toString();
             }
-          } else {
+          } else if (currentScrollY >= vh * 1.0) {
             approachEl.style.transform = 'none';
+
+            applyAdaptiveScroll('approach', '.approach-container-clean', vh * 1.0, vh * 1.3);
 
             // Hide Divider 2 when resting
             if (divider2) {
               divider2.style.transform = 'none';
+              divider2.style.opacity = '0';
+            }
+          } else {
+            approachEl.style.transform = '';
+            const container = approachEl.querySelector('.approach-container-clean');
+            if (container) container.style.transform = '';
+
+            if (divider2) {
+              divider2.style.transform = '';
               divider2.style.opacity = '0';
             }
           }
@@ -1640,6 +1703,8 @@ export default function Home() {
               workEl.style.transform = 'none';
               workEl.style.visibility = 'hidden';
               workEl.style.pointerEvents = 'none';
+              const workContainer = workEl.querySelector('.work-container-clean');
+              if (workContainer) workContainer.style.transform = '';
             } else {
               // 9.2 <= scroll < 11.2: workEl is fixed
               workEl.style.setProperty('position', 'fixed', 'important');
@@ -1651,6 +1716,7 @@ export default function Home() {
               workEl.style.transform = 'none';
               workEl.style.visibility = 'visible';
               workEl.style.pointerEvents = 'auto';
+              applyAdaptiveScroll('work', '.work-container-clean', vh * 9.2, vh * 10.2);
             }
 
             // --- Screen 6 (Testimonials) Fixed Positioning Logic ---
@@ -1754,6 +1820,9 @@ export default function Home() {
                   const translateYBlog = (1 - progressBlog) * 100; // slide up from 100vh
                   blogEl.style.transform = `translateY(${translateYBlog}vh)`;
                   
+                  const gridContainer = blogEl.querySelector('.grid-container');
+                  if (gridContainer) gridContainer.style.transform = 'translateY(0px)';
+
                   if (screen6El) {
                     screen6El.style.opacity = (1 - progressBlog).toString();
                     if (progressBlog >= 0.99) {
@@ -1781,6 +1850,8 @@ export default function Home() {
                   blogEl.style.transform = 'none';
                   blogEl.style.clipPath = 'none';
 
+                  applyAdaptiveScroll('blog-preview', '.grid-container', vh * 13.2, vh * 14.2);
+
                   if (screen6El) {
                     screen6El.style.opacity = '0';
                     screen6El.style.visibility = 'hidden';
@@ -1804,6 +1875,9 @@ export default function Home() {
                 blogEl.style.display = 'none';
                 blogEl.style.clipPath = '';
                 blogEl.style.webkitClipPath = '';
+
+                const gridContainer = blogEl.querySelector('.grid-container');
+                if (gridContainer) gridContainer.style.transform = '';
 
                 if (currentScrollY < vh * 12.2) {
                   if (screen6El) {
@@ -1907,9 +1981,12 @@ export default function Home() {
                     bottomDivider.style.opacity = opacityVal.toString();
                   }
 
-                  // Parallax down + fade + scale
+                  // Parallax down + fade + scale (keeping maxScroll offset to prevent snap)
                   if (contactContainer) {
-                    const formTranslateY = progressF * 120;
+                    const containerHeight = contactContainer.scrollHeight;
+                    const viewportHeight = window.innerHeight;
+                    const maxScroll = Math.max(0, containerHeight - viewportHeight + 120);
+                    const formTranslateY = -maxScroll + progressF * 120;
                     const formScale = 1 - progressF * 0.08;
                     const formOpacity = 1 - progressF;
                     contactContainer.style.transform = `translateY(${formTranslateY}px) scale(${formScale})`;
@@ -1920,6 +1997,8 @@ export default function Home() {
                   screen7El.style.transform = 'none';
                   screen7El.style.opacity = '1';
                   screen7El.style.clipPath = 'none';
+
+                  applyAdaptiveScroll('screen7-container', '.contact-container', vh * 15.2, vh * 16.2);
 
                   const homeCanvas = document.getElementById("home-gradient-canvas");
                   const homeOverlay = document.getElementById("home-gradient-overlay");
@@ -1942,11 +2021,6 @@ export default function Home() {
                   const bottomDivider = screen7El.querySelector('.tech-glow-divider-7-bottom');
                   if (bottomDivider) {
                     bottomDivider.style.opacity = '0';
-                  }
-
-                  if (contactContainer) {
-                    contactContainer.style.transform = '';
-                    contactContainer.style.opacity = '';
                   }
                 }
               } else {
@@ -1997,37 +2071,21 @@ export default function Home() {
             workEl.style.transform = 'none';
             workEl.style.visibility = 'visible';
             workEl.style.pointerEvents = 'auto';
+            const workContainer = workEl.querySelector('.work-container-clean');
+            if (workContainer) workContainer.style.transform = '';
 
             // Restoring the Slanted Wipe & Parallax transition for Screen 5 (#work)
             const workProgress = Math.max(0, Math.min(1, (currentScrollY - vh * 8.2) / vh));
 
             if (whyUsEl) {
-              if (currentScrollY >= vh * 8.2 && currentScrollY < vh * 9.2) {
-                if (workProgress < 0.20) {
-                  whyUsEl.style.filter = '';
-                  whyUsEl.style.opacity = (1 - workProgress).toString();
-                  whyUsEl.style.visibility = 'visible';
-                } else if (workProgress >= 0.80) {
-                  whyUsEl.style.filter = 'blur(8px) brightness(0.35)';
-                  whyUsEl.style.opacity = '0';
-                  whyUsEl.style.visibility = 'hidden';
-                } else {
-                  const p = (workProgress - 0.20) / 0.60;
-                  const blurVal = p * 8;
-                  const brightnessVal = 1 - p * 0.65;
-                  whyUsEl.style.filter = `blur(${blurVal}px) brightness(${brightnessVal})`;
-                  whyUsEl.style.opacity = (1 - workProgress).toString();
-                  whyUsEl.style.visibility = 'visible';
-                }
+              if (currentScrollY >= vh * 8.2) {
+                whyUsEl.style.filter = 'blur(8px) brightness(0.35)';
+                whyUsEl.style.opacity = '0';
+                whyUsEl.style.visibility = 'hidden';
               } else {
                 whyUsEl.style.filter = '';
-                if (currentScrollY >= vh * 9.2) {
-                  whyUsEl.style.opacity = '0';
-                  whyUsEl.style.visibility = 'hidden';
-                } else {
-                  whyUsEl.style.opacity = '1';
-                  whyUsEl.style.visibility = 'visible';
-                }
+                whyUsEl.style.opacity = '1';
+                whyUsEl.style.visibility = 'visible';
               }
             }
 
@@ -2038,18 +2096,8 @@ export default function Home() {
               if (currentScrollY >= vh * 8.2 && currentScrollY < vh * 9.2) {
                 homeCanvas.style.transition = 'none';
                 homeOverlay.style.transition = 'none';
-                if (workProgress <= 0.05) {
-                  homeCanvas.style.opacity = '0';
-                  homeOverlay.style.opacity = '0';
-                } else if (workProgress >= 0.20) {
-                  homeCanvas.style.opacity = '0.5';
-                  homeOverlay.style.opacity = '1';
-                } else {
-                  // Scale smoothly between 5% and 20%
-                  const p = (workProgress - 0.05) / 0.15;
-                  homeCanvas.style.opacity = (p * 0.5).toString();
-                  homeOverlay.style.opacity = p.toString();
-                }
+                homeCanvas.style.opacity = '0.5';
+                homeOverlay.style.opacity = '1';
               } else {
                 homeCanvas.style.transition = "";
                 homeOverlay.style.transition = "";
@@ -3171,9 +3219,10 @@ export default function Home() {
           </svg>
         </div>
 
-        <div className="tech-section-header">
-          <span className="cyber-section-label">// 04 . СТЕК ТЕХНОЛОГИЙ</span>
-        </div>
+        <div className="work-container-clean">
+          <div className="tech-section-header">
+            <span className="cyber-section-label">// 04 . СТЕК ТЕХНОЛОГИЙ</span>
+          </div>
         
         <div className="tech-deck-island">
           {/* Left Column: Vertical Menu */}
@@ -3271,7 +3320,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
 
       {/* ----------------- SCREEN 6: TESTIMONIALS SLIDER ----------------- */}
@@ -3623,53 +3673,156 @@ export default function Home() {
                 <TextReveal text={isMobile ? "Делимся опытом\nи экспертностью" : "Делимся опытом и экспертизой"} glitch={true} />
               </h2>
             </div>
-            {!isMobile && <Button to="/blog" text="Перейти в блог" variant="light" className="blog-link-btn" />}
+            <div className="blog-header-actions">
+              {blogScrollState.hasOverflow && (
+                <div className="services__slider-nav" style={{ marginRight: '1.5rem', display: 'flex' }}>
+                  <button 
+                    className={`slider-nav-btn prev ${blogScrollState.isStart ? 'disabled' : ''}`}
+                    onClick={() => scrollBlogTrack('left')}
+                    aria-label="Previous slide"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  <button 
+                    className={`slider-nav-btn next ${blogScrollState.isEnd ? 'disabled' : ''}`}
+                    onClick={() => scrollBlogTrack('right')}
+                    aria-label="Next slide"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+              )}
+              {!isMobile && <Button to="/blog" text="Перейти в блог" variant="light" className="blog-link-btn" />}
+            </div>
           </div>
 
-          <div className="blog-preview-grid">
+          <div 
+            ref={blogTrackRef}
+            onScroll={handleBlogScroll}
+            className="blog-preview-track"
+          >
             <div className="blog-preview-card">
-              <div className="blog-card-meta">
-                <span className="cyber-section-label">// ИНЖЕНЕРИЯ</span>
-                <span className="blog-card-date">23 июня 2026</span>
+              <div className="blog-card-content">
+                <div className="blog-card-meta">
+                  <span className="cyber-section-label">// ИНЖЕНЕРИЯ</span>
+                  <span className="blog-card-date">23 июня 2026</span>
+                </div>
+                <h3 className="blog-card-title">Оптимизация производительности в экосистеме Antigravity 2.0</h3>
+                <p className="blog-card-summary">Как избежать перегрузки DOM-дерева и обеспечить FPS 60 на мобильных устройствах с помощью автоматических GPU-анимаций.</p>
+                <Link to="/blog" className="blog-card-link">
+                  <span>ЧИТАТЬ СТАТЬЮ</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
               </div>
-              <h3 className="blog-card-title">Оптимизация производительности в экосистеме Antigravity 2.0</h3>
-              <p className="blog-card-summary">Как избежать перегрузки DOM-дерева и обеспечить FPS 60 на мобильных устройствах с помощью автоматических GPU-анимаций.</p>
-              <Link to="/blog" className="blog-card-link">
-                <span>ЧИТАТЬ СТАТЬЮ</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
+              <div className="blog-card-img-wr">
+                <img src="/_sa/img/services/3LuWbO4vFz5rXLmfBA6fFedCstiyjjs4V7axiN9R.png" alt="" loading="lazy" className="blog-card-img" />
+              </div>
             </div>
 
             <div className="blog-preview-card">
-              <div className="blog-card-meta">
-                <span className="cyber-section-label">// ВЕБ-ДИЗАЙН</span>
-                <span className="blog-card-date">14 мая 2026</span>
+              <div className="blog-card-content">
+                <div className="blog-card-meta">
+                  <span className="cyber-section-label">// ВЕБ-ДИЗАЙН</span>
+                  <span className="blog-card-date">14 мая 2026</span>
+                </div>
+                <h3 className="blog-card-title">Использование цветового пространства OKLCH в Tailwind CSS v4</h3>
+                <p className="blog-card-summary">Почему традиционный RGB/HEX уступает новому стандарту OKLCH и как создавать идеальные темные темы с высокой контрастностью.</p>
+                <Link to="/blog" className="blog-card-link">
+                  <span>ЧИТАТЬ СТАТЬЮ</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
               </div>
-              <h3 className="blog-card-title">Использование цветового пространства OKLCH в Tailwind CSS v4</h3>
-              <p className="blog-card-summary">Почему традиционный RGB/HEX уступает новому стандарту OKLCH и как создавать идеальные темные темы с высокой контрастностью.</p>
-              <Link to="/blog" className="blog-card-link">
-                <span>ЧИТАТЬ СТАТЬЮ</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
+              <div className="blog-card-img-wr">
+                <img src="/_sa/img/services/5aiLfmiFufjO85fWyOaYFYVpWQApnXRYEOgrsLjQ.png" alt="" loading="lazy" className="blog-card-img" />
+              </div>
             </div>
 
             <div className="blog-preview-card">
-              <div className="blog-card-meta">
-                <span className="cyber-section-label">// DEVOPS</span>
-                <span className="blog-card-date">02 апреля 2026</span>
+              <div className="blog-card-content">
+                <div className="blog-card-meta">
+                  <span className="cyber-section-label">// DEVOPS</span>
+                  <span className="blog-card-date">02 апреля 2026</span>
+                </div>
+                <h3 className="blog-card-title">Автоматизация проверок Core Web Vitals с Lighthouse CI</h3>
+                <p className="blog-card-summary">Пошаговое руководство по интеграции тестов производительности в ваш CI/CD пайплайн для блокировки медленного кода перед деплоем.</p>
+                <Link to="/blog" className="blog-card-link">
+                  <span>ЧИТАТЬ СТАТЬЮ</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
               </div>
-              <h3 className="blog-card-title">Автоматизация проверок Core Web Vitals с Lighthouse CI</h3>
-              <p className="blog-card-summary">Пошаговое руководство по интеграции тестов производительности в ваш CI/CD пайплайн для блокировки медленного кода перед деплоем.</p>
-              <Link to="/blog" className="blog-card-link">
-                <span>ЧИТАТЬ СТАТЬЮ</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
+              <div className="blog-card-img-wr">
+                <img src="/_sa/img/services/Pkepine6uqomDZTEBqhsyRNddwsB0Eu58pU3wPta.png" alt="" loading="lazy" className="blog-card-img" />
+              </div>
+            </div>
+
+            <div className="blog-preview-card">
+              <div className="blog-card-content">
+                <div className="blog-card-meta">
+                  <span className="cyber-section-label">// АНАЛИТИКА</span>
+                  <span className="blog-card-date">18 марта 2026</span>
+                </div>
+                <h3 className="blog-card-title">Сквозная аналитика без потери конфиденциальности пользователей</h3>
+                <p className="blog-card-summary">Разбираем современные методы tracking-серверов и куки первого уровня (1st party cookies) для построения точных сквозных воронкок продаж.</p>
+                <Link to="/blog" className="blog-card-link">
+                  <span>ЧИТАТЬ СТАТЬЮ</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+              </div>
+              <div className="blog-card-img-wr">
+                <img src="/_sa/img/services/oj3jhMngW54bYhlgy09DXECjyJN8ogjnSy47KDVy.png" alt="" loading="lazy" className="blog-card-img" />
+              </div>
+            </div>
+
+            <div className="blog-preview-card">
+              <div className="blog-card-content">
+                <div className="blog-card-meta">
+                  <span className="cyber-section-label">// ИНТЕРФЕЙСЫ</span>
+                  <span className="blog-card-date">25 февраля 2026</span>
+                </div>
+                <h3 className="blog-card-title">Физика пружин и микро-взаимодействия в современном Web UI</h3>
+                <p className="blog-card-summary">Руководство по созданию естественного отклика интерфейса на жесты пользователя с использованием CSS custom easing и Web Animation API.</p>
+                <Link to="/blog" className="blog-card-link">
+                  <span>ЧИТАТЬ СТАТЬЮ</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+              </div>
+              <div className="blog-card-img-wr">
+                <img src="/_sa/img/services/UlTOttwFc8eb9KTdvv3LJ42gPNf8g7aTk2v9LWOR.png" alt="" loading="lazy" className="blog-card-img" />
+              </div>
+            </div>
+
+            <div className="blog-preview-card">
+              <div className="blog-card-content">
+                <div className="blog-card-meta">
+                  <span className="cyber-section-label">// РАЗРАБОТКА</span>
+                  <span className="blog-card-date">10 января 2026</span>
+                </div>
+                <h3 className="blog-card-title">Архитектура Edge-функций для динамической генерации страниц</h3>
+                <p className="blog-card-summary">Как перенести рендеринг критических секций на CDN-узлы и сократить Time to First Byte (TTFB) до рекордных 15 миллисекунд.</p>
+                <Link to="/blog" className="blog-card-link">
+                  <span>ЧИТАТЬ СТАТЬЮ</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.25 3.25L2.75 9.75M9.25 3.25H3.75M9.25 3.25V8.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+              </div>
+              <div className="blog-card-img-wr">
+                <img src="/_sa/img/services/fJ5Wj4IWyUeAird6zmnNifjZVbmZJstaSycuGa67.png" alt="" loading="lazy" className="blog-card-img" />
+              </div>
             </div>
           </div>
           {isMobile && (
