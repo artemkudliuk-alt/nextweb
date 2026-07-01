@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import TextReveal from '../components/TextReveal';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Icon Components for each service card
 const Icons = {
@@ -395,6 +396,162 @@ const supportOperationsCards = [
   }
 ];
 
+// Detailed Sub-Services Accordion Directory Data
+const directoryCards = [
+  {
+    title: 'Создание сайтов',
+    num: '01',
+    media: { type: 'video', src: '/websites.mp4' },
+    subLinks: [
+      { name: 'Разработка сайтов на Angular', url: '/service/portal' },
+      { name: 'Разработка сайтов на Laravel', url: '/service/portal' },
+      { name: 'Разработка сайтов на Node.js', url: '/service/portal' },
+      { name: 'Разработка сайтов на React', url: '/service/card' },
+      { name: 'Разработка сайтов на Vue.js', url: '/service/showcase' },
+      { name: 'Разработка сайтов на WordPress', url: '/service/corporate' }
+    ]
+  },
+  {
+    title: 'Брендинг и дизайн',
+    num: '02',
+    media: { type: 'image', src: '/images/services/branding_design.png' },
+    subLinks: [
+      { name: 'Разработка логотипа и логобука', url: '#' },
+      { name: 'Дизайн для лендингов', url: '/service/landing' },
+      { name: 'Дизайн интернет-магазинов', url: '/service/showcase' },
+      { name: 'Проектирование интерфейсов с нуля', url: '#' },
+      { name: 'UI/UX аудит и оптимизация', url: '#' }
+    ]
+  },
+  {
+    title: 'CRM-системы',
+    num: '03',
+    media: { type: 'image', src: '/images/services/crm_systems.png' },
+    subLinks: [
+      { name: 'CRM для автобизнеса и автосалонов', url: '#' },
+      { name: 'CRM для агентств недвижимости', url: '#' },
+      { name: 'CRM для аутсорсинговых компаний', url: '#' },
+      { name: 'CRM для строительных компаний', url: '#' },
+      { name: 'Интеграция баз данных и клиентов', url: '#' },
+      { name: 'Автоматизация логистических цепочек', url: '#' }
+    ]
+  },
+  {
+    title: 'Интернет-магазины',
+    num: '04',
+    media: { type: 'image', src: '/images/services/online_store.png' },
+    subLinks: [
+      { name: 'Разработка e-commerce сайтов', url: '/service/showcase' },
+      { name: 'Интеграция и верстка под Shopify', url: '/service/showcase' },
+      { name: 'Создание магазинов на OpenCart', url: '/service/showcase' },
+      { name: 'Настройка платежных шлюзов', url: '/service/showcase' }
+    ]
+  },
+  {
+    title: 'Landing Page',
+    num: '05',
+    subLinks: []
+  },
+  {
+    title: 'Поддержка сайтов',
+    num: '06',
+    subLinks: []
+  },
+  {
+    title: 'Редизайн сайтов',
+    num: '07',
+    subLinks: []
+  },
+  {
+    title: 'Разработка мобильных приложений',
+    num: '08',
+    media: { type: 'image', src: '/images/services/mobile_apps.png' },
+    subLinks: [
+      { name: 'Разработка нативных приложений под iOS', url: '#' },
+      { name: 'Разработка нативных приложений под Android', url: '#' },
+      { name: 'Кроссплатформенная разработка (Flutter)', url: '#' }
+    ]
+  },
+  {
+    title: 'Поисковая оптимизация (SEO)',
+    num: '09',
+    subLinks: []
+  }
+];
+
+// FAQ Questions & Answers Data
+const faqData = [
+  {
+    q: 'Какова стоимость разработки веб-сайта?',
+    a: 'Стоимость разработки рассчитывается индивидуально и зависит от сложности проекта, выбранного стека технологий (React, Node.js, WebGL) и требований к дизайну. Мы работаем по прозрачной модели Time & Material или фиксированной стоимости (Fixed Price) с детальной оценкой каждого этапа.'
+  },
+  {
+    q: 'Какие сроки реализации проектов вы предлагаете?',
+    a: 'В среднем создание сложного корпоративного сайта или e-commerce платформы занимает от 6 до 12 недель. Лендинги и промо-страницы могут быть готовы за 2–4 недели. Сроки всегда фиксируются в договоре и контролируются по методологии Agile/Scrum.'
+  },
+  {
+    q: 'Предоставляете ли вы услуги по продвижению и SEO?',
+    a: 'Да, все разрабатываемые нами сайты проходят базовую техническую SEO-оптимизацию (микроразметка, скорость загрузки, мета-теги). Также мы предлагаем комплексное поисковое продвижение, оптимизацию Core Web Vitals и настройку контекстной рекламы для быстрого запуска продаж.'
+  },
+  {
+    q: 'Как рассчитывается стоимость проекта?',
+    a: 'Перед стартом мы собираем подробные технические требования и составляем смету. Стоимость формируется на основе необходимых часов работы разработчиков, UI/UX дизайнеров, тестировщиков и проектных менеджеров. Каждая задача логируется в Jira/ClickUp.'
+  },
+  {
+    q: 'В чем разница между индивидуальной разработкой и готовым решением?',
+    a: 'Индивидуальная разработка на React/Next.js создается с нуля под бизнес-процессы компании, обеспечивает максимальную скорость (Performance >= 95% в Lighthouse), безопасность и неограниченные возможности масштабирования. Готовые шаблоны имеют ограничения в дизайне, медленнее работают и сложны в доработке.'
+  },
+  {
+    q: 'Какой процесс ведения проекта вы предлагаете?',
+    a: 'Мы делим проект на двухнедельные спринты. В конце каждого спринта вы получаете рабочий демо-релиз. За проектом закрепляется персональный менеджер, который всегда на связи и предоставляет регулярные отчеты в Slack, Telegram или Zoom.'
+  }
+];
+
+// Custom Premium Button with sliding hover text and moving arrow
+function PremiumButton({ to, href, text }) {
+  const content = (
+    <>
+      <div className="btn-inner">
+        <div className="btn-text-wrap">
+          <span className="btn-text-visible">{text}</span>
+          <span className="btn-text-hidden" aria-hidden="true">{text}</span>
+        </div>
+      </div>
+      <div className="btn-arrow">
+        <div className="btn-arrow-clip">
+          <svg className="btn-icon" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.0208 3.41421L1.41421 12.0208L0 10.6066L8.60659 2H1.02082V0H12.0208V11H10.0208V3.41421Z" fill="currentColor"></path>
+          </svg>
+          <svg className="btn-icon btn-arrow-incoming" width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.0208 3.41421L1.41421 12.0208L0 10.6066L8.60659 2H1.02082V0H12.0208V11H10.0208V3.41421Z" fill="currentColor"></path>
+          </svg>
+        </div>
+      </div>
+    </>
+  );
+
+  if (href) {
+    if (href.startsWith('#')) {
+      return (
+        <a href={href} className="btn-premium">
+          {content}
+        </a>
+      );
+    }
+    return (
+      <a href={href} className="btn-premium" target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={to} className="btn-premium">
+      {content}
+    </Link>
+  );
+}
+
 export default function Services() {
   const trackRefs = {
     development: useRef(null),
@@ -407,6 +564,9 @@ export default function Services() {
     brandingMarketing: { isStart: true, isEnd: false, hasOverflow: false },
     supportOperations: { isStart: true, isEnd: false, hasOverflow: false }
   });
+
+  const [activeDirCard, setActiveDirCard] = useState(0);
+  const [activeFaq, setActiveFaq] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -486,13 +646,56 @@ export default function Services() {
 
   const section2Ref = useRef(null);
   const section3Ref = useRef(null);
+  const section4Ref = useRef(null);
   const divider2Ref = useRef(null);
   const divider3Ref = useRef(null);
+  const divider4Ref = useRef(null);
   const line2MainRef = useRef(null);
   const line3MainRef = useRef(null);
+  const line4MainRef = useRef(null);
+
+  const introTrackRef = useRef(null);
+  const videoContainerRef = useRef(null);
+  const textContentRef = useRef(null);
+  const introVideoRef = useRef(null);
+  const placeholderRef = useRef(null);
+  const servicesIntroStickyRef = useRef(null);
+  const bottomRowRef = useRef(null);
+  const initialCoordsRef = useRef(null);
 
   // Dynamic slant-flattening transition scroll listener
   useEffect(() => {
+    // Capture initial anchor coordinates eagerly after fonts render
+    const captureInitialCoords = () => {
+      if (!placeholderRef.current) return;
+      const anchorRect = placeholderRef.current.getBoundingClientRect();
+      if (anchorRect.width > 0) {
+        // anchor is inside a sticky:top:0 element, so its viewport position is stable
+        initialCoordsRef.current = {
+          left: anchorRect.left,
+          top: anchorRect.top,
+          width: anchorRect.width,
+          height: anchorRect.height
+        };
+      }
+    };
+
+    if (document.fonts) {
+      document.fonts.ready.then(() => {
+        setTimeout(captureInitialCoords, 300);
+      });
+    } else {
+      setTimeout(captureInitialCoords, 600);
+    }
+    // Extra fallback in case fonts.ready resolved before component mounted
+    const fallbackTimer = setTimeout(captureInitialCoords, 800);
+
+    const handleResize = () => {
+      initialCoordsRef.current = null;
+      setTimeout(captureInitialCoords, 100);
+    };
+    window.addEventListener('resize', handleResize);
+
     const handleWindowScroll = () => {
       const viewportHeight = window.innerHeight;
 
@@ -500,8 +703,6 @@ export default function Services() {
         if (!sectionEl) return;
         const rect = sectionEl.getBoundingClientRect();
         
-        // Progress goes from 0 (when top of section enters viewport bottom) 
-        // to 1 (when top of section reaches viewport top)
         let progress = 1 - (rect.top / viewportHeight);
         progress = Math.max(0, Math.min(1, progress));
 
@@ -540,17 +741,82 @@ export default function Services() {
       requestAnimationFrame(() => {
         updateSectionTransition(section2Ref.current, divider2Ref.current, line2MainRef.current, 'left');
         updateSectionTransition(section3Ref.current, divider3Ref.current, line3MainRef.current, 'right');
+        updateSectionTransition(section4Ref.current, divider4Ref.current, line4MainRef.current, 'left');
+
+        // Zooming video scroll logic
+        if (introTrackRef.current && videoContainerRef.current && placeholderRef.current && servicesIntroStickyRef.current) {
+          const track = introTrackRef.current;
+          const rect = track.getBoundingClientRect();
+          const totalScroll = rect.height - viewportHeight;
+          const viewportWidth = window.innerWidth;
+          
+          let progress = -rect.top / totalScroll;
+          progress = Math.max(0, Math.min(1, progress));
+
+          if (viewportWidth > 768) {
+            // Fallback: capture on first scroll if not yet captured (only near start)
+            if (!initialCoordsRef.current && placeholderRef.current && progress < 0.05) {
+              captureInitialCoords();
+            }
+            if (initialCoordsRef.current) {
+              const { left: initialLeft, top: initialTop, width: initialWidth, height: initialHeight } = initialCoordsRef.current;
+              const zoomProgress = Math.max(0, Math.min(1, progress / 0.8));
+
+              const currentWidth = initialWidth + (viewportWidth - initialWidth) * zoomProgress;
+              const currentHeight = initialHeight + (viewportHeight - initialHeight) * zoomProgress;
+              const currentLeft = initialLeft * (1 - zoomProgress);
+              const currentTop = initialTop * (1 - zoomProgress);
+              const currentRadius = 8 * (1 - zoomProgress);
+
+
+              // fixed positioning so the anchor doesn't constrain it
+              videoContainerRef.current.style.position = 'fixed';
+              videoContainerRef.current.style.width = `${currentWidth}px`;
+              videoContainerRef.current.style.height = `${currentHeight}px`;
+              videoContainerRef.current.style.left = `${currentLeft}px`;
+              videoContainerRef.current.style.top = `${currentTop}px`;
+              videoContainerRef.current.style.transform = 'none';
+              videoContainerRef.current.style.borderRadius = `${currentRadius}px`;
+
+              if (rect.bottom <= 0) {
+                videoContainerRef.current.style.opacity = '0';
+                videoContainerRef.current.style.pointerEvents = 'none';
+                videoContainerRef.current.style.visibility = 'hidden';
+              } else {
+                videoContainerRef.current.style.opacity = '1';
+                videoContainerRef.current.style.pointerEvents = 'auto';
+                videoContainerRef.current.style.visibility = 'visible';
+              }
+
+              const textOpacity = Math.max(0, 1 - zoomProgress * 2.2);
+              if (textContentRef.current) textContentRef.current.style.opacity = textOpacity.toString();
+              if (bottomRowRef.current) bottomRowRef.current.style.opacity = textOpacity.toString();
+            }
+          } else {
+            if (textContentRef.current) textContentRef.current.style.opacity = '1';
+            if (bottomRowRef.current) bottomRowRef.current.style.opacity = '1';
+            videoContainerRef.current.style.position = '';
+            videoContainerRef.current.style.width = '';
+            videoContainerRef.current.style.height = '';
+            videoContainerRef.current.style.left = '';
+            videoContainerRef.current.style.top = '';
+            videoContainerRef.current.style.transform = '';
+            videoContainerRef.current.style.borderRadius = '';
+            videoContainerRef.current.style.opacity = '1';
+            videoContainerRef.current.style.visibility = 'visible';
+            videoContainerRef.current.style.pointerEvents = 'auto';
+          }
+        }
       });
     };
 
     window.addEventListener('scroll', handleWindowScroll);
-    window.addEventListener('resize', handleWindowScroll);
-    // Initial call
     handleWindowScroll();
 
     return () => {
       window.removeEventListener('scroll', handleWindowScroll);
-      window.removeEventListener('resize', handleWindowScroll);
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(fallbackTimer);
     };
   }, []);
 
@@ -609,6 +875,86 @@ export default function Services() {
         <div className="page-constructor">
           <div className="page-constructor__bg isLoaded">
             {/* Aurora is global in App.jsx — no duplicate needed */}
+          </div>
+
+          {/* BREADCRUMBS & INTRO BLOCK WITH ZOOMING INLINE VIDEO */}
+          <div ref={introTrackRef} className="services-intro-track">
+            {/* Lava Lamp Background overlay */}
+            <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true" style={{ opacity: 0.65 }}>
+              <div className="lava-blob lava-blob--1"></div>
+              <div className="lava-blob lava-blob--2"></div>
+              <div className="lava-blob lava-blob--3"></div>
+            </div>
+
+            <div ref={servicesIntroStickyRef} className="services-intro-sticky">
+              <div className="grid-container">
+                <div className="hero-layout-wrap">
+                  
+                  {/* LEFT: breadcrumbs + display title */}
+                  <div ref={textContentRef} className="hero-text-content-wrap">
+                    <div className="services-breadcrumbs">
+                      <Link to="/">Главная</Link>
+                      <span className="separator">/</span>
+                      <span className="current">Услуги</span>
+                    </div>
+                    <h1 className="display-hero-title">
+                      <TextReveal text="САЙТЫ. APPS." delay={0.1} glitch={true} />
+                      <TextReveal text="CRM-СИСТЕМЫ" delay={0.25} glitch={true} />
+                    </h1>
+                  </div>
+
+                  {/* RIGHT: video anchor & container (absolute overlay) */}
+                  <div ref={placeholderRef} className="hero-video-placeholder-absolute" />
+                  <div ref={videoContainerRef} className="intro-video-container">
+                    <video 
+                      ref={introVideoRef}
+                      muted 
+                      playsInline 
+                      loop 
+                      autoPlay 
+                      src="/websites.mp4" 
+                      poster="/images/services/web_creation.png" 
+                    />
+                  </div>
+
+                  {/* Bottom Column Row */}
+                  <div ref={bottomRowRef} className="hero-bottom-row">
+                    
+                    {/* Left Column: Trust Bar */}
+                    <div className="hero-trust-bar">
+                      <div className="avatar-stack">
+                        <div className="avatar-circle" style={{ background: 'oklch(0.38 0.08 158)' }}>K</div>
+                        <div className="avatar-circle" style={{ background: 'oklch(0.40 0.10 250)' }}>E</div>
+                        <div className="avatar-circle" style={{ background: 'oklch(0.42 0.09 30)' }}>A</div>
+                        <div className="avatar-circle" style={{ background: 'oklch(0.38 0.12 340)' }}>M</div>
+                      </div>
+                      <div className="trust-info">
+                        <div className="star-rating" style={{ gap: '0.18rem', display: 'flex' }}>
+                          {[...Array(5)].map((_, i) => (
+                            <svg key={i} className="star-rating__star" viewBox="0 0 24 24" style={{ fill: 'var(--accent-color)', opacity: 0.95, width: '12px', height: '12px' }}>
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <span className="trust-text">Нам доверяют 150+ клиентов</span>
+                      </div>
+                    </div>
+
+                    {/* Right Column: Description & Portfolio Link */}
+                    <div className="hero-desc-panel">
+                      <p className="hero-desc-text">
+                        Разрабатываем интернет-магазины, CRM-системы, SaaS, APP-платформы — внедряем AI в бизнес-процессы.
+                      </p>
+                      <div className="hero-portfolio-btn-wrap">
+                        <PremiumButton to="/works" text="СМОТРЕТЬ ПОРТФОЛИО" />
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* 1. DEVELOPMENT SECTION */}
@@ -838,8 +1184,192 @@ export default function Services() {
               </section>
             </div>
           </section>
+ 
+         {/* 4. DETAILED SERVICES DIRECTORY */}
+          <section ref={section4Ref} className="page-constructor__section page-constructor__section--directory services-directory-section">
+            <div ref={divider4Ref} className="tech-glow-divider tech-glow-divider-services-4" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '120px', zIndex: 10, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+                <defs>
+                  <linearGradient id="tech-glow-grad-services-4" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#00D9FF" stopOpacity="1" />
+                    <stop offset="50%" stopColor="#A020F0" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#FF1493" stopOpacity="1" />
+                  </linearGradient>
+                </defs>
+                <line ref={line4MainRef} className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-services-4)" strokeWidth="4" />
+              </svg>
+            </div>
+            <div className="grid-container">
+              <div className="section-header" style={{ marginBottom: '4rem', paddingTop: '40px' }}>
+                <span className="cyber-section-label">// ДЕТАЛЬНЫЙ КАТАЛОГ</span>
+                <h2>Направления и технологии</h2>
+                <p className="structure-desc" style={{ maxWidth: '650px', marginTop: '1rem' }}>
+                  Разверните интересующее вас направление, чтобы увидеть подробный список решаемых задач, используемых технологий и платформ.
+                </p>
+              </div>
+
+              <div className="services-directory-list">
+                {directoryCards.map((card, idx) => {
+                  const isOpen = activeDirCard === idx;
+                  return (
+                    <div 
+                      key={card.num} 
+                      className={`directory-card ${isOpen ? 'is-open' : ''}`}
+                      onClick={() => setActiveDirCard(isOpen ? null : idx)}
+                    >
+                      <div className="directory-card-header">
+                        <div className="card-header-left">
+                          <span className="card-num">{card.num}</span>
+                          <h3>{card.title}</h3>
+                        </div>
+                        <div className="card-toggle-icon">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <line x1="12" y1="5" x2="12" y2="19" className="vertical-line" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                            className="directory-card-body"
+                          >
+                            <div className="directory-card-content" onClick={(e) => e.stopPropagation()}>
+                              
+                              {/* Media Mockup */}
+                              {card.media && (
+                                <div className="directory-media-box">
+                                  {card.media.type === 'video' ? (
+                                    <video muted playsInline loop autoPlay src={card.media.src} />
+                                  ) : (
+                                    <img src={card.media.src} alt={card.title} loading="lazy" />
+                                  )}
+                                </div>
+                              )}
+
+                              <div className="directory-details-box">
+                                {card.subLinks.length > 0 ? (
+                                  <>
+                                    <ul className="directory-bullets-list">
+                                      {card.subLinks.map((link, lIdx) => (
+                                        <motion.li 
+                                          key={lIdx}
+                                          initial={{ opacity: 0, x: -10 }}
+                                          animate={{ opacity: 1, x: 0 }}
+                                          transition={{ duration: 0.3, delay: lIdx * 0.04 }}
+                                        >
+                                          {link.url === '#' ? (
+                                            <span>{link.name}</span>
+                                          ) : (
+                                            <Link to={link.url}>{link.name}</Link>
+                                          )}
+                                        </motion.li>
+                                      ))}
+                                    </ul>
+                                    <div style={{ marginTop: '2rem' }}>
+                                      <PremiumButton 
+                                        to={card.subLinks[0]?.url !== '#' ? card.subLinks[0].url : '/service/portal'} 
+                                        text="Узнать больше об услуге" 
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className="directory-empty-links">
+                                    <p>Индивидуальные решения под требования вашего бизнеса. Свяжитесь с нами для детального обсуждения.</p>
+                                    <div style={{ marginTop: '1.5rem' }}>
+                                      <PremiumButton href="#contact" text="Обсудить задачу" />
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
+
+        {/* 5. FAQ & CTA CALL SECTION */}
+          <section className="faq-cta-section" style={{ padding: '4rem 0 8rem' }}>
+            <div className="grid-container">
+              <div className="faq-cta-grid">
+                
+                {/* CTA Card (Left) */}
+                <div className="cta-call-card">
+                  <div className="cta-glow" />
+                  <div className="cta-card-content">
+                    <div className="cta-logo-wrap" style={{ marginBottom: '2rem' }}>
+                      <img src="/Nextweb_logo.svg" alt="NEXTWEB" style={{ height: '24px', width: 'auto', display: 'block' }} />
+                    </div>
+                    <h3>Забронировать ознакомительный звонок</h3>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: '1.6' }}>
+                      Обсудите ваш проект с нашими ведущими инженерами и получите предварительную архитектурную оценку.
+                    </p>
+                    <div style={{ display: 'inline-flex' }}>
+                      <PremiumButton href="#contact" text="Забронировать звонок" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* FAQ Accordion (Right) */}
+                <div className="faq-accordion-block">
+                  <h2>Понятный сервис — начинается с FAQ</h2>
+                  <div className="faq-accordion-list" style={{ marginTop: '3rem' }}>
+                    {faqData.map((item, idx) => {
+                      const isOpen = activeFaq === idx;
+                      return (
+                        <div 
+                          key={idx} 
+                          className={`faq-item-card ${isOpen ? 'is-open' : ''}`}
+                          onClick={() => setActiveFaq(isOpen ? null : idx)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <div className="faq-item-header">
+                            <h4>{item.q}</h4>
+                            <div className="faq-toggle-icon">
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <line x1="12" y1="5" x2="12" y2="19" className="vertical-line" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                              </svg>
+                            </div>
+                          </div>
+                          
+                          <AnimatePresence initial={false}>
+                            {isOpen && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                className="faq-item-body"
+                              >
+                                <p style={{ padding: '1.25rem 0 0', color: 'rgba(255, 255, 255, 0.72)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                                  {item.a}
+                                </p>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+        </div>
       <Footer />
     </>
   );
