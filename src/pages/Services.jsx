@@ -613,6 +613,12 @@ export default function Services() {
 
           {/* 1. DEVELOPMENT SECTION */}
           <section className="page-constructor__section page-constructor__section--dev">
+            <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+              <div className="lava-blob lava-blob--1"></div>
+              <div className="lava-blob lava-blob--2"></div>
+              <div className="lava-blob lava-blob--3"></div>
+              <div className="lava-blob lava-blob--6"></div>
+            </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '117px' }}></div>
               <div className="block-padding block-padding_tablet" style={{ paddingTop: '146px' }}></div>
@@ -687,6 +693,12 @@ export default function Services() {
                 <line ref={line2MainRef} className="tech-glow-line-main" x1="0" y1="120" x2="1440" y2="0" stroke="url(#tech-glow-grad-services-2)" strokeWidth="4" />
               </svg>
             </div>
+            <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+              <div className="lava-blob lava-blob--1"></div>
+              <div className="lava-blob lava-blob--2"></div>
+              <div className="lava-blob lava-blob--3"></div>
+              <div className="lava-blob lava-blob--6"></div>
+            </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '222px' }}></div>
               <div className="block-padding block-padding_tablet" style={{ paddingTop: '171px' }}></div>
@@ -760,6 +772,12 @@ export default function Services() {
                 </defs>
                 <line ref={line3MainRef} className="tech-glow-line-main" x1="0" y1="0" x2="1440" y2="120" stroke="url(#tech-glow-grad-services-3)" strokeWidth="4" />
               </svg>
+            </div>
+            <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+              <div className="lava-blob lava-blob--1"></div>
+              <div className="lava-blob lava-blob--2"></div>
+              <div className="lava-blob lava-blob--3"></div>
+              <div className="lava-blob lava-blob--6"></div>
             </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '90px' }}></div>

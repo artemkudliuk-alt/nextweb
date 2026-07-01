@@ -17352,6 +17352,8 @@ button.swiper-pagination-bullet {
 
 /* --- Services Page: Sticky Layered Card-Stacking Transitions --- */
 .services-body .services-unified {
+  position: relative;
+  z-index: 2;
   padding-bottom: 0;
   box-sizing: border-box;
 }
@@ -17388,7 +17390,6 @@ button.swiper-pagination-bullet {
     margin-bottom: 0;
     box-sizing: border-box;
     will-change: transform;
-    overflow: hidden; /* Contain cards perfectly within the sticky container */
   }
 
   .services-body .page-constructor__section--dev {
