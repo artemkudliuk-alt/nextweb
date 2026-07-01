@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Grid from '../components/Grid';
+import { motion } from 'framer-motion';
 
 const projects = {
   'mal-ai': {
@@ -105,7 +106,13 @@ export default function WorkDetail() {
         </div>
 
         {/* Metadata grid */}
-        <div className="work-detail-meta">
+        <motion.div
+          className="work-detail-meta"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="work-detail-meta-item">
             <span>Клиент</span>
             <span>{project.client}</span>
@@ -122,15 +129,27 @@ export default function WorkDetail() {
             <span>Год</span>
             <span>{project.year}</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Full-width Banner */}
-        <div className="work-detail-banner">
+        <motion.div
+          className="work-detail-banner"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <img src={project.banner} alt={project.title} />
-        </div>
+        </motion.div>
 
         {/* Body content */}
-        <div className="work-detail-body">
+        <motion.div
+          className="work-detail-body"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <h3>Задача и стратегия</h3>
           <p>{project.description}</p>
           
@@ -143,7 +162,7 @@ export default function WorkDetail() {
               ← Назад ко всем работам
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

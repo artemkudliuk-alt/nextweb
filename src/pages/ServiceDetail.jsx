@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { servicesData } from '../utils/servicesData';
 import Footer from '../components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTrail, animated } from 'react-spring';
 import ServiceCalculator from '../components/ServiceCalculator';
 
 function LogoIcon({ className }) {
@@ -186,12 +185,459 @@ function InteractiveVisualCard() {
   );
 }
 
+function BespokeCardService() {
+  const [activeApproach, setActiveApproach] = useState('positioning');
+  const [activeCase, setActiveCase] = useState(0);
+  const [activeStep, setActiveStep] = useState(1);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.title = "Разработка сайта-визитки под ключ | NEXTWEB";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Делаем премиальные сайты-визитки, которые создают сильный образ бренда, доносят преимущества и вызывают желание купить.');
+    }
+  }, []);
+
+  const cases = [
+    {
+      title: "Digitale",
+      subtitle: "Сайт для бизнес-конференции",
+      desc: "Рассказали о событии, спикерах и участниках конференции. Повысили узнаваемость сайта и бренда. Улучшили сервис с помощью разработки.",
+      video: "/websites.mp4",
+      link: "/case/all/digitale"
+    },
+    {
+      title: "The Voice",
+      subtitle: "Сайт на Tilda для бренда премиальных акустических систем",
+      desc: "Сделали главную страницу и еще три посадочных — для каждой колонки бренда. Премиальность продукта показали с помощью дизайна.",
+      video: "/cardetailed.mp4",
+      link: "/case/all/voice"
+    }
+  ];
+
+  return (
+    <div className="card-bespoke">
+      {/* 1. Hero Jumbotron Section */}
+      <section className="jumbotron-video-aurora">
+        {/* Aurora is global via App.jsx */}
+
+        <div className="grid-container jumbotron-container">
+          <div className="jumbotron-text-content">
+            <span className="cyber-section-label">// РАЗРАБОТКА САЙТА-ВИЗИТКИ</span>
+            <h1 className="jumbotron-video-aurora__title">
+              Разрабатываем сайты, которые создают сильный образ бренда
+            </h1>
+            <h4 className="jumbotron-video-aurora__subtitle">
+              И дают высокую конверсию в продажи
+            </h4>
+            <div className="jumbotron-actions">
+              <a href="#contact" className="btn-premium">
+                <span>Оставить заявку</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="jumbotron-video-aurora_blok">
+            <div className="device-frame-macbook">
+              <video 
+                src="/cardetailed.mp4" 
+                poster="/_sa/img/storage__AndTNWYK9X0q8jK1uKSkDrOF4PAEKyfO91k2aqI5.webp"
+                muted 
+                playsInline 
+                loop 
+                autoPlay 
+                className="jumbotron-video-aurora__video"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Our Approach Section */}
+      <section className="static-atom-section">
+        <div className="grid-container">
+          <div className="static-atom-header">
+            <span className="cyber-section-label">// МЕТОДОЛОГИЯ</span>
+            <h2 className="static-atom-title">Наш подход</h2>
+            <p className="static-atom-desc">
+              Создаем сайты, помогающие раскрыть бренд, влюбить в себя клиентов,
+              увеличить продажи продуктов и услуг. Проектируем с прицелом на синергию
+              с рекламными каналами, контент-маркетингом и SEO.
+            </p>
+          </div>
+
+          <div className="approach-interactive-grid">
+            <div className="approach-tabs-nav">
+              <button 
+                className={`approach-tab-btn ${activeApproach === 'positioning' ? 'active' : ''}`}
+                onClick={() => setActiveApproach('positioning')}
+              >
+                <span className="step-num">01</span>
+                <span className="step-name">Позиционирование</span>
+              </button>
+              <button 
+                className={`approach-tab-btn ${activeApproach === 'design' ? 'active' : ''}`}
+                onClick={() => setActiveApproach('design')}
+              >
+                <span className="step-num">02</span>
+                <span className="step-name">Дизайн</span>
+              </button>
+              <button 
+                className={`approach-tab-btn ${activeApproach === 'synergy' ? 'active' : ''}`}
+                onClick={() => setActiveApproach('synergy')}
+              >
+                <span className="step-num">03</span>
+                <span className="step-name">Синергия</span>
+              </button>
+            </div>
+
+            <div className="approach-tab-content-panel">
+              <AnimatePresence mode="wait">
+                {activeApproach === 'positioning' && (
+                  <motion.div
+                    key="pos"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="approach-tab-body"
+                  >
+                    <h4>Раскрываем позиционирование</h4>
+                    <p>
+                      За 17 лет агентство обрело стратегическое мышление в маркетинге и разработке
+                      сайтов. Поэтому мы находим и формулируем преимущества бренда и его продуктов.
+                      Усиливаем текущее позиционирование.
+                    </p>
+                  </motion.div>
+                )}
+                {activeApproach === 'design' && (
+                  <motion.div
+                    key="des"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="approach-tab-body"
+                  >
+                    <h4>Дизайн как преимущество</h4>
+                    <p>
+                      Влюбляем в бренд через красивый дизайн. Формируем желание попробовать продукт
+                      или услугу: выделяем сильные стороны, делаем сайт понятным и удобным.
+                      Усиливаем впечатление через анимации и интерактивы.
+                    </p>
+                  </motion.div>
+                )}
+                {activeApproach === 'synergy' && (
+                  <motion.div
+                    key="syn"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="approach-tab-body"
+                  >
+                    <h4>Думаем о синергии</h4>
+                    <p>
+                      Разрабатывая сайт, мы продумываем посадочные страницы для рекламного трафика,
+                      а также контентное и SEO-наполнение для органического продвижения. И конечно,
+                      учитываем интеграции с CRM, системами аналитики, телефонией и чатами.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          <div className="approach-conversion-card">
+            <div className="conversion-card-glow"></div>
+            <div className="conversion-content">
+              <h3>Высокая конверсия и сильный бренд</h3>
+              <p>
+                Перфекционизм в дизайне и маркетинговое мышление максимизируют продажи в краткосрочной и долгосрочной перспективе.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Case Studies Slider Section */}
+      <section className="bespoke-cases-section">
+        <div className="grid-container">
+          <div className="cases-section-header">
+            <div>
+              <span className="cyber-section-label">// ПОРТФОЛИО</span>
+              <h2>Наши работы</h2>
+            </div>
+            <div className="slider-controls-wrap">
+              <button 
+                className="slider-nav-btn prev"
+                onClick={() => setActiveCase(prev => (prev === 0 ? cases.length - 1 : prev - 1))}
+                aria-label="Previous case"
+              >
+                ←
+              </button>
+              <button 
+                className="slider-nav-btn next"
+                onClick={() => setActiveCase(prev => (prev === cases.length - 1 ? 0 : prev + 1))}
+                aria-label="Next case"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <div className="cases-slider-container">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeCase}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="case-slide-layout"
+              >
+                <div className="case-slide-media">
+                  <video 
+                    src={cases[activeCase].video}
+                    muted 
+                    playsInline 
+                    loop 
+                    autoPlay 
+                    className="case-slide-video"
+                  />
+                </div>
+                <div className="case-slide-text">
+                  <h3>{cases[activeCase].title}</h3>
+                  <span className="case-subtitle">{cases[activeCase].subtitle}</span>
+                  <p>{cases[activeCase].desc}</p>
+                  <Link to={cases[activeCase].link} className="btn-secondary">
+                    <span>Смотреть кейс</span>
+                  </Link>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Pricing Cards Grid */}
+      <section className="bespoke-prices-section">
+        <div className="grid-container">
+          <div className="prices-header">
+            <span className="cyber-section-label">// ТАРИФЫ</span>
+            <h2>Стоимость разработки</h2>
+          </div>
+
+          <div className="prices-cards-grid">
+            <div className="price-card-wrapper">
+              <div className="price-card">
+                <h3>Лендинг</h3>
+                <p>Для тестирования бизнес-идей и получения быстрых результатов</p>
+                <div className="price-tag">
+                  <span className="price-val">~ 230 000 ₽</span>
+                </div>
+                <Link to="/service/landing" className="price-card-link">
+                  <span>Подробнее</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.5"/></svg>
+                </Link>
+              </div>
+            </div>
+
+            <div className="price-card-wrapper">
+              <div className="price-card highlighted">
+                <div className="highlight-tag">Популярно</div>
+                <h3>Интернет-магазин</h3>
+                <p>Большой каталог, глубокая аналитика и простая оплата</p>
+                <div className="price-tag">
+                  <span className="price-val">~ 1 404 000 ₽</span>
+                </div>
+                <Link to="/service/shop" className="price-card-link">
+                  <span>Подробнее</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.5"/></svg>
+                </Link>
+              </div>
+            </div>
+
+            <div className="price-card-wrapper">
+              <div className="price-card">
+                <h3>Корпоративный сайт</h3>
+                <p>Платформа бренда для постоянного контакта с покупателями</p>
+                <div className="price-tag">
+                  <span className="price-val">~ 1 112 000 ₽</span>
+                </div>
+                <Link to="/service/corporate" className="price-card-link">
+                  <span>Подробнее</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.5"/></svg>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. "How We Do It" Steps + Device Mockups */}
+      <section className="bespoke-process-section">
+        <div className="grid-container">
+          <div className="process-header">
+            <span className="cyber-section-label">// ПРОЦЕСС</span>
+            <h2>Как мы это делаем</h2>
+          </div>
+
+          <div className="process-interactive-layout">
+            <div className="process-accordions">
+              {/* Step 1 */}
+              <div className={`process-step-box ${activeStep === 1 ? 'active' : ''}`} onClick={() => setActiveStep(1)}>
+                <div className="step-header-row">
+                  <span className="step-num">1</span>
+                  <h3>Маркетинговое проектирование</h3>
+                </div>
+                <div className="step-expandable-content">
+                  <p className="step-lead">
+                    Создаем платформу сайта: проектируем структуру, пишем чистовой контент и оформляем блоки в формате прототипа.
+                  </p>
+                  <div className="step-subpoints">
+                    <div className="subpoint">
+                      <h4>Проводим маркетинговые исследования</h4>
+                      <p>Погружаемся в бизнес клиента. Анализируем аудиторию, конкурентов и составляем портреты целевой аудитории.</p>
+                    </div>
+                    <div className="subpoint">
+                      <h4>Разрабатываем структуру и пишем контент</h4>
+                      <p>Проектируем структуру сайта на основе исследований и пишем тексты, раскрывающие преимущества.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className={`process-step-box ${activeStep === 2 ? 'active' : ''}`} onClick={() => setActiveStep(2)}>
+                <div className="step-header-row">
+                  <span className="step-num">2</span>
+                  <h3>Дизайн сайта</h3>
+                </div>
+                <div className="step-expandable-content">
+                  <p className="step-lead">
+                    Создаем красивый концепт дизайна сайта, оживляем его анимацией и адаптируем под все экраны.
+                  </p>
+                  <div className="step-subpoints">
+                    <div className="subpoint">
+                      <h4>Согласно вашему вкусу</h4>
+                      <p>Собираем лучшие референсы мирового дизайна и вместе выбираем стилистическое направление.</p>
+                    </div>
+                    <div className="subpoint">
+                      <h4>Дизайн высокого уровня</h4>
+                      <p>Создаем премиальный дизайн страниц с тонкими деталями и микро-анимациями.</p>
+                    </div>
+                    <div className="subpoint">
+                      <h4>Идеально на каждом экране</h4>
+                      <p>Особое внимание уделяем мобильной адаптации, чтобы все элементы оставались удобными.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className={`process-step-box ${activeStep === 3 ? 'active' : ''}`} onClick={() => setActiveStep(3)}>
+                <div className="step-header-row">
+                  <span className="step-num">3</span>
+                  <h3>Разработка и запуск</h3>
+                </div>
+                <div className="step-expandable-content">
+                  <p className="step-lead">
+                    Верстаем пиксель-перфект, интегрируем современную систему управления сайтом и настраиваем маркетинговые инструменты.
+                  </p>
+                  <div className="step-subpoints">
+                    <div className="subpoint">
+                      <h4>Профессиональная верстка</h4>
+                      <p>Создаем чистый, оптимизированный код для мгновенной загрузки на любых устройствах.</p>
+                    </div>
+                    <div className="subpoint">
+                      <h4>Интеграция систем аналитики</h4>
+                      <p>Подключаем CRM, пиксели соцсетей, цели Яндекс.Метрики и Google Analytics.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Devices Mockup Visual display (relative Macbook + iPad + iPhone stack) */}
+            <div className="process-visual-devices-display">
+              <div className="mocks-layout">
+                {/* Macbook */}
+                <div className="device-mock macbook-wrapper">
+                  <div className="device-screen macbook-screen">
+                    <video src="/cardetailed.mp4" muted playsInline loop autoPlay />
+                  </div>
+                  <div className="macbook-base"></div>
+                </div>
+
+                {/* iPad */}
+                <div className="device-mock ipad-wrapper">
+                  <div className="device-screen ipad-screen">
+                    <video src="/cardetailed.mp4" muted playsInline loop autoPlay />
+                  </div>
+                </div>
+
+                {/* iPhone */}
+                <div className="device-mock iphone-wrapper">
+                  <div className="device-screen iphone-screen">
+                    <video src="/Mob_hero_banner.mp4" muted playsInline loop autoPlay />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Calculator Section */}
+      <section className="bespoke-calculator-section">
+        <div className="grid-container">
+          <span className="cyber-section-label">// КАЛЬКУЛЯТОР СТОИМОСТИ</span>
+          <ServiceCalculator basePriceString="от 230 000 ₽" serviceTitle="Сайт-визитка" />
+        </div>
+      </section>
+
+      {/* 7. Premium Call to Action */}
+      <section className="bespoke-cta-section">
+        <div className="grid-container">
+          <div className="cta-box">
+            <div className="cta-glow"></div>
+            <div className="cta-content">
+              <h2>Готовы запустить свой Сайт-визитка?</h2>
+              <p>Заполните форму обратной связи, чтобы получить подробный расчет и концепцию для вашего проекта.</p>
+              <div className="cta-actions">
+                <a href="#contact" className="btn-premium">
+                  <span>Оставить заявку</span>
+                </a>
+                <Link to="/works" className="btn-secondary">
+                  <span>Посмотреть работы</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </div>
+  );
+}
+
 export default function ServiceDetail() {
   const { serviceId } = useParams();
   const service = servicesData[serviceId];
 
   const [inView, setInView] = useState(false);
   const sectionRef = useRef(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setInView(false);
+  }, [serviceId]);
+
+  if (serviceId === 'card') {
+    return <BespokeCardService />;
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(

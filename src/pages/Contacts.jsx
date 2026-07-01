@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { useForm } from 'react-hook-form';
@@ -183,7 +184,13 @@ export default function Contacts() {
           {/* Hero Section */}
           <section className="service-hero-section">
             <div className="service-hero-grid">
-              <div className="service-hero-content">
+              <motion.div
+                className="service-hero-content"
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <span className="cyber-section-label">// СВЯЗАТЬСЯ С НАМИ</span>
                 <h1 className="service-title">Контакты</h1>
                 <p className="service-intro">
@@ -203,9 +210,15 @@ export default function Contacts() {
                     <span style={{ fontSize: '1.2rem', color: '#fff' }}>г. Одесса, Приморский бульвар, 14</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="service-visual-block">
+              <motion.div
+                className="service-visual-block"
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+              >
                 <div className="visual-placeholder-card" style={{ height: '100%', minHeight: '350px', position: 'relative', overflow: 'hidden' }}>
                   <InteractiveNodesCanvas />
                   <div className="visual-card-glow" style={{ zIndex: 1 }}></div>
@@ -307,12 +320,19 @@ export default function Contacts() {
                     )}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </section>
 
           {/* Map/FAQ section */}
-          <section className="service-details-section" style={{ marginBottom: '6rem' }}>
+          <motion.section
+            className="service-details-section"
+            style={{ marginBottom: '6rem' }}
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          >
             <div className="service-tagline-container">
               <h2 className="service-tagline">Свяжитесь с нашими экспертами в Telegram или запланируйте 15-минутный звонок.</h2>
               <p className="service-characteristics" style={{ marginBottom: '2.5rem' }}>
@@ -327,7 +347,7 @@ export default function Contacts() {
                 </a>
               </div>
             </div>
-          </section>
+          </motion.section>
         </div>
       </div>
       <Footer />

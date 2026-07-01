@@ -368,7 +368,7 @@ const testimonialsData = [
     authorRole: "Директор по маркетингу",
     avatar: "/avatar_btex.png",
     logoPath: "/btex_logo.svg",
-    glowColor: "rgba(160, 32, 240, 0.4)", // Purple
+    glowColor: "rgba(255, 255, 255, 0.08)",
     rating: 5,
     reviewText: "Перед нами стояла задача масштабирования оптовых онлайн-продаж. Команда NextWeb создала современный интернет-магазин с автоматической синхронизацией тысяч товарных позиций со складами в реальном времени. Внедрение удобного поиска, умных фильтров и бесшовной интеграции с ERP-системой позволило нам увеличить оптовый оборот через сайт на 40% за первые 6 месяцев."
   },
@@ -382,7 +382,7 @@ const testimonialsData = [
     authorRole: "Управляющая отелем",
     avatar: "/avatar_redling.png",
     logoPath: "/Redling_logo.svg",
-    glowColor: "rgba(255, 20, 147, 0.4)", // Pink
+    glowColor: "rgba(255, 255, 255, 0.08)",
     rating: 5,
     reviewText: "Сайт для премиального отеля — это его цифровое лицо. NextWeb создали изысканный дизайн, передающий атмосферу нашего отеля у моря, и внедрили удобный модуль бронирования номеров. Гости отмечают простоту и удобство бронирования, а мы получили значительное снижение комиссии от сторонних сервисов. Поддержка клиентов после запуска заслуживает отдельной благодарности."
   },
@@ -396,7 +396,7 @@ const testimonialsData = [
     authorRole: "Руководитель студии",
     avatar: "/avatar_blago.png",
     logoPath: "/Blago_logo.png",
-    glowColor: "rgba(0, 217, 255, 0.4)", // Cyan
+    glowColor: "rgba(255, 255, 255, 0.08)",
     rating: 5,
     reviewText: "Для студии ландшафтного дизайна критически важно показать визуальное качество работ. Наш новый сайт портфолио от NextWeb — это произведение искусства. Интерактивная галерея проектов, плавные анимации и высокая скорость работы на мобильных устройствах привлекают к нам клиентов премиум-сегмента. Поток качественных лидов вырос почти сразу после релиза."
   },
@@ -410,7 +410,7 @@ const testimonialsData = [
     authorRole: "Управляющая рестораном",
     avatar: "/avatar_kumanets.png",
     logoPath: "/kumanets_logo.png",
-    glowColor: "rgba(255, 20, 147, 0.4)", // Pink
+    glowColor: "rgba(255, 255, 255, 0.08)",
     rating: 5,
     reviewText: "Сайт нашего легендарного ресторана украинской кухни должен был стать по-настоящему аппетитным и функциональным. NextWeb справились с задачей на все сто. Красивое адаптивное онлайн-меню, простая форма резерва столов и интеграция с системой доставки помогли нам привлечь новую молодую аудиторию и увеличить количество заказов на вынос. Очень рекомендуем эту команду!"
   }
@@ -422,6 +422,61 @@ const getCardOffset = (idx, activeIdx, total) => {
   while (diff > total / 2) diff -= total;
   return diff;
 };
+
+function BlogCategoryIcon({ type }) {
+  if (type === 'cpu') {
+    return (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-color)', opacity: 0.85, flexShrink: 0 }}>
+        <rect x="4" y="4" width="16" height="16" rx="2" />
+        <rect x="9" y="9" width="6" height="6" />
+        <path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2" />
+      </svg>
+    );
+  }
+  if (type === 'swatch') {
+    return (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-color)', opacity: 0.85, flexShrink: 0 }}>
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+        <path d="M12 6A1.5 1.5 0 1 0 12 9A1.5 1.5 0 1 0 12 6Z" />
+        <path d="M7.5 9.7A1.5 1.5 0 1 0 7.5 12.7A1.5 1.5 0 1 0 7.5 9.7Z" />
+        <path d="M16.5 9.7A1.5 1.5 0 1 0 16.5 12.7A1.5 1.5 0 1 0 16.5 9.7Z" />
+        <path d="M12 14.5A1.5 1.5 0 1 0 12 17.5A1.5 1.5 0 1 0 12 14.5Z" />
+      </svg>
+    );
+  }
+  if (type === 'server') {
+    return (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-color)', opacity: 0.85, flexShrink: 0 }}>
+        <rect x="2" y="2" width="20" height="8" rx="2" />
+        <rect x="2" y="14" width="20" height="8" rx="2" />
+        <path d="M6 6h.01M6 18h.01" />
+      </svg>
+    );
+  }
+  if (type === 'bar-chart') {
+    return (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-color)', opacity: 0.85, flexShrink: 0 }}>
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </svg>
+    );
+  }
+  if (type === 'activity') {
+    return (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-color)', opacity: 0.85, flexShrink: 0 }}>
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+      </svg>
+    );
+  }
+  // code
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent-color)', opacity: 0.85, flexShrink: 0 }}>
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+}
 
 export default function Home() {
   const isVideoOpen = useUIStore((state) => state.isVideoOpen);
@@ -1152,7 +1207,7 @@ export default function Home() {
 
     const updateParallax = () => {
       // Linear interpolation (lerp) for soft easing (0.04 for very soft Apple-style inertia)
-      currentScrollY += (targetScrollY - currentScrollY) * 0.04;
+      currentScrollY += (targetScrollY - currentScrollY) * 0.07;
       
       const vh = Math.max(window.innerHeight || 0, 1);
       const progress = Math.min(currentScrollY / vh, 1);
@@ -1912,14 +1967,7 @@ export default function Home() {
                   screen7El.style.transform = `translateY(${translateYVal}px)`;
                   screen7El.style.opacity = '1';
 
-                  const homeCanvas = document.getElementById("home-gradient-canvas");
-                  const homeOverlay = document.getElementById("home-gradient-overlay");
-                  if (homeCanvas && homeOverlay) {
-                    homeCanvas.style.transition = 'none';
-                    homeOverlay.style.transition = 'none';
-                    homeCanvas.style.opacity = '0.5';
-                    homeOverlay.style.opacity = '1';
-                  }
+
 
                   if (blogEl) {
                     blogEl.style.filter = `blur(${contactProgress * 12}px) brightness(${1 - contactProgress * 0.65})`;
@@ -1957,14 +2005,7 @@ export default function Home() {
                   screen7El.style.opacity = '1';
                   screen7El.style.clipPath = 'none';
 
-                  const homeCanvas = document.getElementById("home-gradient-canvas");
-                  const homeOverlay = document.getElementById("home-gradient-overlay");
-                  if (homeCanvas && homeOverlay) {
-                    homeCanvas.style.transition = "";
-                    homeOverlay.style.transition = "";
-                    homeCanvas.style.opacity = "";
-                    homeOverlay.style.opacity = "";
-                  }
+
 
                   if (blogEl) {
                     blogEl.style.filter = '';
@@ -2000,14 +2041,7 @@ export default function Home() {
 
                   applyAdaptiveScroll('screen7-container', '.contact-container', vh * 15.2, vh * 16.2);
 
-                  const homeCanvas = document.getElementById("home-gradient-canvas");
-                  const homeOverlay = document.getElementById("home-gradient-overlay");
-                  if (homeCanvas && homeOverlay) {
-                    homeCanvas.style.transition = "";
-                    homeOverlay.style.transition = "";
-                    homeCanvas.style.opacity = "";
-                    homeOverlay.style.opacity = "";
-                  }
+
 
                   if (blogEl) {
                     blogEl.style.filter = '';
@@ -2036,14 +2070,7 @@ export default function Home() {
                 screen7El.style.display = 'none';
                 screen7El.style.clipPath = '';
 
-                const homeCanvas = document.getElementById("home-gradient-canvas");
-                const homeOverlay = document.getElementById("home-gradient-overlay");
-                if (homeCanvas && homeOverlay) {
-                  homeCanvas.style.transition = "";
-                  homeOverlay.style.transition = "";
-                  homeCanvas.style.opacity = "";
-                  homeOverlay.style.opacity = "";
-                }
+
 
                 if (contactContainer) {
                   contactContainer.style.transform = '';
@@ -2079,9 +2106,11 @@ export default function Home() {
 
             if (whyUsEl) {
               if (currentScrollY >= vh * 8.2) {
-                whyUsEl.style.filter = 'blur(8px) brightness(0.35)';
-                whyUsEl.style.opacity = '0';
-                whyUsEl.style.visibility = 'hidden';
+                const blurVal = workProgress * 8;
+                const brightnessVal = 1 - workProgress * 0.65;
+                whyUsEl.style.filter = `blur(${blurVal}px) brightness(${brightnessVal})`;
+                whyUsEl.style.opacity = (1 - workProgress).toString();
+                whyUsEl.style.visibility = workProgress >= 0.99 ? 'hidden' : 'visible';
               } else {
                 whyUsEl.style.filter = '';
                 whyUsEl.style.opacity = '1';
@@ -2089,22 +2118,7 @@ export default function Home() {
               }
             }
 
-            // Animate canvas and overlay opacity programmatically during the slide transition
-            const homeCanvas = document.getElementById("home-gradient-canvas");
-            const homeOverlay = document.getElementById("home-gradient-overlay");
-            if (homeCanvas && homeOverlay) {
-              if (currentScrollY >= vh * 8.2 && currentScrollY < vh * 9.2) {
-                homeCanvas.style.transition = 'none';
-                homeOverlay.style.transition = 'none';
-                homeCanvas.style.opacity = '0.5';
-                homeOverlay.style.opacity = '1';
-              } else {
-                homeCanvas.style.transition = "";
-                homeOverlay.style.transition = "";
-                homeCanvas.style.opacity = "";
-                homeOverlay.style.opacity = "";
-              }
-            }
+
 
             if (workProgress >= 0.99) {
               workEl.style.clipPath = 'none';
@@ -2427,9 +2441,17 @@ export default function Home() {
     };
 
     const handleScroll = () => {
-      targetScrollY = window.scrollY;
-      if (!reqId) {
-        reqId = requestAnimationFrame(updateParallax);
+      const newScrollY = window.scrollY;
+      const isJump = Math.abs(newScrollY - currentScrollY) > 1200;
+      if (isJump) {
+        currentScrollY = newScrollY;
+        targetScrollY = newScrollY;
+        updateParallax();
+      } else {
+        targetScrollY = newScrollY;
+        if (!reqId) {
+          reqId = requestAnimationFrame(updateParallax);
+        }
       }
     };
 
@@ -2458,6 +2480,8 @@ export default function Home() {
 
   useEffect(() => {
     if (window.innerWidth <= 1024) return;
+    let retries = 0;
+    const maxRetries = 30;
     const initUnicorn = () => {
       if (window.UnicornStudio && window.UnicornStudio.init) {
         try {
@@ -2469,120 +2493,20 @@ export default function Home() {
         } catch (e) {
           console.warn('Unicorn Studio initialization deferred:', e);
         }
-      } else {
+      } else if (retries < maxRetries) {
+        retries++;
         setTimeout(initUnicorn, 100);
+      } else {
+        console.warn('Unicorn Studio failed to load after maximum retries');
       }
     };
     initUnicorn();
   }, []);
 
-  // Dynamic canvas background animation for homepage dark sections - Shared Lava Lamp Effect
-  useEffect(() => {
-    const canvas = document.getElementById("home-gradient-canvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let animationFrameId;
+  // Canvas rendering has been migrated to high-performance CSS Aurora in index.css
+  useEffect(() => {}, []);
 
-    // NextWeb brand RGB colors: Cyber-cyan, Magenta, and Purple
-    const blobs = [
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 350, baseR: 350, vx: 0.45, vy: 0.32, color: 'rgba(0, 217, 255, 0.85)', phase: Math.random() * 100 }, // Cyber-cyan
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 400, baseR: 400, vx: -0.32, vy: 0.38, color: 'rgba(255, 20, 147, 0.8)', phase: Math.random() * 100 },  // Magenta
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 380, baseR: 380, vx: 0.28, vy: -0.35, color: 'rgba(160, 32, 240, 0.8)', phase: Math.random() * 100 },  // Purple
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 280, baseR: 280, vx: -0.38, vy: -0.28, color: 'rgba(0, 217, 255, 0.85)', phase: Math.random() * 100 }, // Cyber-cyan small
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 320, baseR: 320, vx: 0.32, vy: 0.32, color: 'rgba(255, 20, 147, 0.8)', phase: Math.random() * 100 },   // Magenta small
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 420, baseR: 420, vx: -0.25, vy: -0.32, color: 'rgba(160, 32, 240, 0.8)', phase: Math.random() * 100 }  // Purple large
-    ];
 
-    const resizeCanvas = () => {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width || window.innerWidth;
-      canvas.height = rect.height || window.innerHeight;
-    };
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    let time = 0;
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      time += 0.003;
-
-      blobs.forEach(b => {
-        b.x += b.vx + Math.sin(time + b.phase) * 0.15;
-        b.y += b.vy + Math.cos(time + b.phase) * 0.15;
-        b.r = b.baseR + Math.sin(time * 1.2 + b.phase) * 35;
-
-        if (b.x < -b.r / 2 || b.x > canvas.width + b.r / 2) b.vx *= -1;
-        if (b.y < -b.r / 2 || b.y > canvas.height + b.r / 2) b.vy *= -1;
-
-        const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-        grad.addColorStop(0, b.color);
-        grad.addColorStop(0.5, b.color);
-        grad.addColorStop(1, "transparent");
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-    render();
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
-  // IntersectionObserver to show/hide the homepage lava lamp canvas and overlay
-  useEffect(() => {
-    const canvas = document.getElementById("home-gradient-canvas");
-    const overlay = document.getElementById("home-gradient-overlay");
-    if (!canvas) return;
-
-    const activeTargets = new Set();
-    const callback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          activeTargets.add(entry.target.id);
-        } else {
-          activeTargets.delete(entry.target.id);
-        }
-      });
-
-      const hasDarkSection = activeTargets.has("dedicated") || 
-                             activeTargets.has("work") || 
-                             activeTargets.has("blog-preview") || 
-                             activeTargets.has("screen7");
-
-      if (hasDarkSection) {
-        canvas.classList.add("visible");
-        if (overlay) overlay.classList.add("visible");
-      } else {
-        canvas.classList.remove("visible");
-        if (overlay) overlay.classList.remove("visible");
-      }
-    };
-
-    const observer = new IntersectionObserver(callback, {
-      root: null,
-      rootMargin: "-10% 0px -10% 0px",
-      threshold: 0.05
-    });
-
-    const targets = ["dedicated", "work", "blog-preview", "screen7"].map(id => document.getElementById(id));
-    targets.forEach(target => {
-      if (target) observer.observe(target);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   const handleLearnApproach = (e) => {
     e.preventDefault();
@@ -2592,8 +2516,7 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <canvas id="home-gradient-canvas" className="home-gradient-canvas" />
-      <div id="home-gradient-overlay" className="home-gradient-overlay" />
+
       {/* Divider 2: Sliding Vertical Glowing Line at the left edge of #approach (slides with it) */}
       <div ref={divider2Ref} className="tech-glow-divider-2-fixed">
         <svg viewBox="0 0 100 1080" width="100%" height="100%" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'visible' }}>
@@ -2973,12 +2896,16 @@ export default function Home() {
           </svg>
         </div>
         <div className="dedicated-sticky-container">
-          <div className="dedicated-sticky-inner">
+          <div className="aurora-bg-container">
+            <div className="aurora-blob cyan"></div>
+            <div className="aurora-blob magenta"></div>
+            <div className="aurora-blob purple"></div>
+          </div>
+          <div className="dedicated-sticky-inner" style={{ position: 'relative', zIndex: 2 }}>
             <div className="works-split-layout">
               {/* Left Column: Fixed Project Meta Info */}
               <div className="works-left-panel">
-                <span className="cyber-section-label">// 02 . ИЗБРАННЫЕ РАБОТЫ</span>
-                
+                <span className="cyber-section-label" style={{ marginBottom: '2rem' }}>// 02 . ИЗБРАННЫЕ РАБОТЫ</span>
                 <div className="works-left-content-wrap">
                   <div className="works-left-content" key={activeProjectIdx}>
                     <span className="works-project-number">
@@ -3220,10 +3147,15 @@ export default function Home() {
         </div>
 
         <div className="work-container-clean">
+          <div className="aurora-bg-container">
+            <div className="aurora-blob cyan"></div>
+            <div className="aurora-blob magenta"></div>
+            <div className="aurora-blob purple"></div>
+          </div>
           <div className="tech-section-header">
             <span className="cyber-section-label">// 04 . СТЕК ТЕХНОЛОГИЙ</span>
           </div>
-        
+          
         <div className="tech-deck-island">
           {/* Left Column: Vertical Menu */}
           <div className="tech-tabs-sidebar" ref={techTabsRef}>
@@ -3358,7 +3290,7 @@ export default function Home() {
         <div 
           className="testimonials-glow" 
           style={{ 
-            backgroundColor: testimonialsData[activeTestimonialIdx]?.glowColor || 'rgba(160, 32, 240, 0.4)'
+            backgroundColor: testimonialsData[activeTestimonialIdx]?.glowColor || 'rgba(255, 255, 255, 0.08)'
           }} 
         />
 
@@ -3644,6 +3576,11 @@ export default function Home() {
 
       {/* ----------------- SECTION: BLOG PREVIEW ----------------- */}
       <section id="blog-preview" className="blog-preview-section">
+        <div className="aurora-bg-container">
+          <div className="aurora-blob cyan"></div>
+          <div className="aurora-blob magenta"></div>
+          <div className="aurora-blob purple"></div>
+        </div>
         {/* Glow Line Sweep Divider */}
         <div className="tech-glow-divider tech-glow-divider-blog">
           <svg viewBox="0 0 1440 120" width="100%" height="120" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
@@ -3668,13 +3605,13 @@ export default function Home() {
         <div className="grid-container">
           <div className="blog-preview-header">
             <div className="blog-preview-title-block">
-              <span className="cyber-section-label">// 06 . НАШ ЭКСПЕРТНЫЙ БЛОГ</span>
+              <span className="cyber-section-label" style={{ marginBottom: '0.75rem', display: 'block' }}>// 06 . НАШ ЭКСПЕРТНЫЙ БЛОГ</span>
               <h2 className="blog-preview-title">
                 <TextReveal text={isMobile ? "Делимся опытом\nи экспертностью" : "Делимся опытом и экспертизой"} glitch={true} />
               </h2>
             </div>
             <div className="blog-header-actions">
-              {blogScrollState.hasOverflow && (
+              {!isMobile && (
                 <div className="services__slider-nav" style={{ marginRight: '1.5rem', display: 'flex' }}>
                   <button 
                     className={`slider-nav-btn prev ${blogScrollState.isStart ? 'disabled' : ''}`}
@@ -3708,11 +3645,14 @@ export default function Home() {
             <div className="blog-preview-card">
               <div className="blog-card-content">
                 <div className="blog-card-meta">
-                  <span className="cyber-section-label">// ИНЖЕНЕРИЯ</span>
+                  <div className="blog-card-category" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BlogCategoryIcon type="cpu" />
+                    <span className="cyber-section-label" style={{ margin: 0 }}>// ИНЖЕНЕРИЯ</span>
+                  </div>
                   <span className="blog-card-date">23 июня 2026</span>
                 </div>
-                <h3 className="blog-card-title">Оптимизация производительности в экосистеме Antigravity 2.0</h3>
-                <p className="blog-card-summary">Как избежать перегрузки DOM-дерева и обеспечить FPS 60 на мобильных устройствах с помощью автоматических GPU-анимаций.</p>
+                <h3 className="blog-card-title" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Оптимизация производительности в экосистеме Antigravity 2.0</h3>
+                <p className="blog-card-summary" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Как избежать перегрузки DOM-дерева и обеспечить FPS 60 на мобильных устройствах с помощью автоматических GPU-анимаций.</p>
                 <Link to="/blog" className="blog-card-link">
                   <span>ЧИТАТЬ СТАТЬЮ</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3728,11 +3668,14 @@ export default function Home() {
             <div className="blog-preview-card">
               <div className="blog-card-content">
                 <div className="blog-card-meta">
-                  <span className="cyber-section-label">// ВЕБ-ДИЗАЙН</span>
+                  <div className="blog-card-category" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BlogCategoryIcon type="swatch" />
+                    <span className="cyber-section-label" style={{ margin: 0 }}>// ВЕБ-ДИЗАЙН</span>
+                  </div>
                   <span className="blog-card-date">14 мая 2026</span>
                 </div>
-                <h3 className="blog-card-title">Использование цветового пространства OKLCH в Tailwind CSS v4</h3>
-                <p className="blog-card-summary">Почему традиционный RGB/HEX уступает новому стандарту OKLCH и как создавать идеальные темные темы с высокой контрастностью.</p>
+                <h3 className="blog-card-title" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Использование цветового пространства OKLCH в Tailwind CSS v4</h3>
+                <p className="blog-card-summary" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Почему традиционный RGB/HEX уступает новому стандарту OKLCH и как создавать идеальные темные темы с высокой контрастностью.</p>
                 <Link to="/blog" className="blog-card-link">
                   <span>ЧИТАТЬ СТАТЬЮ</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3748,11 +3691,14 @@ export default function Home() {
             <div className="blog-preview-card">
               <div className="blog-card-content">
                 <div className="blog-card-meta">
-                  <span className="cyber-section-label">// DEVOPS</span>
+                  <div className="blog-card-category" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BlogCategoryIcon type="server" />
+                    <span className="cyber-section-label" style={{ margin: 0 }}>// DEVOPS</span>
+                  </div>
                   <span className="blog-card-date">02 апреля 2026</span>
                 </div>
-                <h3 className="blog-card-title">Автоматизация проверок Core Web Vitals с Lighthouse CI</h3>
-                <p className="blog-card-summary">Пошаговое руководство по интеграции тестов производительности в ваш CI/CD пайплайн для блокировки медленного кода перед деплоем.</p>
+                <h3 className="blog-card-title" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Автоматизация проверок Core Web Vitals с Lighthouse CI</h3>
+                <p className="blog-card-summary" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Пошаговое руководство по интеграции тестов производительности в ваш CI/CD пайплайн для блокировки медленного кода перед деплоем.</p>
                 <Link to="/blog" className="blog-card-link">
                   <span>ЧИТАТЬ СТАТЬЮ</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3768,11 +3714,14 @@ export default function Home() {
             <div className="blog-preview-card">
               <div className="blog-card-content">
                 <div className="blog-card-meta">
-                  <span className="cyber-section-label">// АНАЛИТИКА</span>
+                  <div className="blog-card-category" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BlogCategoryIcon type="bar-chart" />
+                    <span className="cyber-section-label" style={{ margin: 0 }}>// АНАЛИТИКА</span>
+                  </div>
                   <span className="blog-card-date">18 марта 2026</span>
                 </div>
-                <h3 className="blog-card-title">Сквозная аналитика без потери конфиденциальности пользователей</h3>
-                <p className="blog-card-summary">Разбираем современные методы tracking-серверов и куки первого уровня (1st party cookies) для построения точных сквозных воронкок продаж.</p>
+                <h3 className="blog-card-title" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Сквозная аналитика без потери конфиденциальности пользователей</h3>
+                <p className="blog-card-summary" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Разбираем современные методы tracking-серверов и куки первого уровня (1st party cookies) для построения точных сквозных воронкок продаж.</p>
                 <Link to="/blog" className="blog-card-link">
                   <span>ЧИТАТЬ СТАТЬЮ</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3788,11 +3737,14 @@ export default function Home() {
             <div className="blog-preview-card">
               <div className="blog-card-content">
                 <div className="blog-card-meta">
-                  <span className="cyber-section-label">// ИНТЕРФЕЙСЫ</span>
+                  <div className="blog-card-category" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BlogCategoryIcon type="activity" />
+                    <span className="cyber-section-label" style={{ margin: 0 }}>// ИНТЕРФЕЙСЫ</span>
+                  </div>
                   <span className="blog-card-date">25 февраля 2026</span>
                 </div>
-                <h3 className="blog-card-title">Физика пружин и микро-взаимодействия в современном Web UI</h3>
-                <p className="blog-card-summary">Руководство по созданию естественного отклика интерфейса на жесты пользователя с использованием CSS custom easing и Web Animation API.</p>
+                <h3 className="blog-card-title" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Физика пружин и микро-взаимодействия в современном Web UI</h3>
+                <p className="blog-card-summary" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Руководство по созданию естественного отклика интерфейса на жесты пользователя с использованием CSS custom easing и Web Animation API.</p>
                 <Link to="/blog" className="blog-card-link">
                   <span>ЧИТАТЬ СТАТЬЮ</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3808,11 +3760,14 @@ export default function Home() {
             <div className="blog-preview-card">
               <div className="blog-card-content">
                 <div className="blog-card-meta">
-                  <span className="cyber-section-label">// РАЗРАБОТКА</span>
+                  <div className="blog-card-category" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BlogCategoryIcon type="code" />
+                    <span className="cyber-section-label" style={{ margin: 0 }}>// РАЗРАБОТКА</span>
+                  </div>
                   <span className="blog-card-date">10 января 2026</span>
                 </div>
-                <h3 className="blog-card-title">Архитектура Edge-функций для динамической генерации страниц</h3>
-                <p className="blog-card-summary">Как перенести рендеринг критических секций на CDN-узлы и сократить Time to First Byte (TTFB) до рекордных 15 миллисекунд.</p>
+                <h3 className="blog-card-title" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Архитектура Edge-функций для динамической генерации страниц</h3>
+                <p className="blog-card-summary" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>Как перенести рендеринг критических секций на CDN-узлы и сократить Time to First Byte (TTFB) до рекордных 15 миллисекунд.</p>
                 <Link to="/blog" className="blog-card-link">
                   <span>ЧИТАТЬ СТАТЬЮ</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -79,70 +79,10 @@ export default function Footer() {
   const isHomepage = location.pathname === "/";
   const isSharedCanvasPage = isServicesPage || isHomepage;
 
-  // Dynamic canvas background animation inside Footer - Lava Lamp Effect
+  // No-op useEffect for clean canvas removal
   useEffect(() => {
-    // Prevent double rendering on pages where page-wide fixed canvas is active
-    if (isSharedCanvasPage) return;
-
-    const canvas = document.getElementById("footer-gradient-canvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let animationFrameId;
-
-    // NextWeb brand RGB colors: Cyber-cyan, Magenta, and Purple
-    const blobs = [
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 350, baseR: 350, vx: 0.45, vy: 0.32, color: 'rgba(0, 217, 255, 0.85)', phase: Math.random() * 100 }, // Cyber-cyan
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 400, baseR: 400, vx: -0.32, vy: 0.38, color: 'rgba(255, 20, 147, 0.8)', phase: Math.random() * 100 },  // Magenta
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 380, baseR: 380, vx: 0.28, vy: -0.35, color: 'rgba(160, 32, 240, 0.8)', phase: Math.random() * 100 },  // Purple
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 280, baseR: 280, vx: -0.38, vy: -0.28, color: 'rgba(0, 217, 255, 0.85)', phase: Math.random() * 100 }, // Cyber-cyan small
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 320, baseR: 320, vx: 0.32, vy: 0.32, color: 'rgba(255, 20, 147, 0.8)', phase: Math.random() * 100 },   // Magenta small
-      { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: 420, baseR: 420, vx: -0.25, vy: -0.32, color: 'rgba(160, 32, 240, 0.8)', phase: Math.random() * 100 }  // Purple large
-    ];
-
-    const resizeCanvas = () => {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width || window.innerWidth;
-      canvas.height = rect.height || window.innerHeight;
-    };
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    let time = 0;
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      time += 0.003;
-
-      blobs.forEach(b => {
-        b.x += b.vx + Math.sin(time + b.phase) * 0.15;
-        b.y += b.vy + Math.cos(time + b.phase) * 0.15;
-        b.r = b.baseR + Math.sin(time * 1.2 + b.phase) * 35;
-
-        if (b.x < -b.r / 2 || b.x > canvas.width + b.r / 2) b.vx *= -1;
-        if (b.y < -b.r / 2 || b.y > canvas.height + b.r / 2) b.vy *= -1;
-
-        const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-        grad.addColorStop(0, b.color);
-        grad.addColorStop(0.5, b.color);
-        grad.addColorStop(1, "transparent");
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-    render();
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isSharedCanvasPage]);
+    // Canvas rendering has been migrated to high-performance CSS Aurora in index.css
+  }, []);
 
   const handleNavClick = (e, hash) => {
     e.preventDefault();
@@ -172,9 +112,9 @@ export default function Footer() {
           >
             <defs>
               <linearGradient id="tech-glow-grad-footer" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#00D9FF" />
-                <stop offset="50%" stopColor="#A020F0" />
-                <stop offset="100%" stopColor="#FF1493" />
+                <stop offset="0%" stopColor="#0e7490" />
+                <stop offset="50%" stopColor="#581c87" />
+                <stop offset="100%" stopColor="#881337" />
               </linearGradient>
               <filter id="tech-glow-blur-footer" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="12" result="blur" />
@@ -214,7 +154,7 @@ export default function Footer() {
             style={{
               height: "1.5px",
               width: "100%",
-              background: "linear-gradient(90deg, #00D9FF 0%, #A020F0 50%, #FF1493 100%)",
+              background: "linear-gradient(90deg, #0e7490 0%, #581c87 50%, #881337 100%)",
               opacity: 0.35,
             }}
           />
@@ -223,7 +163,11 @@ export default function Footer() {
 
       {/* Glass Card Container: Stretched to cover the entire footer area */}
       {!isSharedCanvasPage && (
-        <canvas id="footer-gradient-canvas" className="footer-gradient-canvas" />
+        <div id="footer-gradient-canvas" className="footer-gradient-canvas aurora-bg-container">
+          <div className="aurora-blob cyan"></div>
+          <div className="aurora-blob magenta"></div>
+          <div className="aurora-blob purple"></div>
+        </div>
       )}
       <div
         className="footer-glass-card"

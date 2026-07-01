@@ -43,6 +43,13 @@ function MainLayout() {
     <>
       <Preloader onComplete={() => setPreloaderComplete(true)} />
 
+      {/* Global CSS Aurora Background */}
+      <div className="global-aurora-bg aurora-bg-container">
+        <div className="aurora-blob cyan"></div>
+        <div className="aurora-blob magenta"></div>
+        <div className="aurora-blob purple"></div>
+      </div>
+
       <div
         className={`page-wrapper ${!preloaderComplete ? "loading" : ""} ${transitioning ? "loading" : ""}`}
       >
