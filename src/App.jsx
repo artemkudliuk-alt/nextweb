@@ -43,16 +43,35 @@ function MainLayout() {
     <>
       <Preloader onComplete={() => setPreloaderComplete(true)} />
 
-      {/* Global CSS Aurora Background */}
-      <div className="global-aurora-bg aurora-bg-container">
-        <div className="aurora-blob cyan"></div>
-        <div className="aurora-blob magenta"></div>
-        <div className="aurora-blob purple"></div>
-      </div>
+      {/* SVG Gooey filter — creates organic blob merging effect (lava lamp) */}
+      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+        <defs>
+          <filter id="lava-goo" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur" />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 14 -5"
+              result="goo"
+            />
+            <feBlend in="SourceGraphic" in2="goo" />
+          </filter>
+        </defs>
+      </svg>
 
       <div
         className={`page-wrapper ${!preloaderComplete ? "loading" : ""} ${transitioning ? "loading" : ""}`}
       >
+        {/* Global Lava Lamp Background — GPU-only animations (transform + opacity) */}
+        <div className="global-aurora-bg lava-lamp-bg" aria-hidden="true">
+          <div className="lava-blob lava-blob--1"></div>
+          <div className="lava-blob lava-blob--2"></div>
+          <div className="lava-blob lava-blob--3"></div>
+          <div className="lava-blob lava-blob--4"></div>
+          <div className="lava-blob lava-blob--5"></div>
+          <div className="lava-blob lava-blob--6"></div>
+        </div>
+
         <Navbar />
         <main>
           <Routes>

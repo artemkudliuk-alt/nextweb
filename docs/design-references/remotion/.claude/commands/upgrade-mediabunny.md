@@ -1,0 +1,1 @@
+../../.agents/commands/upgrade-mediabunny.md

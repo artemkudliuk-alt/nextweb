@@ -1,0 +1,1 @@
+../../.agents/commands/update-chrome-binaries-test-region.md

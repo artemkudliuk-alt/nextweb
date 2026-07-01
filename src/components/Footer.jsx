@@ -161,14 +161,7 @@ export default function Footer() {
         </div>
       )}
 
-      {/* Glass Card Container: Stretched to cover the entire footer area */}
-      {!isSharedCanvasPage && (
-        <div id="footer-gradient-canvas" className="footer-gradient-canvas aurora-bg-container">
-          <div className="aurora-blob cyan"></div>
-          <div className="aurora-blob magenta"></div>
-          <div className="aurora-blob purple"></div>
-        </div>
-      )}
+      {/* Background is handled globally by the fixed lava lamp layer */}
       <div
         className="footer-glass-card"
         onMouseMove={handleMouseMove}

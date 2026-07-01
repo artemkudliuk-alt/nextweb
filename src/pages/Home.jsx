@@ -2896,10 +2896,14 @@ export default function Home() {
           </svg>
         </div>
         <div className="dedicated-sticky-container">
-          <div className="aurora-bg-container">
-            <div className="aurora-blob cyan"></div>
-            <div className="aurora-blob magenta"></div>
-            <div className="aurora-blob purple"></div>
+          {/* Local Lava Lamp Background */}
+          <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+            <div className="lava-blob lava-blob--1"></div>
+            <div className="lava-blob lava-blob--2"></div>
+            <div className="lava-blob lava-blob--3"></div>
+            <div className="lava-blob lava-blob--4"></div>
+            <div className="lava-blob lava-blob--5"></div>
+            <div className="lava-blob lava-blob--6"></div>
           </div>
           <div className="dedicated-sticky-inner" style={{ position: 'relative', zIndex: 2 }}>
             <div className="works-split-layout">
@@ -3147,10 +3151,14 @@ export default function Home() {
         </div>
 
         <div className="work-container-clean">
-          <div className="aurora-bg-container">
-            <div className="aurora-blob cyan"></div>
-            <div className="aurora-blob magenta"></div>
-            <div className="aurora-blob purple"></div>
+          {/* Local Lava Lamp Background */}
+          <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+            <div className="lava-blob lava-blob--1"></div>
+            <div className="lava-blob lava-blob--2"></div>
+            <div className="lava-blob lava-blob--3"></div>
+            <div className="lava-blob lava-blob--4"></div>
+            <div className="lava-blob lava-blob--5"></div>
+            <div className="lava-blob lava-blob--6"></div>
           </div>
           <div className="tech-section-header">
             <span className="cyber-section-label">// 04 . СТЕК ТЕХНОЛОГИЙ</span>
@@ -3576,10 +3584,14 @@ export default function Home() {
 
       {/* ----------------- SECTION: BLOG PREVIEW ----------------- */}
       <section id="blog-preview" className="blog-preview-section">
-        <div className="aurora-bg-container">
-          <div className="aurora-blob cyan"></div>
-          <div className="aurora-blob magenta"></div>
-          <div className="aurora-blob purple"></div>
+        {/* Local Lava Lamp Background */}
+        <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+          <div className="lava-blob lava-blob--1"></div>
+          <div className="lava-blob lava-blob--2"></div>
+          <div className="lava-blob lava-blob--3"></div>
+          <div className="lava-blob lava-blob--4"></div>
+          <div className="lava-blob lava-blob--5"></div>
+          <div className="lava-blob lava-blob--6"></div>
         </div>
         {/* Glow Line Sweep Divider */}
         <div className="tech-glow-divider tech-glow-divider-blog">
@@ -3790,6 +3802,15 @@ export default function Home() {
 
       <div id="screen7-container">
         <section id="screen7" className="contact-section">
+          {/* Local Lava Lamp Background */}
+          <div className="lava-lamp-bg lava-lamp-bg--local" aria-hidden="true">
+            <div className="lava-blob lava-blob--1"></div>
+            <div className="lava-blob lava-blob--2"></div>
+            <div className="lava-blob lava-blob--3"></div>
+            <div className="lava-blob lava-blob--4"></div>
+            <div className="lava-blob lava-blob--5"></div>
+            <div className="lava-blob lava-blob--6"></div>
+          </div>
           {/* Ambient Glow Orbs */}
           <div className="contact-glow-orb orb-1" />
           <div className="contact-glow-orb orb-2" />
