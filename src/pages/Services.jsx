@@ -573,6 +573,12 @@ export default function Services() {
     supportOperations: { isStart: true, isEnd: false, hasOverflow: false }
   });
 
+  const [scrollProgress, setScrollProgress] = useState({
+    development: 0,
+    brandingMarketing: 0,
+    supportOperations: 0
+  });
+
   const [activeDirCard, setActiveDirCard] = useState(0);
   const [activeFaq, setActiveFaq] = useState(null);
 
@@ -607,9 +613,15 @@ export default function Services() {
       const isStart = el.scrollLeft <= 15;
       const isEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 15;
       const hasOverflow = el.scrollWidth > el.clientWidth;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const progress = maxScroll > 0 ? (el.scrollLeft / maxScroll) * 100 : 0;
       setScrollStates(prev => ({
         ...prev,
         [id]: { isStart, isEnd, hasOverflow }
+      }));
+      setScrollProgress(prev => ({
+        ...prev,
+        [id]: progress
       }));
     }
   }, []);
@@ -1027,7 +1039,8 @@ export default function Services() {
               <div className="block-padding block-padding_mobile" style={{ paddingTop: '57px' }}></div>
               
               <section id="services-development" className="services-section">
-                <div className="services__header-row">
+                <div className="services__header-row" style={{ position: 'relative' }}>
+                  <span className="services__section-numeral" aria-hidden="true">01</span>
                   <div className="services__text services__text-with-counter">
                     <div className="services__title-group">
                       <h2 className="services__title"><TextReveal text="Разработка" glitch={true} /></h2>
@@ -1076,6 +1089,14 @@ export default function Services() {
                   >
                     {renderSliderTrack(developmentCards)}
                   </div>
+                  {scrollStates.development.hasOverflow && (
+                    <div className="services__scroll-progress">
+                      <div
+                        className="services__scroll-progress-fill"
+                        style={{ width: `${scrollProgress.development}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
               </section>
             </div>
@@ -1107,7 +1128,8 @@ export default function Services() {
               <div className="block-padding block-padding_mobile" style={{ paddingTop: '100px' }}></div>
 
               <section id="services-branding-marketing" className="services-section">
-                <div className="services__header-row">
+                <div className="services__header-row" style={{ position: 'relative' }}>
+                  <span className="services__section-numeral" aria-hidden="true">02</span>
                   <div className="services__text services__text-with-counter">
                     <div className="services__title-group">
                       <h2 className="services__title"><TextReveal text="Брендинг и маркетинг" glitch={true} /></h2>
@@ -1156,6 +1178,14 @@ export default function Services() {
                   >
                     {renderSliderTrack(brandingMarketingCards)}
                   </div>
+                  {scrollStates.brandingMarketing.hasOverflow && (
+                    <div className="services__scroll-progress">
+                      <div
+                        className="services__scroll-progress-fill"
+                        style={{ width: `${scrollProgress.brandingMarketing}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
               </section>
             </div>
@@ -1187,7 +1217,8 @@ export default function Services() {
               <div className="block-padding block-padding_mobile" style={{ paddingTop: '48px' }}></div>
 
               <section id="services-support-operations" className="services-section">
-                <div className="services__header-row">
+                <div className="services__header-row" style={{ position: 'relative' }}>
+                  <span className="services__section-numeral" aria-hidden="true">03</span>
                   <div className="services__text services__text-with-counter">
                     <div className="services__title-group">
                       <h2 className="services__title"><TextReveal text="Поддержка и операции" glitch={true} /></h2>
@@ -1236,6 +1267,7 @@ export default function Services() {
                   >
                     {renderSliderTrack(supportOperationsCards)}
                   </div>
+
                 </div>
               </section>
             </div>

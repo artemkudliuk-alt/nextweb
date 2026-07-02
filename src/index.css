@@ -20080,12 +20080,15 @@ button.swiper-pagination-bullet {
 /* Headers / Titles */
 .services-directory-section .services__title--directory {
   font-family: "Unbounded", var(--font-sans), sans-serif !important;
-  font-size: clamp(2.2rem, 5vw, 3.8rem) !important;
+  font-size: clamp(1.6rem, 3.5vw, 3rem) !important;
   font-weight: 800 !important;
   color: #000000 !important;
   letter-spacing: -0.02em !important;
   line-height: 1.1 !important;
   margin-bottom: 2rem !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  word-break: break-word !important;
 }
 
 .faq-accordion-block h2 {
@@ -20105,6 +20108,88 @@ button.swiper-pagination-bullet {
   color: #8a8a93 !important; /* Sleek muted gray description below title */
   font-size: 1.1rem !important;
   line-height: 1.6 !important;
+}
+
+/* ============================================ */
+/* SLIDER CARD STAGGER ENTRANCE ANIMATION        */
+/* ============================================ */
+
+/* Cards start invisible below and slide up on reveal */
+.services__slide.swiper-slide {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* When section becomes active, cards animate in with stagger */
+.page-constructor__section.is-active .services__slide.swiper-slide,
+.page-constructor__section--dev .services__slide.swiper-slide {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for first 8 cards */
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(1),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(1) { transition-delay: 0.05s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(2),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(2) { transition-delay: 0.12s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(3),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(3) { transition-delay: 0.19s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(4),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(4) { transition-delay: 0.26s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(5),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(5) { transition-delay: 0.33s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(6),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(6) { transition-delay: 0.40s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(7),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(7) { transition-delay: 0.47s; }
+.page-constructor__section.is-active .services__slide.swiper-slide:nth-child(8),
+.page-constructor__section--dev .services__slide.swiper-slide:nth-child(8) { transition-delay: 0.54s; }
+
+/* ============================================ */
+/* SLIDER SCROLL PROGRESS BAR                   */
+/* ============================================ */
+
+.services__scroll-progress {
+  position: relative;
+  height: 2px;
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.services__scroll-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #00d9ff 0%, #a020f0 50%, #ff1493 100%);
+  transition: width 0.15s ease-out;
+  will-change: width;
+}
+
+/* ============================================ */
+/* SECTION NUMBER BADGE (01 / 02 / 03)          */
+/* ============================================ */
+
+/* Decorative large numeral behind section title */
+.services__section-numeral {
+  font-size: clamp(6rem, 12vw, 10rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  position: absolute;
+  top: -1.5rem;
+  right: 0;
+  background: linear-gradient(135deg, rgba(0,217,255,0.07) 0%, rgba(160,32,240,0.04) 50%, rgba(255,20,147,0.07) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 
 /* Side margins and maximum content width constraint */
