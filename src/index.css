@@ -1012,6 +1012,7 @@ ol {
   display: block;
   overflow: hidden;
   margin-bottom: 0.2rem;
+  white-space: nowrap;
 }
 
 .text-reveal-inner {
@@ -1023,6 +1024,7 @@ ol {
     transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     filter 0.8s,
     opacity 0.8s;
+  white-space: nowrap;
 }
 
 .text-reveal-inner.revealed {
@@ -4894,6 +4896,7 @@ ol {
   }
 
   .tech-mobile-layout {
+    position: relative;
     display: block;
     width: 100%;
     max-width: 600px;
@@ -4901,6 +4904,8 @@ ol {
   }
 
   .tech-mobile-heading {
+    position: relative;
+    z-index: 2;
     font-family: "Unbounded", sans-serif;
     font-size: 1.8rem;
     font-weight: 800;
@@ -4908,6 +4913,12 @@ ol {
     margin-bottom: 2.8rem; /* Increased from 1.5rem to push toggles down */
     text-align: center;
     text-transform: uppercase;
+  }
+
+  .tech-mobile-tabs-container,
+  .tech-mobile-grid {
+    position: relative;
+    z-index: 2;
   }
 
   /* Horizontal scrollable category tabs - Centered */
@@ -7697,6 +7708,14 @@ ol {
 /* Prevent word splitting inside text reveals globally */
 .text-reveal-inner {
   white-space: nowrap;
+}
+
+/* Allow text reveals to wrap on mobile/tablet viewports to prevent truncation */
+@media screen and (max-width: 768px) {
+  .text-reveal-line,
+  .text-reveal-inner {
+    white-space: normal !important;
+  }
 }
 
 /* Responsive adjustments for Hero Heading */
@@ -13351,9 +13370,14 @@ ol {
 
 @media screen and (max-width: 550px) {
   .services__title {
-    font-size: 28px;
-    margin-bottom: 40px;
-    line-height: 147%;
+    font-size: clamp(20px, 6vw, 24px);
+    margin-bottom: 20px;
+    line-height: 1.3;
+    width: 100%;
+  }
+  .services__title .text-reveal-line,
+  .services__title .text-reveal-inner {
+    white-space: normal;
   }
 }
 
@@ -13846,6 +13870,8 @@ ol {
 }
 
 .services-unified {
+  position: relative;
+  z-index: 2;
   overflow: hidden;
   margin-left: auto;
   margin-right: auto;
@@ -19352,6 +19378,15 @@ button.swiper-pagination-bullet {
   align-items: center;
   gap: 1.25rem;
   margin-bottom: 0.75rem;
+}
+
+@media screen and (max-width: 550px) {
+  .services__title-group {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
 }
 
 .service-counter {

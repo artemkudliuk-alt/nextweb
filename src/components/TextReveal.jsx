@@ -166,17 +166,32 @@ export default function TextReveal({ text, className = "", delay = 0, glitch = f
             }}
           >
             {glitch && typeof line === "string"
-              ? line
-                  .split("")
-                  .map((char, charIndex) => (
-                    <GlitchChar
-                      key={charIndex}
-                      char={char}
-                      revealed={revealed}
-                      delay={delay + index * 0.15}
-                      index={charIndex}
-                    />
-                  ))
+              ? (() => {
+                  const wordsArray = line.split(" ");
+                  return wordsArray.map((word, wordIndex) => (
+                    <span key={wordIndex}>
+                      <span 
+                        className="text-reveal-word"
+                        style={{ display: "inline-block", whiteSpace: "nowrap" }}
+                      >
+                        {word.split("").map((char, charIndex) => {
+                          const prevWordsLength = wordsArray.slice(0, wordIndex).join(" ").length + (wordIndex > 0 ? 1 : 0);
+                          const globalCharIndex = prevWordsLength + charIndex;
+                          return (
+                            <GlitchChar
+                              key={charIndex}
+                              char={char}
+                              revealed={revealed}
+                              delay={delay + index * 0.15}
+                              index={globalCharIndex}
+                            />
+                          );
+                        })}
+                      </span>
+                      {wordIndex < wordsArray.length - 1 && " "}
+                    </span>
+                  ));
+                })()
               : line}
           </span>
         </span>
