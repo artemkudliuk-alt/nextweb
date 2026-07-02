@@ -17148,8 +17148,8 @@ button.swiper-pagination-bullet {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: min(80px, 8dvh); /* Generous, standard navigation padding */
-    padding-bottom: min(180px, 16dvh); /* Spacious bottom padding for breathing room */
+    padding-top: min(35px, 3dvh); /* Reduced top padding to shift content up */
+    padding-bottom: min(280px, 26dvh); /* Increased bottom padding to compensate for slant overlap */
     margin-bottom: 0;
     box-sizing: border-box;
     will-change: transform;
@@ -17166,7 +17166,7 @@ button.swiper-pagination-bullet {
     margin-top: -120px;
     clip-path: polygon(0 120px, 100% 0, 100% 100%, 0 100%);
     -webkit-clip-path: polygon(0 120px, 100% 0, 100% 100%, 0 100%);
-    padding-top: calc(min(80px, 8dvh) + 120px);
+    padding-top: calc(min(35px, 3dvh) + 120px);
   }
 
   .services-body .page-constructor__section--support {
@@ -17175,7 +17175,7 @@ button.swiper-pagination-bullet {
     margin-top: -120px;
     clip-path: polygon(0 0, 100% 120px, 100% 100%, 0 100%);
     -webkit-clip-path: polygon(0 0, 100% 120px, 100% 100%, 0 100%);
-    padding-top: calc(min(80px, 8dvh) + 120px);
+    padding-top: calc(min(35px, 3dvh) + 120px);
   }
 
   .services-body .page-constructor__section--directory {
@@ -17184,7 +17184,7 @@ button.swiper-pagination-bullet {
     margin-top: -120px;
     clip-path: polygon(0 120px, 100% 0, 100% 100%, 0 100%);
     -webkit-clip-path: polygon(0 120px, 100% 0, 100% 100%, 0 100%);
-    padding-top: calc(min(80px, 8dvh) + 120px);
+    padding-top: calc(min(35px, 3dvh) + 120px);
   }
 
   /* Restore spacious text padding-bottom for comfortable breathing room */
@@ -17649,10 +17649,11 @@ button.swiper-pagination-bullet {
 
 /* --- Services Header Row & Navigation --- */
 .services__header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 150px;
+  gap: 2.5rem;
+  align-items: end;
+  margin-bottom: 3.5rem;
   max-width: 1574px;
   margin-left: auto;
   margin-right: auto;
@@ -17660,14 +17661,45 @@ button.swiper-pagination-bullet {
   box-sizing: border-box;
 }
 
-.services__header-row .services__text {
-  flex: 1;
+.services__header-title-col {
+  display: flex;
+  align-items: center;
+}
+
+.services__header-desc-col {
+  display: flex;
+  align-items: flex-end;
+}
+
+.services__header-control-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  position: relative;
+  min-height: 120px;
+}
+
+/* Large gradient numeral positioned cleanly inside the control column */
+.services__header-control-col .services__section-numeral {
+  font-size: clamp(5rem, 8vw, 7.5rem) !important;
+  font-weight: 900 !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.05em !important;
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.16) 0%, rgba(160, 32, 240, 0.12) 50%, rgba(255, 20, 147, 0.16) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  margin-bottom: 0.5rem !important;
+  user-select: none !important;
+  pointer-events: none !important;
+  display: block !important;
+  text-align: right !important;
 }
 
 .services__slider-nav {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  z-index: 5;
 }
 
 .slider-nav-btn {
@@ -17703,15 +17735,21 @@ button.swiper-pagination-bullet {
 
 @media (max-width: 1024px) {
   .services__header-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    align-items: start !important;
   }
-  .services__header-row .services__text {
-    max-width: 100%;
+  .services__header-control-col {
+    flex-direction: row-reverse !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: auto !important;
+    width: 100% !important;
+    margin-top: 0.5rem !important;
   }
-  .services__slider-nav {
-    margin-bottom: 0;
+  .services__header-control-col .services__section-numeral {
+    margin-bottom: 0 !important;
+    font-size: 4rem !important;
   }
 }
 
@@ -20172,25 +20210,8 @@ button.swiper-pagination-bullet {
 }
 
 /* ============================================ */
-/* SECTION NUMBER BADGE (01 / 02 / 03)          */
+/* SECTION NUMBER BADGE - INTEGRATED            */
 /* ============================================ */
-
-/* Decorative large numeral behind section title */
-.services__section-numeral {
-  font-size: clamp(6rem, 12vw, 10rem);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.05em;
-  position: absolute;
-  top: -1.5rem;
-  right: 0;
-  background: linear-gradient(135deg, rgba(0,217,255,0.07) 0%, rgba(160,32,240,0.04) 50%, rgba(255,20,147,0.07) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
 
 /* Side margins and maximum content width constraint */
 .services-directory-section .grid-container,

@@ -1035,50 +1035,49 @@ export default function Services() {
             </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '117px' }}></div>
-              <div className="block-padding block-padding_tablet" style={{ paddingTop: '146px' }}></div>
-              <div className="block-padding block-padding_mobile" style={{ paddingTop: '57px' }}></div>
+              <div className="block-padding block-padding_tablet" style={{ paddingTop: '80px' }}></div>
+              <div className="block-padding block-padding_mobile" style={{ paddingTop: '40px' }}></div>
               
               <section id="services-development" className="services-section">
-                <div className="services__header-row" style={{ position: 'relative' }}>
-                  <span className="services__section-numeral" aria-hidden="true">01</span>
-                  <div className="services__text services__text-with-counter">
-                    <div className="services__title-group">
-                      <h2 className="services__title"><TextReveal text="Разработка" glitch={true} /></h2>
-                      <div className="service-counter">
-                        <span className="counter-num">01</span>
-                        <div className="counter-lines">
-                          <span className="counter-line active"></span>
-                          <span className="counter-line"></span>
-                          <span className="counter-line"></span>
-                        </div>
-                      </div>
-                    </div>
+                <div className="services__header-row">
+                  {/* Column 1: Title */}
+                  <div className="services__header-title-col">
+                    <h2 className="services__title"><TextReveal text="Разработка" glitch={true} /></h2>
+                  </div>
+
+                  {/* Column 2: Description */}
+                  <div className="services__header-desc-col">
                     <p className="services__description">
                       Создаем современные, быстрые и масштабируемые веб-ресурсы. От простых посадочных страниц до высоконагруженных веб-приложений и уникальных интерфейсов.
                     </p>
                   </div>
-                  {scrollStates.development.hasOverflow && (
-                    <div className="services__slider-nav">
-                      <button 
-                        className={`slider-nav-btn prev ${scrollStates.development.isStart ? 'disabled' : ''}`}
-                        onClick={() => scrollTrack('development', 'left')}
-                        aria-label="Previous slide"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                      <button 
-                        className={`slider-nav-btn next ${scrollStates.development.isEnd ? 'disabled' : ''}`}
-                        onClick={() => scrollTrack('development', 'right')}
-                        aria-label="Next slide"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                    </div>
-                  )}
+
+                  {/* Column 3: Numeral & Arrows */}
+                  <div className="services__header-control-col">
+                    <span className="services__section-numeral" aria-hidden="true">01</span>
+                    {scrollStates.development.hasOverflow && (
+                      <div className="services__slider-nav">
+                        <button 
+                          className={`slider-nav-btn prev ${scrollStates.development.isStart ? 'disabled' : ''}`}
+                          onClick={() => scrollTrack('development', 'left')}
+                          aria-label="Previous slide"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                        <button 
+                          className={`slider-nav-btn next ${scrollStates.development.isEnd ? 'disabled' : ''}`}
+                          onClick={() => scrollTrack('development', 'right')}
+                          aria-label="Next slide"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="services__context-slider swiper-container">
@@ -1124,50 +1123,49 @@ export default function Services() {
             </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '222px' }}></div>
-              <div className="block-padding block-padding_tablet" style={{ paddingTop: '171px' }}></div>
-              <div className="block-padding block-padding_mobile" style={{ paddingTop: '100px' }}></div>
+              <div className="block-padding block-padding_tablet" style={{ paddingTop: '90px' }}></div>
+              <div className="block-padding block-padding_mobile" style={{ paddingTop: '50px' }}></div>
 
               <section id="services-branding-marketing" className="services-section">
-                <div className="services__header-row" style={{ position: 'relative' }}>
-                  <span className="services__section-numeral" aria-hidden="true">02</span>
-                  <div className="services__text services__text-with-counter">
-                    <div className="services__title-group">
-                      <h2 className="services__title"><TextReveal text="Брендинг и маркетинг" glitch={true} /></h2>
-                      <div className="service-counter">
-                        <span className="counter-num">02</span>
-                        <div className="counter-lines">
-                          <span className="counter-line"></span>
-                          <span className="counter-line active"></span>
-                          <span className="counter-line"></span>
-                        </div>
-                      </div>
-                    </div>
+                <div className="services__header-row">
+                  {/* Column 1: Title */}
+                  <div className="services__header-title-col">
+                    <h2 className="services__title"><TextReveal text="Брендинг и маркетинг" glitch={true} /></h2>
+                  </div>
+
+                  {/* Column 2: Description */}
+                  <div className="services__header-desc-col">
                     <p className="services__description">
                       Формируем сильный визуальный образ бренда и привлекаем клиентов через комплексные маркетинговые каналы: от создания фирменного стиля до SEO, контекста и SMM.
                     </p>
                   </div>
-                  {scrollStates.brandingMarketing.hasOverflow && (
-                    <div className="services__slider-nav">
-                      <button 
-                        className={`slider-nav-btn prev ${scrollStates.brandingMarketing.isStart ? 'disabled' : ''}`}
-                        onClick={() => scrollTrack('brandingMarketing', 'left')}
-                        aria-label="Previous slide"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                      <button 
-                        className={`slider-nav-btn next ${scrollStates.brandingMarketing.isEnd ? 'disabled' : ''}`}
-                        onClick={() => scrollTrack('brandingMarketing', 'right')}
-                        aria-label="Next slide"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                    </div>
-                  )}
+
+                  {/* Column 3: Numeral & Arrows */}
+                  <div className="services__header-control-col">
+                    <span className="services__section-numeral" aria-hidden="true">02</span>
+                    {scrollStates.brandingMarketing.hasOverflow && (
+                      <div className="services__slider-nav">
+                        <button 
+                          className={`slider-nav-btn prev ${scrollStates.brandingMarketing.isStart ? 'disabled' : ''}`}
+                          onClick={() => scrollTrack('brandingMarketing', 'left')}
+                          aria-label="Previous slide"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                        <button 
+                          className={`slider-nav-btn next ${scrollStates.brandingMarketing.isEnd ? 'disabled' : ''}`}
+                          onClick={() => scrollTrack('brandingMarketing', 'right')}
+                          aria-label="Next slide"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="services__context-slider swiper-container">
@@ -1213,50 +1211,49 @@ export default function Services() {
             </div>
             <div className="services-unified" style={{ WebkitTapHighlightColor: 'transparent' }}>
               <div className="block-padding block-padding_desktop" style={{ paddingTop: '90px' }}></div>
-              <div className="block-padding block-padding_tablet" style={{ paddingTop: '68px' }}></div>
-              <div className="block-padding block-padding_mobile" style={{ paddingTop: '48px' }}></div>
+              <div className="block-padding block-padding_tablet" style={{ paddingTop: '50px' }}></div>
+              <div className="block-padding block-padding_mobile" style={{ paddingTop: '30px' }}></div>
 
               <section id="services-support-operations" className="services-section">
-                <div className="services__header-row" style={{ position: 'relative' }}>
-                  <span className="services__section-numeral" aria-hidden="true">03</span>
-                  <div className="services__text services__text-with-counter">
-                    <div className="services__title-group">
-                      <h2 className="services__title"><TextReveal text="Поддержка и операции" glitch={true} /></h2>
-                      <div className="service-counter">
-                        <span className="counter-num">03</span>
-                        <div className="counter-lines">
-                          <span className="counter-line"></span>
-                          <span className="counter-line"></span>
-                          <span className="counter-line active"></span>
-                        </div>
-                      </div>
-                    </div>
+                <div className="services__header-row">
+                  {/* Column 1: Title */}
+                  <div className="services__header-title-col">
+                    <h2 className="services__title"><TextReveal text="Поддержка и операции" glitch={true} /></h2>
+                  </div>
+
+                  {/* Column 2: Description */}
+                  <div className="services__header-desc-col">
                     <p className="services__description">
                       Обеспечиваем стабильную работу ваших веб-ресурсов. Оказываем услуги технической поддержки, DevOps-инжиниринга, IT-консалтинга, аудита безопасности, юзабилити и оптимизации.
                     </p>
                   </div>
-                  {scrollStates.supportOperations.hasOverflow && (
-                    <div className="services__slider-nav">
-                      <button 
-                        className={`slider-nav-btn prev ${scrollStates.supportOperations.isStart ? 'disabled' : ''}`}
-                        onClick={() => scrollTrack('supportOperations', 'left')}
-                        aria-label="Previous slide"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                      <button 
-                        className={`slider-nav-btn next ${scrollStates.supportOperations.isEnd ? 'disabled' : ''}`}
-                        onClick={() => scrollTrack('supportOperations', 'right')}
-                        aria-label="Next slide"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                    </div>
-                  )}
+
+                  {/* Column 3: Numeral & Arrows */}
+                  <div className="services__header-control-col">
+                    <span className="services__section-numeral" aria-hidden="true">03</span>
+                    {scrollStates.supportOperations.hasOverflow && (
+                      <div className="services__slider-nav">
+                        <button 
+                          className={`slider-nav-btn prev ${scrollStates.supportOperations.isStart ? 'disabled' : ''}`}
+                          onClick={() => scrollTrack('supportOperations', 'left')}
+                          aria-label="Previous slide"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                        <button 
+                          className={`slider-nav-btn next ${scrollStates.supportOperations.isEnd ? 'disabled' : ''}`}
+                          onClick={() => scrollTrack('supportOperations', 'right')}
+                          aria-label="Next slide"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="services__context-slider swiper-container">
