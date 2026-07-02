@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import TextReveal from '../components/TextReveal';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useUIStore } from '../store/useUIStore';
 
 // Icon Components for each service card
 const Icons = {
@@ -553,11 +554,18 @@ function PremiumButton({ to, href, text }) {
 }
 
 export default function Services() {
-  const trackRefs = {
-    development: useRef(null),
-    brandingMarketing: useRef(null),
-    supportOperations: useRef(null)
+  const developmentRef = useRef(null);
+  const brandingMarketingRef = useRef(null);
+  const supportOperationsRef = useRef(null);
+
+  const getTrackRef = (id) => {
+    if (id === 'development') return developmentRef;
+    if (id === 'brandingMarketing') return brandingMarketingRef;
+    if (id === 'supportOperations') return supportOperationsRef;
+    return null;
   };
+
+  const preloaderComplete = useUIStore((state) => state.preloaderComplete);
 
   const [scrollStates, setScrollStates] = useState({
     development: { isStart: true, isEnd: false, hasOverflow: false },
@@ -584,7 +592,7 @@ export default function Services() {
   }, []);
 
   const scrollTrack = (id, direction) => {
-    const ref = trackRefs[id];
+    const ref = getTrackRef(id);
     if (ref && ref.current) {
       const cardWidth = 401; // card width + margin
       const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
@@ -592,8 +600,9 @@ export default function Services() {
     }
   };
 
-  const handleScroll = (id) => {
-    const el = trackRefs[id].current;
+  const handleScroll = useCallback((id) => {
+    const ref = getTrackRef(id);
+    const el = ref ? ref.current : null;
     if (el) {
       const isStart = el.scrollLeft <= 15;
       const isEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 15;
@@ -603,12 +612,12 @@ export default function Services() {
         [id]: { isStart, isEnd, hasOverflow }
       }));
     }
-  };
+  }, []);
 
   // Trigger initial checks and window resize checks for all sliders
   useEffect(() => {
     const checkAll = () => {
-      Object.keys(trackRefs).forEach(id => {
+      ['development', 'brandingMarketing', 'supportOperations'].forEach(id => {
         handleScroll(id);
       });
     };
@@ -619,7 +628,20 @@ export default function Services() {
       clearTimeout(timer);
       window.removeEventListener('resize', checkAll);
     };
-  }, []);
+  }, [handleScroll]);
+
+  // Re-run checks 500ms after preloader completes and page layout settles
+  useEffect(() => {
+    if (preloaderComplete) {
+      const checkAll = () => {
+        ['development', 'brandingMarketing', 'supportOperations'].forEach(id => {
+          handleScroll(id);
+        });
+      };
+      const timer = setTimeout(checkAll, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [preloaderComplete, handleScroll]);
 
   // IntersectionObserver to detect active section stacking and trigger animations
   useEffect(() => {
@@ -665,6 +687,28 @@ export default function Services() {
 
   // Dynamic slant-flattening transition scroll listener
   useEffect(() => {
+    let trackAbsoluteTop = 0;
+    let trackHeight = 0;
+    let section2AbsoluteTop = 0;
+    let section3AbsoluteTop = 0;
+    let section4AbsoluteTop = 0;
+
+    const recalculateCoordinates = () => {
+      const getAbsoluteTop = (el) => {
+        if (!el) return 0;
+        const rect = el.getBoundingClientRect();
+        return window.scrollY + rect.top;
+      };
+
+      if (introTrackRef.current) {
+        trackAbsoluteTop = getAbsoluteTop(introTrackRef.current);
+        trackHeight = introTrackRef.current.offsetHeight || introTrackRef.current.scrollHeight;
+      }
+      if (section2Ref.current) section2AbsoluteTop = getAbsoluteTop(section2Ref.current);
+      if (section3Ref.current) section3AbsoluteTop = getAbsoluteTop(section3Ref.current);
+      if (section4Ref.current) section4AbsoluteTop = getAbsoluteTop(section4Ref.current);
+    };
+
     // Capture initial anchor coordinates eagerly after fonts render
     const captureInitialCoords = () => {
       if (!placeholderRef.current) return;
@@ -682,28 +726,40 @@ export default function Services() {
 
     if (document.fonts) {
       document.fonts.ready.then(() => {
-        setTimeout(captureInitialCoords, 300);
+        setTimeout(() => {
+          captureInitialCoords();
+          recalculateCoordinates();
+        }, 300);
       });
     } else {
-      setTimeout(captureInitialCoords, 600);
+      setTimeout(() => {
+        captureInitialCoords();
+        recalculateCoordinates();
+      }, 600);
     }
     // Extra fallback in case fonts.ready resolved before component mounted
-    const fallbackTimer = setTimeout(captureInitialCoords, 800);
+    const fallbackTimer = setTimeout(() => {
+      captureInitialCoords();
+      recalculateCoordinates();
+    }, 800);
 
     const handleResize = () => {
       initialCoordsRef.current = null;
-      setTimeout(captureInitialCoords, 100);
+      setTimeout(() => {
+        captureInitialCoords();
+        recalculateCoordinates();
+      }, 100);
     };
     window.addEventListener('resize', handleResize);
 
     const handleWindowScroll = () => {
       const viewportHeight = window.innerHeight;
+      const scrollYVal = window.scrollY;
 
-      const updateSectionTransition = (sectionEl, dividerEl, lineMainEl, direction) => {
+      const updateSectionTransition = (sectionEl, absoluteTop, dividerEl, lineMainEl, direction) => {
         if (!sectionEl) return;
-        const rect = sectionEl.getBoundingClientRect();
         
-        let progress = 1 - (rect.top / viewportHeight);
+        let progress = 1 - ((absoluteTop - scrollYVal) / viewportHeight);
         progress = Math.max(0, Math.min(1, progress));
 
         const slantHeight = (1 - progress) * 120;
@@ -739,18 +795,16 @@ export default function Services() {
       };
 
       requestAnimationFrame(() => {
-        updateSectionTransition(section2Ref.current, divider2Ref.current, line2MainRef.current, 'left');
-        updateSectionTransition(section3Ref.current, divider3Ref.current, line3MainRef.current, 'right');
-        updateSectionTransition(section4Ref.current, divider4Ref.current, line4MainRef.current, 'left');
+        updateSectionTransition(section2Ref.current, section2AbsoluteTop, divider2Ref.current, line2MainRef.current, 'left');
+        updateSectionTransition(section3Ref.current, section3AbsoluteTop, divider3Ref.current, line3MainRef.current, 'right');
+        updateSectionTransition(section4Ref.current, section4AbsoluteTop, divider4Ref.current, line4MainRef.current, 'left');
 
         // Zooming video scroll logic
         if (introTrackRef.current && videoContainerRef.current && placeholderRef.current && servicesIntroStickyRef.current) {
-          const track = introTrackRef.current;
-          const rect = track.getBoundingClientRect();
-          const totalScroll = rect.height - viewportHeight;
+          const totalScroll = trackHeight - viewportHeight;
           const viewportWidth = window.innerWidth;
           
-          let progress = -rect.top / totalScroll;
+          let progress = (scrollYVal - trackAbsoluteTop) / totalScroll;
           progress = Math.max(0, Math.min(1, progress));
 
           if (viewportWidth > 768) {
@@ -778,7 +832,9 @@ export default function Services() {
               videoContainerRef.current.style.transform = 'none';
               videoContainerRef.current.style.borderRadius = `${currentRadius}px`;
 
-              if (rect.bottom <= 0) {
+              // Check if track is scrolled out of viewport
+              const isOut = (scrollYVal - trackAbsoluteTop) >= totalScroll + viewportHeight || (scrollYVal - trackAbsoluteTop) < -viewportHeight;
+              if (isOut) {
                 videoContainerRef.current.style.opacity = '0';
                 videoContainerRef.current.style.pointerEvents = 'none';
                 videoContainerRef.current.style.visibility = 'hidden';
@@ -810,7 +866,7 @@ export default function Services() {
       });
     };
 
-    window.addEventListener('scroll', handleWindowScroll);
+    window.addEventListener('scroll', handleWindowScroll, { passive: true });
     handleWindowScroll();
 
     return () => {
@@ -1014,7 +1070,7 @@ export default function Services() {
 
                 <div className="services__context-slider swiper-container">
                   <div 
-                    ref={trackRefs.development}
+                    ref={developmentRef}
                     onScroll={() => handleScroll('development')}
                     className="services__context-wrapper swiper-wrapper"
                   >
@@ -1094,7 +1150,7 @@ export default function Services() {
 
                 <div className="services__context-slider swiper-container">
                   <div 
-                    ref={trackRefs.brandingMarketing}
+                    ref={brandingMarketingRef}
                     onScroll={() => handleScroll('brandingMarketing')}
                     className="services__context-wrapper swiper-wrapper"
                   >
@@ -1174,7 +1230,7 @@ export default function Services() {
 
                 <div className="services__context-slider swiper-container">
                   <div 
-                    ref={trackRefs.supportOperations}
+                    ref={supportOperationsRef}
                     onScroll={() => handleScroll('supportOperations')}
                     className="services__context-wrapper swiper-wrapper"
                   >
@@ -1202,7 +1258,9 @@ export default function Services() {
             <div className="grid-container">
               <div className="section-header" style={{ marginBottom: '4rem', paddingTop: '40px' }}>
                 <span className="cyber-section-label">// ДЕТАЛЬНЫЙ КАТАЛОГ</span>
-                <h2>Направления и технологии</h2>
+                <h2 className="services__title services__title--directory">
+                  <TextReveal text="Направления, технологии" glitch={true} />
+                </h2>
                 <p className="structure-desc" style={{ maxWidth: '650px', marginTop: '1rem' }}>
                   Разверните интересующее вас направление, чтобы увидеть подробный список решаемых задач, используемых технологий и платформ.
                 </p>
@@ -1313,7 +1371,7 @@ export default function Services() {
                       <img src="/Nextweb_logo.svg" alt="NEXTWEB" style={{ height: '24px', width: 'auto', display: 'block' }} />
                     </div>
                     <h3>Забронировать ознакомительный звонок</h3>
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: '1.6' }}>
+                    <p className="cta-card-desc" style={{ marginBottom: '2.5rem', lineHeight: '1.6' }}>
                       Обсудите ваш проект с нашими ведущими инженерами и получите предварительную архитектурную оценку.
                     </p>
                     <div style={{ display: 'inline-flex' }}>
@@ -1354,7 +1412,7 @@ export default function Services() {
                                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                                 className="faq-item-body"
                               >
-                                <p style={{ padding: '1.25rem 0 0', color: 'rgba(255, 255, 255, 0.72)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                                <p className="faq-answer-text">
                                   {item.a}
                                 </p>
                               </motion.div>

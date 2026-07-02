@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 export default function Footer() {
   const ref = useRef(null);
   const [revealed, setRevealed] = useState(false);
-  const [_isArrowsHovered, _setIsArrowsHovered] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -66,12 +65,13 @@ export default function Footer() {
       { threshold: 0.05 },
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (ref.current) observer.unobserve(ref.current);
+      if (currentRef) observer.unobserve(currentRef);
     };
   }, []);
 

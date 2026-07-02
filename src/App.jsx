@@ -28,7 +28,6 @@ function MainLayout() {
   const transitioning = useUIStore((state) => state.transitioning);
   const setTransitioning = useUIStore((state) => state.setTransitioning);
 
-  const _location = useLocation();
 
   useEffect(() => {
     // Only animate transitions if initial load is finished

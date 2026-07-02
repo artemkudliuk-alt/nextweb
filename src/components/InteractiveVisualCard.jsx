@@ -4,10 +4,16 @@ export default function InteractiveVisualCard() {
   const [activeTab, setActiveTab] = useState("wireframe");
   const [radialVal, setRadialVal] = useState(0);
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab !== "performance") {
+      setRadialVal(0);
+    }
+  };
+
   // Radial animation for the Performance tab when active
   useEffect(() => {
     if (activeTab !== "performance") {
-      setRadialVal(0);
       return;
     }
 
@@ -45,21 +51,21 @@ export default function InteractiveVisualCard() {
           <button
             type="button"
             className={`tab-btn ${activeTab === "wireframe" ? "active" : ""}`}
-            onClick={() => setActiveTab("wireframe")}
+            onClick={() => handleTabChange("wireframe")}
           >
             Structure
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === "metrics" ? "active" : ""}`}
-            onClick={() => setActiveTab("metrics")}
+            onClick={() => handleTabChange("metrics")}
           >
             Metrics
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === "performance" ? "active" : ""}`}
-            onClick={() => setActiveTab("performance")}
+            onClick={() => handleTabChange("performance")}
           >
             Speed
           </button>

@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import Grid from '../components/Grid';
+import { useEffect } from 'react';
 import DraggableMarquee from '../components/DraggableMarquee';
-import TextReveal from '../components/TextReveal';
 import { motion } from 'framer-motion';
 
 const allWorks = [
@@ -63,6 +61,7 @@ export default function Works() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
+          <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', border: '0' }}>Портфолио NEXTWEB — Наши работы</h1>
           <span className="cyber-section-label">// ВСЕ РАБОТЫ</span>
         </motion.div>
 

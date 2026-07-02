@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Grid from '../components/Grid';
 import Button from '../components/Button';
 import TextReveal from '../components/TextReveal';
-import TeamPills from '../components/TeamPills';
-import DraggableMarquee from '../components/DraggableMarquee';
 import AsciiArrows from '../components/AsciiArrows';
 import Footer from '../components/Footer';
 import { useUIStore } from '../store/useUIStore';
@@ -511,11 +509,27 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState('idle');
   const [currentTime, setCurrentTime] = useState('');
   const formCardRef = useRef(null);
-  const prevActiveTestimonialIdxRef = useRef(activeTestimonialIdx);
+  const [prevActiveTestimonialIdx, setPrevActiveTestimonialIdx] = useState(activeTestimonialIdx);
+  const [lastActiveTestimonialIdx, setLastActiveTestimonialIdx] = useState(activeTestimonialIdx);
 
-  useEffect(() => {
-    prevActiveTestimonialIdxRef.current = activeTestimonialIdx;
-  }, [activeTestimonialIdx]);
+  if (activeTestimonialIdx !== lastActiveTestimonialIdx) {
+    setPrevActiveTestimonialIdx(lastActiveTestimonialIdx);
+    setLastActiveTestimonialIdx(activeTestimonialIdx);
+  }
+
+  const [images] = useState(() => {
+    if (typeof window === 'undefined' || window.innerWidth <= 1024) return [];
+    const totalFrames = 300;
+    const loadedImages = [];
+    for (let i = 1; i <= totalFrames; i++) {
+      const img = new Image();
+      const numStr = String(i).padStart(3, '0');
+      img.src = `/sequence/ezgif-frame-${numStr}.png`;
+      loadedImages.push(img);
+    }
+    return loadedImages;
+  });
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   // Prevent body scrolling when reviews modal is open
   useEffect(() => {
@@ -555,119 +569,22 @@ export default function Home() {
     formCardRef.current.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = () => {
     setFormStatus('sending');
     setTimeout(() => {
       setFormStatus('success');
     }, 1200);
   };
 
-  const approachHeightRef = useRef(0);
-  const dedicatedHeightRef = useRef(0);
   const workTopDocRef = useRef(0);
   const screen6TopDocRef = useRef(0);
   const blogTopDocRef = useRef(0);
   const contactSecTopDocRef = useRef(0);
 
-  const getApproachHeight = () => {
-    if (approachHeightRef.current > 0) return approachHeightRef.current;
-    const el = document.getElementById('approach');
-    if (el) {
-      approachHeightRef.current = el.offsetHeight;
-      return approachHeightRef.current;
-    }
-    return window.innerHeight;
-  };
-
-  const getDedicatedHeight = () => {
-    if (dedicatedHeightRef.current > 0) return dedicatedHeightRef.current;
-    const el = dedicatedRef.current;
-    if (el) {
-      dedicatedHeightRef.current = el.offsetHeight;
-      return dedicatedHeightRef.current;
-    }
-    return window.innerHeight;
-  };
-
-  const getDedicatedTopDoc = () => {
-    const isMobileLayout = window.innerWidth <= 1024;
-    if (!isMobileLayout) return window.innerHeight * 2;
-    const el = dedicatedRef.current;
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      return window.scrollY + rect.top;
-    }
-    return window.innerHeight * 2;
-  };
-
-  const getWhyUsTopDoc = () => {
-    const isMobileLayout = window.innerWidth <= 1024;
-    if (!isMobileLayout) return window.innerHeight * 3.2;
-    const el = whyUsRef.current;
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      return window.scrollY + rect.top;
-    }
-    return window.innerHeight * 3.2;
-  };
-
-  const getWorkTopDoc = () => {
-    const isMobileLayout = window.innerWidth <= 1024;
-    if (!isMobileLayout && workTopDocRef.current > 0) return workTopDocRef.current;
-    const el = document.getElementById('work');
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const val = window.scrollY + rect.top;
-      if (!isMobileLayout) workTopDocRef.current = val;
-      return val;
-    }
-    return window.innerHeight * 8.2;
-  };
-
-  const getScreen6TopDoc = () => {
-    const isMobileLayout = window.innerWidth <= 1024;
-    if (!isMobileLayout && screen6TopDocRef.current > 0) return screen6TopDocRef.current;
-    const el = document.getElementById('screen6');
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const val = window.scrollY + rect.top;
-      if (!isMobileLayout) screen6TopDocRef.current = val;
-      return val;
-    }
-    return window.innerHeight * 11.2;
-  };
-
-  const getBlogTopDoc = () => {
-    const isMobileLayout = window.innerWidth <= 1024;
-    if (!isMobileLayout && blogTopDocRef.current > 0) return blogTopDocRef.current;
-    const el = document.getElementById('blog-preview');
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const val = window.scrollY + rect.top;
-      if (!isMobileLayout) blogTopDocRef.current = val;
-      return val;
-    }
-    return window.innerHeight * 13.5;
-  };
-
-  const getContactSecTopDoc = () => {
-    const isMobileLayout = window.innerWidth <= 1024;
-    if (!isMobileLayout && contactSecTopDocRef.current > 0) return contactSecTopDocRef.current;
-    const el = document.querySelector('.contact-section');
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const val = window.scrollY + rect.top;
-      if (!isMobileLayout) contactSecTopDocRef.current = val;
-      return val;
-    }
-    return window.innerHeight * 16.2;
-  };
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1024);
-      approachHeightRef.current = 0;
-      dedicatedHeightRef.current = 0;
       workTopDocRef.current = 0;
       screen6TopDocRef.current = 0;
       blogTopDocRef.current = 0;
@@ -752,24 +669,21 @@ export default function Home() {
   const heroSceneRef = useRef(null);
   const heroContentRef = useRef(null);
   const heroFooterRef = useRef(null);
-  const cardsRef = useRef(null);
 
   const sectionsWrapRef = useRef(null);
   const menuRef = useRef(null);
   const descriptionRef = useRef(null);
   const dedicatedRef = useRef(null);
   const divider2Ref = useRef(null);
-  const diagonalTrackRef = useRef(null);
   const worksTrackRef = useRef(null);
+  const cardsRef = useRef(null);
+  const menuItemsRef = useRef([]);
+  const activeProjectIdxRef = useRef(0);
+  const sequenceIslandRef = useRef(null);
 
-  const card1Ref = useRef(null);
   const canvasRef = useRef(null);
   const dividerBarRef = useRef(null);
-  const menuItemsRef = useRef([]);
-  const card2Ref = useRef(null);
-  const card3Ref = useRef(null);
   const whyUsRef = useRef(null);
-  const sequenceIslandRef = useRef(null);
   const sequenceMenuRef = useRef(null);
   const techTabsRef = useRef(null);
   const carouselContainerRef = useRef(null);
@@ -815,10 +729,8 @@ export default function Home() {
     }
   }, [activeTestimonialIdx, isMobile]);
   
-  const [activeCategory, setActiveCategory] = useState('tech');
   const [activeTechTab, setActiveTechTab] = useState('web');
   const [activeProjectIdx, setActiveProjectIdx] = useState(0);
-  const activeProjectIdxRef = useRef(0);
 
   // Screen 4 click-driven sequence player state & refs
   const [activeStage, setActiveStage] = useState(0);
@@ -833,7 +745,8 @@ export default function Home() {
 
 
 
-  const animateFrames = () => {
+
+  const animateFrames = useCallback(() => {
     const current = currentFrameRef.current;
     const target = targetFrameRef.current;
 
@@ -844,8 +757,8 @@ export default function Home() {
       currentFrameRef.current = target;
       
       const roundedFrame = target;
-      if (imagesRef.current && imagesRef.current.length > 0) {
-        const img = imagesRef.current[roundedFrame - 1];
+      if (images && images.length > 0) {
+        const img = images[roundedFrame - 1];
         if (img && img.complete) {
           const canvas = canvasRef.current;
           const ctx = canvas?.getContext('2d');
@@ -872,8 +785,8 @@ export default function Home() {
 
     const roundedFrame = Math.max(1, Math.min(300, Math.round(nextFrame)));
 
-    if (imagesRef.current && imagesRef.current.length > 0) {
-      const img = imagesRef.current[roundedFrame - 1];
+    if (images && images.length > 0) {
+      const img = images[roundedFrame - 1];
       if (img && img.complete) {
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
@@ -890,10 +803,13 @@ export default function Home() {
     }
 
     animationFrameIdRef.current = requestAnimationFrame(animateFramesRef.current);
-  };
-  animateFramesRef.current = animateFrames;
+  }, [images]);
 
-  const changeStage = (idx) => {
+  useEffect(() => {
+    animateFramesRef.current = animateFrames;
+  }, [animateFrames]);
+
+  const changeStage = useCallback((idx) => {
     const isChaotic = Math.abs(idx - activeStageRef.current) > 1;
     isChaoticRef.current = isChaotic;
     setActiveStage(idx);
@@ -903,7 +819,7 @@ export default function Home() {
     if (!animationFrameIdRef.current) {
       animationFrameIdRef.current = requestAnimationFrame(animateFramesRef.current);
     }
-  };
+  }, []);
 
   const handleStageClick = (idx) => {
     isClickingRef.current = true;
@@ -932,14 +848,8 @@ export default function Home() {
 
     const handleWheel = (e) => {
       if (window.innerWidth <= 1024) return;
-
+      const direction = Math.sign(e.deltaY);
       const currentStage = activeStageRef.current;
-      const direction = e.deltaY > 0 ? 1 : -1;
-
-      // Reset accumulation on scroll direction change
-      if ((direction === 1 && accumDelta < 0) || (direction === -1 && accumDelta > 0)) {
-        accumDelta = 0;
-      }
 
       // Check if we should block the page scroll and switch stages
       if (direction === 1 && currentStage < 4) {
@@ -965,7 +875,7 @@ export default function Home() {
     return () => {
       menuEl.removeEventListener('wheel', handleWheel);
     };
-  }, []);
+  }, [changeStage]);
 
 
   useEffect(() => {
@@ -1118,77 +1028,40 @@ export default function Home() {
     }
   };
 
-  const handleCategoryClick = (category, cardRef) => {
-    setActiveCategory(category);
-    if (window.innerWidth <= 1024) {
-      if (cardRef.current) {
-        cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  };
+
+
 
   useEffect(() => {
-    if (window.innerWidth > 1024) return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '-30% 0px -45% 0px',
-      threshold: 0.1,
-    };
-
-    const callback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (entry.target === card1Ref.current) {
-            setActiveCategory('tech');
-          } else if (entry.target === card2Ref.current) {
-            setActiveCategory('team');
-          } else if (entry.target === card3Ref.current) {
-            setActiveCategory('marketing');
-          }
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(callback, observerOptions);
-
-    if (card1Ref.current) observer.observe(card1Ref.current);
-    if (card2Ref.current) observer.observe(card2Ref.current);
-    if (card3Ref.current) observer.observe(card3Ref.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const imagesRef = useRef([]);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-
-  useEffect(() => {
-    if (window.innerWidth <= 1024) return;
+    if (images.length === 0) return;
     let loadedCount = 0;
-    const totalFrames = 300;
-    const loadedImages = [];
-
-    for (let i = 1; i <= totalFrames; i++) {
-      const img = new Image();
-      const numStr = String(i).padStart(3, '0');
-      img.src = `/sequence/ezgif-frame-${numStr}.png`;
-      img.onload = () => {
+    const totalFrames = images.length;
+    images.forEach((img) => {
+      if (img.complete) {
         loadedCount++;
         if (loadedCount === totalFrames) {
           setImagesLoaded(true);
         }
-      };
-      loadedImages.push(img);
-    }
-    imagesRef.current = loadedImages;
-  }, []);
+      } else {
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === totalFrames) {
+            setImagesLoaded(true);
+          }
+        };
+        img.onerror = () => {
+          loadedCount++;
+          if (loadedCount === totalFrames) {
+            setImagesLoaded(true);
+          }
+        };
+      }
+    });
+  }, [images]);
 
   useEffect(() => {
-    if (imagesLoaded && canvasRef.current && imagesRef.current[0]) {
+    if (imagesLoaded && canvasRef.current && images[0]) {
       const canvas = canvasRef.current;
-      const firstImg = imagesRef.current[0];
+      const firstImg = images[0];
       canvas.width = firstImg.naturalWidth || 1280;
       canvas.height = firstImg.naturalHeight || 720;
       const ctx = canvas.getContext('2d');
@@ -1196,7 +1069,7 @@ export default function Home() {
         ctx.drawImage(firstImg, 0, 0, canvas.width, canvas.height);
       }
     }
-  }, [imagesLoaded]);
+  }, [imagesLoaded, images]);
 
 
 
@@ -1204,6 +1077,49 @@ export default function Home() {
     let targetScrollY = window.scrollY;
     let currentScrollY = window.scrollY;
     let reqId = null;
+
+    let dedicatedTopDoc = 0;
+    let whyUsTopDoc = 0;
+    let workTopDocVal = 0;
+    let screen6TopDocVal = 0;
+    let blogTopDocVal = 0;
+    let contactSecTopDocVal = 0;
+
+    const recalculateCoords = () => {
+      const vh = window.innerHeight;
+      const isMobileLayout = window.innerWidth <= 1024;
+      
+      if (!isMobileLayout) {
+        dedicatedTopDoc = vh * 2;
+        whyUsTopDoc = vh * 3.2;
+        workTopDocVal = workTopDocRef.current > 0 ? workTopDocRef.current : vh * 8.2;
+        screen6TopDocVal = screen6TopDocRef.current > 0 ? screen6TopDocRef.current : vh * 11.2;
+        blogTopDocVal = blogTopDocRef.current > 0 ? blogTopDocRef.current : vh * 13.5;
+        contactSecTopDocVal = contactSecTopDocRef.current > 0 ? contactSecTopDocRef.current : vh * 16.2;
+      } else {
+        const getElTop = (el) => {
+          if (!el) return 0;
+          const rect = el.getBoundingClientRect();
+          return window.scrollY + rect.top;
+        };
+
+        const getElTopById = (id) => {
+          const el = document.getElementById(id);
+          return getElTop(el);
+        };
+
+        dedicatedTopDoc = getElTop(dedicatedRef.current) || (vh * 2);
+        whyUsTopDoc = getElTop(whyUsRef.current) || (vh * 3.2);
+        workTopDocVal = getElTopById('work') || (vh * 8.2);
+        screen6TopDocVal = getElTopById('screen6') || (vh * 11.2);
+        blogTopDocVal = getElTopById('blog-preview') || (vh * 13.5);
+        contactSecTopDocVal = getElTop(document.querySelector('.contact-section')) || (vh * 16.2);
+      }
+    };
+
+    recalculateCoords();
+    const initialRecalcTimer = setTimeout(recalculateCoords, 400);
+    window.addEventListener('resize', recalculateCoords);
 
     const updateParallax = () => {
       // Linear interpolation (lerp) for soft easing (0.04 for very soft Apple-style inertia)
@@ -1269,11 +1185,10 @@ export default function Home() {
       }
 
       // Accelerated vertical transition along the slant slope (Slanted vertical entrance)
-      let parentTranslateY = 0;
       if (sectionsWrapRef.current) {
         if (currentScrollY < vh) {
           const transitionProgress = Math.max(0, Math.min(currentScrollY / vh, 1));
-          parentTranslateY = (1 - transitionProgress) * 60; // slide up from 60vh
+          const parentTranslateY = (1 - transitionProgress) * 60; // slide up from 60vh
           sectionsWrapRef.current.style.transform = `translateY(${parentTranslateY}vh)`;
           
           // Dynamic clip-path during transition (slanted edge that flattens out)
@@ -1322,7 +1237,7 @@ export default function Home() {
       if (isMobile) {
         const dedicatedEl = dedicatedRef.current;
         if (approachEl && dedicatedEl) {
-          const dedicatedTopDoc = getDedicatedTopDoc();
+          // dedicatedTopDoc is cached in the outer scope
           const scrollStart = dedicatedTopDoc - vh;
           const scrollEnd = dedicatedTopDoc;
           
@@ -1398,7 +1313,7 @@ export default function Home() {
         const dedicatedEl = dedicatedRef.current;
         const whyUsEl = whyUsRef.current;
         if (dedicatedEl && whyUsEl) {
-          const whyUsTopDoc = getWhyUsTopDoc();
+          // whyUsTopDoc is cached in the outer scope
           const scrollStart3 = whyUsTopDoc;
           const scrollEnd3 = whyUsTopDoc + vh;
           
@@ -1581,8 +1496,8 @@ export default function Home() {
       // Split Screen Layout translation, project index tracking, and image parallax logic
       if (worksTrackRef.current) {
         if (window.innerWidth > 1024) {
-          let translateYVal = 0;
-          let activeIdx = 0;
+          let translateYVal;
+          let activeIdx;
           
           if (currentScrollY >= vh * 1.3 && currentScrollY < vh * 2.3) {
             const slideProgress = (currentScrollY - vh * 1.3) / vh;
@@ -1672,7 +1587,7 @@ export default function Home() {
               whyUsEl.style.pointerEvents = 'auto';
             }
 
-            let wipeProgress = 0;
+            let wipeProgress;
             if (currentScrollY < vh * 6.2) {
               wipeProgress = (currentScrollY - vh * 5.2) / vh;
             } else {
@@ -2211,7 +2126,7 @@ export default function Home() {
           workEl.style.visibility = '';
           workEl.style.pointerEvents = '';
 
-          const rectTop = getWorkTopDoc() - currentScrollY;
+          const rectTop = workTopDocVal - currentScrollY;
           const progress = Math.max(0, Math.min(1, 1 - (rectTop / vh)));
           const slantHeight = (1 - progress) * 120;
           workEl.style.clipPath = `polygon(0 0, 100% ${slantHeight}px, 100% 100%, 0 100%)`;
@@ -2242,7 +2157,7 @@ export default function Home() {
             screen6El.style.display = '';
 
             // Mobile dynamic clip-path transition (slanted edge that flattens out)
-            const rectTop6 = getScreen6TopDoc() - currentScrollY;
+            const rectTop6 = screen6TopDocVal - currentScrollY;
             const progress6 = Math.max(0, Math.min(1, 1 - (rectTop6 / vh)));
             if (progress6 >= 0.99) {
               screen6El.style.clipPath = 'none';
@@ -2281,7 +2196,7 @@ export default function Home() {
             blogEl.style.display = '';
 
             // Mobile dynamic clip-path transition (slanted edge that flattens out)
-            const rectTopBlog = getBlogTopDoc() - currentScrollY;
+            const rectTopBlog = blogTopDocVal - currentScrollY;
             const progressBlog = Math.max(0, Math.min(1, 1 - (rectTopBlog / vh)));
             if (progressBlog >= 0.99) {
               blogEl.style.clipPath = 'none';
@@ -2326,7 +2241,7 @@ export default function Home() {
 
             const contactSec = screen7El.querySelector('.contact-section');
             if (contactSec) {
-              const rectTop7 = getContactSecTopDoc() - currentScrollY;
+              const rectTop7 = contactSecTopDocVal - currentScrollY;
               const progress7 = Math.max(0, Math.min(1, 1 - (rectTop7 / vh)));
 
               if (progress7 >= 0.99) {
@@ -2461,6 +2376,8 @@ export default function Home() {
     const heroSceneVal = heroSceneRef.current;
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', recalculateCoords);
+      clearTimeout(initialRecalcTimer);
       if (reqId) cancelAnimationFrame(reqId);
       if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
 
@@ -2503,16 +2420,16 @@ export default function Home() {
     initUnicorn();
   }, []);
 
-  // Canvas rendering has been migrated to high-performance CSS Aurora in index.css
-  useEffect(() => {}, []);
+  // Set document title and meta description on mount for SEO
+  useEffect(() => {
+    document.title = 'NEXTWEB — Сложная веб-разработка, дизайн на основе данных и маркетинг';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'NEXTWEB — Креативное технологическое агентство. Разработка сложных веб-решений, дизайн интерфейсов на основе исследований и маркетинг в цифровой среде.');
+    }
+  }, []);
 
 
-
-  const handleLearnApproach = (e) => {
-    e.preventDefault();
-    const el = document.querySelector('#approach');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div className="home-page">
@@ -3168,7 +3085,7 @@ export default function Home() {
           {/* Left Column: Vertical Menu */}
           <div className="tech-tabs-sidebar" ref={techTabsRef}>
             <ul className="tech-tabs-list">
-              {techCategories.map((category, idx) => (
+              {techCategories.map((category) => (
                 <li
                   key={category.id}
                   className={`tech-tab-item ${activeTechTab === category.id ? 'active' : ''}`}
@@ -3421,7 +3338,7 @@ export default function Home() {
                 {testimonialsData.map((item, idx) => {
                   const isActive = idx === activeTestimonialIdx;
                   const offset = getCardOffset(idx, activeTestimonialIdx, testimonialsData.length);
-                  const prevOffset = getCardOffset(idx, prevActiveTestimonialIdxRef.current, testimonialsData.length);
+                  const prevOffset = getCardOffset(idx, prevActiveTestimonialIdx, testimonialsData.length);
                   const isSide = Math.abs(offset) === 1;
                   const isWrapping = Math.abs(offset - prevOffset) > 1;
                   

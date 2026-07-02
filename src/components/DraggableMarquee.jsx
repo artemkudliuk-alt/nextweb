@@ -31,12 +31,8 @@ export default function DraggableMarquee() {
     if (!list) return;
 
     const autoScrollSpeed = -0.8; // pixels per frame
-    let lastFrameTime = performance.now();
 
     const update = () => {
-      const time = performance.now();
-      const _dt = time - lastFrameTime;
-      lastFrameTime = time;
 
       if (!isDragging) {
         // Apply velocity decay

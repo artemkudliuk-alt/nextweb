@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Grid from '../components/Grid';
 import { motion } from 'framer-motion';
 
 const projects = {
@@ -82,7 +81,14 @@ export default function WorkDetail() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [id]);
+    if (project) {
+      document.title = `${project.title} | Портфолио NEXTWEB`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', project.description || '');
+      }
+    }
+  }, [id, project]);
 
   if (!project) {
     return (

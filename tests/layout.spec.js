@@ -20,7 +20,11 @@ test.describe('NextWeb Layout Checks', () => {
     // Toggle menu
     const menuBtn = page.locator('.menu-btn').first();
     await expect(menuBtn).toBeVisible();
-    await menuBtn.click();
+    
+    // Wait for preloader to be hidden so it doesn't intercept clicks
+    await page.waitForSelector('.preloader.hidden', { state: 'attached', timeout: 5000 });
+    
+    await menuBtn.click({ force: true });
     
     // Mobile drawer should open
     const drawer = page.locator('.mobile-drawer');

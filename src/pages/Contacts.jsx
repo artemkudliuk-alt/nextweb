@@ -159,7 +159,7 @@ export default function Contacts() {
     }
   });
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = () => {
     setFormStatus('sending');
     setTimeout(() => {
       setFormStatus('success');

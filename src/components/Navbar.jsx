@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import { servicesData } from '../utils/servicesData';
-import { useUIStore } from '../store/useUIStore';
 
 const serviceGroups = [
   {
@@ -60,10 +59,9 @@ export default function Navbar() {
   const [mobileActiveCategory, setMobileActiveCategory] = useState(null);
 
   const location = useLocation();
-  const navigate = useNavigate();
   const leaveTimeoutRef = useRef(null);
 
-  let lastScrollY = 0;
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -87,7 +85,7 @@ export default function Navbar() {
       }
 
       // Hide navbar on scroll down, show on scroll up
-      if (currentScrollY > lastScrollY && currentScrollY > 200) {
+      if (currentScrollY > lastScrollYRef.current && currentScrollY > 200) {
         setHidden(true);
       } else {
         setHidden(false);
@@ -103,7 +101,7 @@ export default function Navbar() {
         setStickyVisible(true);
       }
       
-      lastScrollY = currentScrollY;
+      lastScrollYRef.current = currentScrollY;
     };
 
     handleScroll();
@@ -112,23 +110,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location.pathname]);
 
-  // Handle anchor navigation from other pages
-  const handleNavClick = (e, hash) => {
-    e.preventDefault();
-    setMenuOpen(false);
-    setDropdownOpen(false);
-    if (location.pathname !== '/') {
-      navigate('/');
-      // Wait for page load, then scroll
-      setTimeout(() => {
-        const el = document.querySelector(hash);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      const el = document.querySelector(hash);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+
 
   const handleMouseEnter = () => {
     if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);

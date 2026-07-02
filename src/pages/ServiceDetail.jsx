@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { servicesData } from '../utils/servicesData';
 import Footer from '../components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import ServiceCalculator from '../components/ServiceCalculator';
+import { useTrail, animated } from '@react-spring/web';
 
 function LogoIcon({ className }) {
   return (
@@ -17,9 +18,15 @@ function InteractiveVisualCard() {
   const [activeTab, setActiveTab] = useState('grid');
   const [speedProgress, setSpeedProgress] = useState(0);
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'speed') {
+      setSpeedProgress(0);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'speed') {
-      setSpeedProgress(0);
       const timer = setTimeout(() => {
         setSpeedProgress(99);
       }, 100);
@@ -39,19 +46,19 @@ function InteractiveVisualCard() {
         <div className="visual-card-tabs">
           <button 
             className={`tab-btn ${activeTab === 'grid' ? 'active' : ''}`}
-            onClick={() => setActiveTab('grid')}
+            onClick={() => handleTabChange('grid')}
           >
             Сетка
           </button>
           <button 
             className={`tab-btn ${activeTab === 'chart' ? 'active' : ''}`}
-            onClick={() => setActiveTab('chart')}
+            onClick={() => handleTabChange('chart')}
           >
             Конверсии
           </button>
           <button 
             className={`tab-btn ${activeTab === 'speed' ? 'active' : ''}`}
-            onClick={() => setActiveTab('speed')}
+            onClick={() => handleTabChange('speed')}
           >
             Скорость
           </button>
@@ -623,21 +630,21 @@ function BespokeCardService() {
   );
 }
 
-export default function ServiceDetail() {
-  const { serviceId } = useParams();
+function StandardServiceDetail({ serviceId }) {
   const service = servicesData[serviceId];
 
   const [inView, setInView] = useState(false);
+  const [prevServiceId, setPrevServiceId] = useState(serviceId);
   const sectionRef = useRef(null);
+
+  if (serviceId !== prevServiceId) {
+    setPrevServiceId(serviceId);
+    setInView(false);
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setInView(false);
   }, [serviceId]);
-
-  if (serviceId === 'card') {
-    return <BespokeCardService />;
-  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -664,10 +671,16 @@ export default function ServiceDetail() {
     config: { mass: 1, tension: 210, friction: 20 },
   });
 
+  // Handle document title updates for SEO
   useEffect(() => {
-    window.scrollTo(0, 0);
-    setInView(false);
-  }, [serviceId]);
+    if (service) {
+      document.title = service.metaTitle || `${service.title} — NextWeb`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', service.metaDescription || '');
+      }
+    }
+  }, [service]);
 
   if (!service) {
     return (
@@ -688,17 +701,6 @@ export default function ServiceDetail() {
       </>
     );
   }
-
-  // Handle document title updates for SEO
-  useEffect(() => {
-    if (service) {
-      document.title = service.metaTitle || `${service.title} — NextWeb`;
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute('content', service.metaDescription || '');
-      }
-    }
-  }, [service]);
 
   return (
     <>
@@ -822,4 +824,14 @@ export default function ServiceDetail() {
       <Footer />
     </>
   );
+}
+
+export default function ServiceDetail() {
+  const { serviceId } = useParams();
+
+  if (serviceId === 'card') {
+    return <BespokeCardService />;
+  }
+
+  return <StandardServiceDetail serviceId={serviceId} />;
 }

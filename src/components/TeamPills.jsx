@@ -63,7 +63,6 @@ export default function TeamPills() {
     // Disable default drag behaviours
     e.preventDefault();
 
-    const _rect = containerRef.current.getBoundingClientRect();
     const pillElement = e.currentTarget;
 
     // Parse current left and top as percentages or pixels

@@ -166,8 +166,8 @@ export default function AsciiArrows({ isHovered = false }) {
       shapeProgress += (targetProgress - shapeProgress) * 0.035;
 
       // Smooth mouse-following parallax offset or automatic organic floating
-      let targetOffsetX = 0;
-      let targetOffsetY = 0;
+      let targetOffsetX;
+      let targetOffsetY;
       if (mouse.active) {
         const centerX = width / 2;
         const centerY = height / 2;
@@ -215,11 +215,7 @@ export default function AsciiArrows({ isHovered = false }) {
         let opacity = 0; // Default background character opacity is 0 (fully transparent)
         let char = "-";
         let isGradientColor = false;
-
-        // 1. Mouse Interaction (Warp, light up, and local shape reveal)
         let mouseDist = 999;
-        let _spotlightFactor = 0;
-        const revealRadius = 90; // Spotlight reveal radius (approx 80-90px)
 
         if (mouse.active) {
           const mx = mouse.x;
@@ -245,11 +241,6 @@ export default function AsciiArrows({ isHovered = false }) {
             }
           }
 
-          // Compute spotlight factor for active shape cells
-          if (mouseDist < revealRadius) {
-            // Smooth cosine falloff
-            _spotlightFactor = Math.cos(((mouseDist / revealRadius) * Math.PI) / 2);
-          }
         }
 
         // 2. Shape Morph State (Based on global hover progress)
